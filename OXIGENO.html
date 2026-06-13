@@ -126,10 +126,37 @@
         .oxygen-meta {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 0.9rem;
             margin-bottom: 6px;
             font-weight: 600;
             color: var(--text-muted);
+        }
+
+        .item-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Botón de copiar individual */
+        .btn-copy-small {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-copy-small:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .btn-copy-small:active {
+            transform: scale(0.9);
         }
 
         .bar-bg {
@@ -177,7 +204,10 @@
             text-align: center;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
-        .w-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px;}
+        .w-label { 
+            font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px;
+            display: flex; justify-content: center; align-items: center; gap: 6px;
+        }
         .w-val { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
 
         /* Notificación Flotante */
@@ -192,6 +222,20 @@
         [data-theme="dark"] .toast { background: #f8fafc; color: #0f172a; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+
+        /* Estilos exclusivos para Impresión */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
+            .container { max-width: 100%; padding: 0; }
+            header { background: #ffffff !important; color: #000000 !important; box-shadow: none; border: none; border-bottom: 2px solid #000; padding: 0 0 15px 0; border-radius: 0;}
+            header h1 { color: #000000 !important; font-size: 1.5rem; }
+            .header-controls, .btn-copy-small, .toast { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; break-inside: avoid; }
+            .bar-bg, .bg-empty, .bar-fill, .bg-red, .bg-yellow, .bg-blue {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -200,8 +244,9 @@
         <header>
             <h1>REPORTE DE OXÍGENO - Novo Clinic</h1>
             <div class="header-controls">
+                <button class="btn-action btn-icon" onclick="window.print()" title="Imprimir Reporte">🖨️</button>
                 <button class="btn-action btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Alternar Modo Oscuro">🌙</button>
-                <button class="btn-action" onclick="copyText()">📋 Copiar a WhatsApp</button>
+                <button class="btn-action" onclick="copyFullText()">📋 Copiar Todo</button>
             </div>
         </header>
 
@@ -232,17 +277,17 @@ Neb. *Nebulizar:* 600
 ▫️ *Reserva O2:* *04UND*
 ▫️ *RESERVA CO2:* *02 UND*</textarea>
 
-    <div id="toast" class="toast">✅ ¡Reporte copiado al portapapeles!</div>
+    <div id="toast" class="toast">✅ ¡Copiado al portapapeles!</div>
 
     <script>
-        // --- 1. LÓGICA DEL MODO OSCURO NATIVO ---
+        // --- LÓGICA DEL MODO OSCURO NATIVO ---
         document.addEventListener("DOMContentLoaded", () => {
             const savedTheme = localStorage.getItem("tema_oxigeno");
             if (savedTheme === "dark") {
                 document.documentElement.setAttribute("data-theme", "dark");
                 document.getElementById("theme-toggle").textContent = "☀️";
             }
-            renderDashboard(); // Renderiza los datos al cargar
+            renderDashboard(); 
         });
 
         function toggleTheme() {
@@ -258,7 +303,7 @@ Neb. *Nebulizar:* 600
             }
         }
 
-        // --- 2. LÓGICA DE DATOS Y RENDERIZADO ---
+        // --- DATOS Y RENDERIZADO ---
         const MAX = 3000;
         const data = {
             salas: [
@@ -286,19 +331,29 @@ Neb. *Nebulizar:* 600
         };
 
         function getBar(item) {
+            // El texto a copiar para datos individuales
+            let copyText = item.isNull || item.val === 0 ? `${item.tag}: VACÍO` : `${item.tag}: ${item.val}`;
+
             if (item.isNull || item.val === 0) {
                 return `<div class="oxygen-item">
-                    <div class="oxygen-meta"><span>${item.tag}</span><span class="text-empty">VACÍO</span></div>
+                    <div class="oxygen-meta">
+                        <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
+                        <span class="text-empty">VACÍO</span>
+                    </div>
                     <div class="bar-bg bg-empty"><span class="text-empty" style="font-size:0.75rem;">VACÍO</span></div>
                 </div>`;
             }
+            
             let pct = (item.val / MAX) * 100;
             let c = "blue";
             if (item.val < 800) c = "red";
             else if (item.val < 2000) c = "yellow";
 
             return `<div class="oxygen-item">
-                <div class="oxygen-meta"><span>${item.tag}</span><span class="text-${c}">${item.val} / ${MAX}</span></div>
+                <div class="oxygen-meta">
+                    <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
+                    <span class="text-${c}">${item.val} / ${MAX}</span>
+                </div>
                 <div class="bar-bg"><div class="bar-fill bg-${c}" style="width: ${pct}%"></div></div>
             </div>`;
         }
@@ -327,19 +382,45 @@ Neb. *Nebulizar:* 600
                 <div class="card">
                     <h3>📦 Reservas de Gases</h3>
                     <div class="widgets-container">
-                        ${data.reservas.map(w => `<div class="widget"><div class="w-label">${w.gas}</div><div class="w-val">${w.qty}</div></div>`).join('')}
+                        ${data.reservas.map(w => `
+                        <div class="widget">
+                            <div class="w-label">
+                                ${w.gas} 
+                                <button class="btn-copy-small" onclick="copySingleItem('${w.gas}: ${w.qty}', this)" title="Copiar este dato">📋</button>
+                            </div>
+                            <div class="w-val">${w.qty}</div>
+                        </div>`).join('')}
                     </div>
                 </div>
             `;
         }
 
-        // --- 3. COPIAR A WHATSAPP ---
-        function copyText() {
+        // --- FUNCIONES DE COPIADO ---
+
+        // Función para mostrar la notificación de Toast
+        function showToast() {
+            let t = document.getElementById("toast");
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        // Copiar TODO el reporte
+        function copyFullText() {
             navigator.clipboard.writeText(document.getElementById("raw-text").value).then(() => {
-                let t = document.getElementById("toast");
-                t.classList.add("show");
-                setTimeout(() => t.classList.remove("show"), 3000);
-            });
+                showToast();
+            }).catch(err => console.error("Error copiando", err));
+        }
+
+        // Copiar un elemento individual
+        function copySingleItem(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Cambiar el icono visualmente por 1.5s
+                btnElement.textContent = "✅";
+                showToast();
+                setTimeout(() => {
+                    btnElement.textContent = "📋";
+                }, 1500);
+            }).catch(err => console.error("Error copiando item", err));
         }
     </script>
 </body>
