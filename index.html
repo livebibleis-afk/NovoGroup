@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Clínico - Novo Clinic</title>
+    <style>
+        /* Variables globales y temas */
+        :root {
+            --bg-default: #f4f6f9;
+            --header-bg: #1e3a5f;
+            --card-bg: rgba(255, 255, 255, 0.55);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.06);
+            --accent: #3b82f6;
+            --glass-blur: blur(12px);
+        }
+
+        [data-theme="dark"] {
+            --bg-default: #0f172a;
+            --header-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --accent: #60a5fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-default);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Contenedor Principal */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Encabezado */
+        header {
+            background: var(--header-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            transition: background 0.3s ease;
+        }
+
+        header h1 {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-icon-only {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .btn-icon-only:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-icon-only svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Estructuras de las Secciones */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        .sala-block {
+            margin-bottom: 35px;
+        }
+
+        .sala-subtitle {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grid de Tarjetas Quirúrgicas */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        /* Tarjeta de Paciente Glassmorphism */
+        .patient-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.12);
+        }
+
+        /* Botón de copia flotante */
+        .btn-copy-card {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-copy-card:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        /* Fila de Datos */
+        .card-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+
+        .card-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-label {
+            width: 145px;
+            min-width: 145px;
+            margin-right: 10px;
+            word-break: break-word;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .card-value {
+            flex: 1;
+            word-break: break-word;
+            color: var(--text-main);
+        }
+
+        .card-value.highlight {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Sección B: Oxígeno */
+        .oxygen-section {
+            margin-top: 20px;
+        }
+
+        .oxygen-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .oxygen-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .span-full {
+                grid-column: span 2;
+            }
+        }
+
+        .oxygen-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .oxygen-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 8px;
+        }
+
+        /* Layout interno de Recuperación */
+        .recuperacion-split {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        @media (min-width: 600px) {
+            .recuperacion-split {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Lógica de Barras de Oxígeno */
+        .oxygen-item {
+            margin-bottom: 15px;
+        }
+        .oxygen-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .oxygen-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .bar-container {
+            height: 22px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .bar-container {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        /* Estados de Color Condicionales */
+        .status-empty-container {
+            background: #fee2e2 !important;
+            width: 100%;
+            justify-content: center;
+        }
+        .text-empty {
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .text-red { color: #ef4444; font-weight: 600; }
+        .bg-red { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+        .text-yellow { color: #ca8a04; font-weight: 600; }
+        .bg-yellow { background: linear-gradient(90deg, #eab308, #facc15); }
+
+        .text-blue { color: #0ea5e9; font-weight: 600; }
+        .bg-blue { background: linear-gradient(90deg, #3b82f6, #0ea5e9); }
+
+        /* Widgets de Reservas */
+        .reserva-widgets-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .widget-gas {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+        [data-theme="dark"] .widget-gas {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .widget-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .widget-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-top: 5px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        /* Toasts de notificación */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #1e293b;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Elementos Ocultos de Utilidad */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Capa de Impresión Exclusiva */
+        #print-section {
+            display: none;
+        }
+
+        /* Media Queries de Pantalla e Impresión */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                font-size: 10pt;
+                padding: 0;
+            }
+            .dashboard-container, header, .oxygen-section, .btn-copy-card, .toast {
+                display: none !important;
+            }
+            #print-section {
+                display: block !important;
+                max-width: 100%;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 15mm 12mm;
+            }
+            .print-title {
+                font-size: 16pt;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 25px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 5px;
+            }
+            .print-sala-heading {
+                font-size: 12pt;
+                font-weight: bold;
+                margin-top: 20px;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                background: #e5e7eb;
+                padding: 4px 8px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            th, td {
+                border: 1px solid #4b5563;
+                padding: 6px 8px;
+                text-align: left;
+                vertical-align: top;
+                font-size: 9.5pt;
+            }
+            th {
+                background-color: #f3f4f6 !important;
+                font-weight: bold;
+            }
+            .col-hora { width: 10%; }
+            .col-medico { width: 25%; }
+            .col-paciente { width: 25%; }
+            .col-procedimiento { width: 20%; }
+            .col-obs { width: 20%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <h1>Dashboard Clínico - Novo Clinic - Sábado 13 de Junio, 2026</h1>
+            <div class="header-controls">
+                <button class="btn" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema claro/oscuro">
+                    🌙 Modo Oscuro
+                </button>
+                <button class="btn" onclick="window.print()" title="Imprimir Programación">
+                    🖨️ Imprimir
+                </button>
+                <button class="btn-icon-only" onclick="copyOxygenReport()" title="Copiar Reporte de Oxígeno para WhatsApp">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="sala-block">
+                <div class="section-title">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    Programación Quirúrgica
+                </div>
+                
+                <div class="sala-subtitle">⚠️ Sala 1</div>
+                <div class="cards-grid" id="grid-sala-1"></div>
+            </section>
+
+            <section class="sala-block">
+                <div class="sala-subtitle">⚠️ Sala 2</div>
+                <div class="cards-grid" id="grid-sala-2"></div>
+            </section>
+
+            <section class="sala-block">
+                <div class="sala-subtitle">⚠️ Sala 3</div>
+                <div class="cards-grid" id="grid-sala-3"></div>
+            </section>
+
+            <section class="oxygen-section">
+                <div class="section-title">
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 14l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z"/></svg>
+                    Oxígeno Novo Clinic
+                </div>
+                <div class="oxygen-grid">
+                    
+                    <div class="oxygen-card">
+                        <h3>🛠️ Salas de Operaciones</h3>
+                        <div id="ox-salas"></div>
+                    </div>
+
+                    <div class="oxygen-card">
+                        <h3>🏥 UCI & Nebulización</h3>
+                        <div id="ox-uci"></div>
+                    </div>
+
+                    <div class="oxygen-card span-full">
+                        <h3>🛏️ Recuperación</h3>
+                        <div class="recuperacion-split" id="ox-recuperacion"></div>
+                    </div>
+
+                    <div class="oxygen-card">
+                        <h3>🏥 Hospitalización</h3>
+                        <div id="ox-hospitalizacion"></div>
+                    </div>
+
+                    <div class="oxygen-card">
+                        <h3>📦 Reservas de Gases</h3>
+                        <div class="reserva-widgets-container" id="ox-reservas"></div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <textarea id="whatsapp-report-raw" class="visually-hidden">📋 *REPORTE DE ESTADO DE OXÍGENO*
+🏥 *Novo Clinic*
+
+🛠️ *SALAS DE OPERACIONES*
+S1. *Sala 1:* 1400
+S2. *Sala 2:* 1900
+S3. *Sala 3:* 2900
+
+🛏️ *RECUPERACIÓN*
+Rb. *Pto. B:* 600
+Re. *Pto. E:* 1500
+Re. *Pto. G:* 900
+
+🏥 *UCI & NEBULIZACIÓN*
+Ca1. *Cama A1:* 1600
+Cb1. *Cama b1:* -
+Neb. *Nebulizar:* 600
+
+🏥 *HOSPITALIZACIÓN*: 3000
+📦 *RESERVAS DE GASES*
+▫️ *Reserva O2:* *04UND*
+▫️ *RESERVA CO2:* *02 UND*</textarea>
+
+    <div id="toast-notif" class="toast">✅ ¡Reporte copiado al portapapeles!</div>
+
+    <div id="print-section">
+        <div class="print-title">PROGRAMACIÓN QUIRÚRGICA - NOVO CLINIC</div>
+        <p style="margin-bottom: 15px; font-weight: bold;">Fecha: Sábado 13 de Junio, 2026</p>
+        
+        <div class="print-sala-heading">SALA 1</div>
+        <table id="table-print-s1">
+            <thead>
+                <tr>
+                    <th class="col-hora">Hora</th>
+                    <th class="col-medico">Médico</th>
+                    <th class="col-paciente">Paciente</th>
+                    <th class="col-procedimiento">Procedimiento</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="print-sala-heading">SALA 2</div>
+        <table id="table-print-s2">
+            <thead>
+                <tr>
+                    <th class="col-hora">Hora</th>
+                    <th class="col-medico">Médico</th>
+                    <th class="col-paciente">Paciente</th>
+                    <th class="col-procedimiento">Procedimiento</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="print-sala-heading">SALA 3</div>
+        <table id="table-print-s3">
+            <thead>
+                <tr>
+                    <th class="col-hora">Hora</th>
+                    <th class="col-medico">Médico</th>
+                    <th class="col-paciente">Paciente</th>
+                    <th class="col-procedimiento">Procedimiento</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // Datos de la programación quirúrgica estructurados nativamente
+        const surgicalData = [
+            { sala: "S1", hora: "6:00", paciente: "ALEX ALARCON", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
+            { sala: "S1", hora: "7:00", paciente: "MARIELA MILLA JAVIER JESUS", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
+            { sala: "S1", hora: "9:00", paciente: "LEYDI IZQUIERDO", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
+            { sala: "S1", hora: "10:00", paciente: "ISABEL UBALDO", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
+            { sala: "S1", hora: "17:00", paciente: "", medico: "DR: VICTOR ALFREDO GOMEZ PONCE", procedimiento: "SIMPATECTOMIA", obs: "PREOP: DR / TRAE ANESTESIOLOGO", h: "2 H" },
+            { sala: "S1", hora: "18:30", paciente: "", medico: "DR: VICTOR ALFREDO GOMEZ PONCE", procedimiento: "SIMPATECTOMIA", obs: "PREOP: DR / TRAE ANESTESIOLOGO", h: "2 H" },
+            { sala: "S1", hora: "19:00", paciente: "LOPEZ TASAYCO LUIS (66a)", medico: "DR: JAVIER ELISEO CABRERA ROSAS", procedimiento: "URETROTOMIA INTERNA", obs: "", h: "3 H" },
+            
+            { sala: "S2", hora: "4:30", paciente: "FUNEGRA MORI RICHARD", medico: "DR: ESTUARDO ANDRES RIOS CADENILLAS", procedimiento: "PENECTOMIA PARCIAL", obs: "PREOP: PX TRAE", h: "2 H" },
+            { sala: "S2", hora: "8:00", paciente: "SHEYLA RAMIREZ", medico: "DR: Mauricio De la Gala", procedimiento: "HISTEROSCOPIA", obs: "PREOP: DR", h: "2 H" },
+            { sala: "S2", hora: "10:00", paciente: "NORCA ASCUE", medico: "DR: JESUS MARTIN PARI ESPINOZA", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX / HBT: PRIVADA LA MEJOR INFLUENCER", h: "2 H" },
+            { sala: "S2", hora: "12:30", paciente: "", medico: "DR: RICKS HARDY MOSTACERO MONTALVO", procedimiento: "LIPOABDOMINO", obs: "PREOP: PX", h: "" },
+            { sala: "S2", hora: "17:00", paciente: "MEJIAS ESPINOZA MAXIMILIANA", medico: "DR: JHOHAN RUMALDO DE JESUS SOLIS", procedimiento: "PROSTARSECTOMIA RADICAL", obs: "PREOP: PX TRAE", h: "2 H" },
+            { sala: "S2", hora: "19:00", paciente: "XOLANDA LAINES TAPIA", medico: "DR: ABEL FERNANDO ALFARO OCHOA", procedimiento: "HEMORROIDECTOMIA", obs: "PREOP: PX TIENE", h: "2 H" },
+            
+            { sala: "S3", hora: "5:00", paciente: "YINETH VILLAFRANCA", medico: "DR: JOEL SAUL SOTELO PASCUAL", procedimiento: "COLELAP", obs: "PREOP: DR", h: "2 H" },
+            { sala: "S3", hora: "8:00", paciente: "GENOVEVA TERRONES", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX", h: "2 H" },
+            { sala: "S3", hora: "10:00", paciente: "DIEGO FELIX DE LA CRUZ", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX", h: "2 H" },
+            { sala: "S3", hora: "12:00", paciente: "KEYLA LOPEZ", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: DR", h: "2 H" }
+        ];
+
+        // Datos del Reporte de Oxígeno
+        const oxygenData = {
+            salas: [
+                { tag: "S1. Sala 1", val: 1400 },
+                { tag: "S2. Sala 2", val: 1900 },
+                { tag: "S3. Sala 3", val: 2900 }
+            ],
+            uci: [
+                { tag: "Ca1. Cama A1", val: 1600 },
+                { tag: "Cb1. Cama b1", val: 0, isNull: true },
+                { tag: "Neb. Nebulizar", val: 600 }
+            ],
+            recuperacion: [
+                { tag: "Rb. Pto. B", val: 600 },
+                { tag: "Re. Pto. E", val: 1500 },
+                { tag: "Re. Pto. G", val: 900 }
+            ],
+            hospitalizacion: [
+                { tag: "Hospitalización", val: 3000 }
+            ],
+            reservas: [
+                { gas: "Reserva O2", qty: "04 UND", badge: "Estable (+4)" },
+                { gas: "Reserva CO2", qty: "02 UND", badge: "OK" }
+            ]
+        };
+
+        // Renderización de Contenidos al Cargar la Página
+        document.addEventListener("DOMContentLoaded", () => {
+            // Inicializar tema guardado
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+                document.getElementById("theme-toggle").textContent = "☀️ Modo Claro";
+            }
+
+            renderSurgicalDashboard();
+            renderOxygenDashboard();
+        });
+
+        // Alternar Tema Claro / Oscuro
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "dark") {
+                document.documentElement.removeAttribute("data-theme");
+                localStorage.setItem("theme", "light");
+                document.getElementById("theme-toggle").textContent = "🌙 Modo Oscuro";
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("theme", "dark");
+                document.getElementById("theme-toggle").textContent = "☀️ Modo Claro";
+            }
+        }
+
+        // Render de la sección A y Tablas de Impresión
+        function renderSurgicalDashboard() {
+            const grid1 = document.getElementById("grid-sala-1");
+            const grid2 = document.getElementById("grid-sala-2");
+            const grid3 = document.getElementById("grid-sala-3");
+
+            const t1 = document.getElementById("table-print-s1").querySelector("tbody");
+            const t2 = document.getElementById("table-print-s2").querySelector("tbody");
+            const t3 = document.getElementById("table-print-s3").querySelector("tbody");
+
+            surgicalData.forEach((item, index) => {
+                // Limpieza visual solicitada (quitar guiones bajos u optimizar vacíos)
+                const pacDisplay = item.paciente.trim() || "";
+                const obsDisplay = item.obs.trim() || "";
+                const hDisplay = item.h.trim() || "";
+
+                // Generar tarjeta interactiva
+                const card = document.createElement("div");
+                card.className = "patient-card";
+                card.innerHTML = `
+                    <button class="btn-copy-card" onclick="copyPatientToSheets(${index}, this)" title="Copiar fila para Google Sheets">📋</button>
+                    <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value ${pacDisplay ? 'highlight' : ''}">${pacDisplay}</div></div>
+                    <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${item.hora}</div></div>
+                    <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${item.sala}</div></div>
+                    <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${item.medico}</div></div>
+                    <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${item.procedimiento}</div></div>
+                    <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${obsDisplay}</div></div>
+                    <div class="card-row"><div class="card-label">H:</div><div class="card-value">${hDisplay}</div></div>
+                `;
+
+                // Añadir al grid correspondiente
+                if (item.sala === "S1") grid1.appendChild(card);
+                else if (item.sala === "S2") grid2.appendChild(card);
+                else if (item.sala === "S3") grid3.appendChild(card);
+
+                // Generar fila limpia para impresión clásica en papel A4
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.hora}</td>
+                    <td>${item.medico}</td>
+                    <td>${pacDisplay || "<em>Sin paciente asignado</em>"}</td>
+                    <td>${item.procedimiento}</td>
+                    <td>${obsDisplay || "-"}</td>
+                `;
+
+                if (item.sala === "S1") t1.appendChild(row);
+                else if (item.sala === "S2") t2.appendChild(row);
+                else if (item.sala === "S3") t3.appendChild(row);
+            });
+        }
+
+        // Función de copia de datos formateada para Google Sheets de forma estricta (Etiqueta \t Dato \n)
+        function copyPatientToSheets(idx, btnElement) {
+            const i = surgicalData[idx];
+            const cleanPac = i.paciente.trim();
+            const cleanObs = i.obs.trim();
+            const cleanH = i.h.trim();
+
+            const textToCopy = 
+                `PACIENTE:\t${cleanPac}\n` +
+                `HORA PROG.:\t${i.hora}\n` +
+                `SALA:\t${i.sala}\n` +
+                `MEDICO:\t${i.medico}\n` +
+                `PROCEDIMIENTO:\t${i.procedimiento}\n` +
+                `OBS:\t${cleanObs}\n` +
+                `H:\t${cleanH}\n`;
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                btnElement.textContent = "✅";
+                setTimeout(() => {
+                    btnElement.textContent = "📋";
+                }, 1500);
+            }).catch(err => console.error("Error al copiar al portapapeles: ", err));
+        }
+
+        // Render de la sección B (Lógica de barras y colores de Oxígeno)
+        function renderOxygenDashboard() {
+            // Auxiliar para barras con rango dinámico y cálculo matemático estricto sobre 3000
+            const createOxygenBarHtml = (item) => {
+                if (item.isNull || item.val === 0) {
+                    return `
+                        <div class="oxygen-item">
+                            <div class="oxygen-meta"><span>${item.tag}</span><span class="text-empty">VACÍO</span></div>
+                            <div class="bar-container status-empty-container"><span class="text-empty">VACÍO</span></div>
+                        </div>`;
+                }
+
+                const pct = ((item.val / 3000) * 100).toFixed(2);
+                let colorClass = "bg-blue";
+                let textClass = "text-blue";
+
+                if (item.val >= 1 && item.val <= 799) {
+                    colorClass = "bg-red";
+                    textClass = "text-red";
+                } else if (item.val >= 800 && item.val <= 1999) {
+                    colorClass = "bg-yellow";
+                    textClass = "text-yellow";
+                }
+
+                return `
+                    <div class="oxygen-item">
+                        <div class="oxygen-meta"><span>${item.tag}</span><span class="${textClass}">${item.val} / 3000</span></div>
+                        <div class="bar-container">
+                            <div class="bar-fill ${colorClass}" style="width: ${pct}%"></div>
+                        </div>
+                    </div>`;
+            };
+
+            // Renderizar cada bloque de gases
+            document.getElementById("ox-salas").innerHTML = oxygenData.salas.map(createOxygenBarHtml).join("");
+            document.getElementById("ox-uci").innerHTML = oxygenData.uci.map(createOxygenBarHtml).join("");
+            document.getElementById("ox-recuperacion").innerHTML = oxygenData.recuperacion.map(createOxygenBarHtml).join("");
+            document.getElementById("ox-hospitalizacion").innerHTML = oxygenData.hospitalizacion.map(createOxygenBarHtml).join("");
+
+            // Renderizar bloque de reservas (Widgets sin barra con badges)
+            document.getElementById("ox-reservas").innerHTML = oxygenData.reservas.map(w => `
+                <div class="widget-gas">
+                    <div class="widget-label">${w.gas}</div>
+                    <div class="widget-value">${w.qty}</div>
+                    <div class="badge">${w.badge}</div>
+                </div>
+            `).join("");
+        }
+
+        // Copia el reporte raw de oxígeno oculto y genera la alerta flotante por 3 segundos
+        function copyOxygenReport() {
+            const reportRawText = document.getElementById("whatsapp-report-raw").value;
+            navigator.clipboard.writeText(reportRawText).then(() => {
+                const toast = document.getElementById("toast-notif");
+                toast.classList.add("show");
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                }, 3000);
+            }).catch(err => console.error("Error al copiar reporte de oxígeno: ", err));
+        }
+    </script>
+</body>
+</html>
