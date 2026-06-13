@@ -2,335 +2,426 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ficha de Registro de Asistencia Unificada V7 - NovoClinic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Oxígeno - Novo Clinic</title>
     <style>
-        @page {
-            size: A4 portrait;
-            margin: 10mm 10mm;
-            @bottom-right {
-                content: "Página " counter(page) " de " counter(pages);
-                font-family: Arial, sans-serif;
-                font-size: 7pt;
-                color: #64748b;
-            }
+        /* Variables Globales (Modo Claro por defecto) */
+        :root {
+            --bg-default: #f4f6f9;
+            --header-bg: #1e3a5f;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 4px 12px rgba(203, 213, 225, 0.4);
+            --widget-bg: #f8fafc;
+            --bar-bg: #f1f5f9;
+            --empty-bg: #fee2e2;
         }
-        
-        *, *::before, *::after {
-            box-sizing: border-box;
+
+        /* Variables Modo Oscuro */
+        [data-theme="dark"] {
+            --bg-default: #0f172a;
+            --header-bg: #1e293b;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --widget-bg: #0f172a;
+            --bar-bg: #334155;
+            --empty-bg: #7f1d1d;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #1e293b;
-            background-color: #ffffff;
-            -webkit-print-color-adjust: exact;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-default);
+            color: var(--text-main);
+            padding-bottom: 40px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .page {
-            page-break-after: always;
-        }
-        
-        .page:last-child {
-            page-break-after: auto;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 
-        .header-table {
-            width: 100%;
-            margin-bottom: 12px;
-            border-collapse: collapse;
-        }
-
-        .header-table td {
-            border: none;
-            padding: 0;
-            vertical-align: middle;
-        }
-
-        .logo-section {
-            width: 45%;
-        }
-
-        .logo-flex {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .logo-text {
-            font-size: 18pt;
-            font-weight: bold;
-            color: #0284c7;
-            letter-spacing: -0.5px;
-            line-height: 1;
-        }
-
-        .info-section {
-            width: 55%;
-            text-align: right;
-        }
-
-        .form-title {
-            font-size: 11pt;
-            font-weight: bold;
-            color: #0f172a;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .meta-details {
-            font-size: 8.5pt;
-            color: #334155;
-        }
-
-        .meta-row {
-            margin-bottom: 2px;
-        }
-
-        .fill-line {
-            border-bottom: 1px solid #94a3b8;
-            display: inline-block;
-            width: 150px;
-            height: 11px;
-            vertical-align: bottom;
-            margin-left: 4px;
-        }
-
-        .highlight-box {
-            background-color: #fef08a;
-            padding: 1px 4px;
-            font-weight: bold;
-            border-radius: 2px;
-            border: 1px solid #facc15;
-            display: inline-block;
-        }
-
-        .attendance-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 7.5pt;
-        }
-
-        .attendance-table th {
-            background-color: #1e293b;
+        /* Encabezado */
+        header {
+            background: var(--header-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             color: #ffffff;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 7.5pt;
-            border: 1px solid #0f172a;
-            padding: 4px 2px;
-            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            transition: background-color 0.3s ease;
         }
 
-        .attendance-table th.day-header {
-            background-color: #ffffff;
+        header h1 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase;}
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-action:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Grilla Principal */
+        .oxygen-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .oxygen-grid { grid-template-columns: repeat(2, 1fr); }
+            .span-full { grid-column: span 2; }
+            .recuperacion-split { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Lógica de Elementos y Barras */
+        .oxygen-item { margin-bottom: 15px; }
+        .oxygen-item:last-child { margin-bottom: 0; }
+
+        .oxygen-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .item-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Botón de copiar individual */
+        .btn-copy-small {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: opacity 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-copy-small:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        .btn-copy-small:active {
+            transform: scale(0.9);
+        }
+
+        .bar-bg {
             height: 18px;
+            background: var(--bar-bg);
+            border-radius: 9px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
         }
 
-        .attendance-table th.sub-header {
-            background-color: #475569;
-            font-size: 7pt;
-            padding: 3px 1px;
+        .bar-fill {
+            height: 100%;
+            border-radius: 9px;
+            transition: width 0.8s ease;
         }
 
-        .attendance-table td {
-            border: 1px solid #cbd5e1;
-            padding: 6px 4px;
-            vertical-align: middle;
-            color: #0f172a;
-        }
+        /* Colores Dinámicos */
+        .text-empty { color: #ef4444; font-weight: 700; letter-spacing: 1px; }
+        .bg-empty { background: var(--empty-bg); width: 100%; justify-content: center; }
+        
+        .text-red { color: #ef4444; }
+        .bg-red { background: linear-gradient(90deg, #ef4444, #f87171); }
 
-        .text-center {
+        .text-yellow { color: #ca8a04; }
+        [data-theme="dark"] .text-yellow { color: #facc15; }
+        .bg-yellow { background: linear-gradient(90deg, #eab308, #facc15); }
+
+        .text-blue { color: #0ea5e9; }
+        [data-theme="dark"] .text-blue { color: #38bdf8; }
+        .bg-blue { background: linear-gradient(90deg, #3b82f6, #0ea5e9); }
+
+        /* Widgets Reservas */
+        .widgets-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .widget {
+            background: var(--widget-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 20px 10px;
             text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
-
-        .text-left {
-            text-align: left;
-            padding-left: 4px;
+        .w-label { 
+            font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px;
+            display: flex; justify-content: center; align-items: center; gap: 6px;
         }
+        .w-val { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
 
-        .font-bold {
-            font-weight: bold;
+        /* Notificación Flotante */
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #1e293b; color: #fff; padding: 12px 24px;
+            border-radius: 8px; opacity: 0; transform: translateY(10px);
+            transition: 0.3s; pointer-events: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
         }
+        [data-theme="dark"] .toast { background: #f8fafc; color: #0f172a; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
 
-        .row-even {
-            background-color: #f8fafc;
+        /* Estilos exclusivos para Impresión */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
+            .container { max-width: 100%; padding: 0; }
+            header { background: #ffffff !important; color: #000000 !important; box-shadow: none; border: none; border-bottom: 2px solid #000; padding: 0 0 15px 0; border-radius: 0;}
+            header h1 { color: #000000 !important; font-size: 1.5rem; }
+            .header-controls, .btn-copy-small, .toast { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; break-inside: avoid; }
+            .bar-bg, .bg-empty, .bar-fill, .bg-red, .bg-yellow, .bg-blue {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="page">
-        <table class="header-table">
-            <tr>
-                <td class="logo-section">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;">
-                        <path d="M19 10.5H13.5V5C13.5 4.17157 12.8284 3.5 12 3.5C11.1716 3.5 10.5 4.17157 10.5 5V10.5H5C4.17157 10.5 3.5 11.1716 3.5 12C3.5 12.8284 4.17157 13.5 5 13.5H10.5V19C10.5 19.8284 11.1716 20.5 12 20.5C12.8284 20.5 13.5 19.8284 13.5 19V13.5H19C19.8284 13.5 20.5 12.8284 20.5 12C20.5 11.1716 19.8284 10.5 19 10.5Z" fill="#0284c7"/>
-                    </svg>
-                    <div class="logo-flex">
-                        <div class="logo-text">NovoClinic</div>
-                    </div>
-                </td>
-                <td class="info-section">
-                    <div class="form-title">Ficha de Registro de Asistencia</div>
-                    <div class="meta-details">
-                        <div class="meta-row">
-                            <span class="font-bold">MES DE:</span> 
-                            <span class="highlight-box">JUNIO 2026</span>
-                        </div>
-                        <div class="meta-row" style="margin-top: 3px;">
-                            <span class="font-bold">RESPONSABLE:</span>
-                            <div class="fill-line"></div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+    <div class="container">
+        <header>
+            <h1>REPORTE DE OXÍGENO - Novo Clinic</h1>
+            <div class="header-controls">
+                <button class="btn-action btn-icon" onclick="window.print()" title="Imprimir Reporte">🖨️</button>
+                <button class="btn-action btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Alternar Modo Oscuro">🌙</button>
+                <button class="btn-action" onclick="copyFullText()">📋 Copiar Todo</button>
+            </div>
+        </header>
 
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th rowspan="2" style="width: 4%;">Nº</th>
-                    <th rowspan="2" style="width: 38%;">NOMBRE Y APELLIDOS</th>
-                    <th rowspan="2" style="width: 22%;">PUESTO</th>
-                    <th rowspan="2" style="width: 10%;">DNI</th>
-                    <th colspan="2" class="day-header" style="width: 13%;"></th>
-                    <th colspan="2" class="day-header" style="width: 13%;"></th>
-                </tr>
-                <tr>
-                    <th class="sub-header">INGRESO</th>
-                    <th class="sub-header">SALIDA</th>
-                    <th class="sub-header">INGRESO</th>
-                    <th class="sub-header">SALIDA</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td class="text-center font-bold">1</td><td class="text-left font-bold">ISAYAMA MANRIQUE DIEGO SEGUNDO</td><td class="text-left" style="color: #475569;">Gerente General</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">2</td><td class="text-left font-bold">ISAYAMA MANRIQUE SAMUEL</td><td class="text-left" style="color: #475569;">Gerente Comercial</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">3</td><td class="text-left font-bold">MEDINA OLIVEROS, CLARA</td><td class="text-left" style="color: #475569;">Administradora</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">4</td><td class="text-left font-bold">QUISPE MOLLOCONDO, SANDY MARIBEL</td><td class="text-left" style="color: #475569;">Asist. Administrativa</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">5</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">6</td><td class="text-left font-bold">CHACOA CARABALLO MAIRYN CAROLINA</td><td class="text-left" style="color: #475569;">Admisionista</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">7</td><td class="text-left font-bold">TOVAR PAEZ, YORMARY EMICEL</td><td class="text-left" style="color: #475569;">Programación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">8</td><td class="text-left font-bold">GIRON GUZMAN, MILAGROS DEL SOCORRO</td><td class="text-left" style="color: #475569;">Liquidación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">9</td><td class="text-left font-bold">KOHIRA CARRASCO, YAEKO DANIELA</td><td class="text-left" style="color: #475569;">Cajera</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">10</td><td class="text-left font-bold">TAYUPO FARIAS, YORNIER ANTONIO</td><td class="text-left" style="color: #475569;">Coordinador</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">11</td><td class="text-left font-bold">JOHAN BARRETO</td><td class="text-left" style="color: #475569;">Coordinador</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">12</td><td class="text-left font-bold">ITRIAGO ALEXANDER</td><td class="text-left" style="color: #475569;">Coordinador</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">13</td><td class="text-left font-bold">PESCORAN VILLALOBOS, LUIS ARMANDO</td><td class="text-left" style="color: #475569;">Seguridad</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">14</td><td class="text-left font-bold">FERNANDEZ ALARCON, FAUSTO EXEL</td><td class="text-left" style="color: #475569;">Seguridad</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">15</td><td class="text-left font-bold">VALDIVIEZO LEIGH, JUAN CARLOS</td><td class="text-left" style="color: #475569;">Seguridad</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">16</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">17</td><td class="text-left font-bold">MONZÓN GANTO, JOSUÉ MATHEEWS</td><td class="text-left" style="color: #475569;">Asist. Contabilidad</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">18</td><td class="text-left font-bold">CASTRO, BERTHA</td><td class="text-left" style="color: #475569;">Cafetería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">19</td><td class="text-left font-bold">ROJAS POMATANTA, JOSEFA</td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">20</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">21</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">22</td><td class="text-left font-bold">FARFAN LADRÓN DE GUEVARA, GABRIELA</td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">23</td><td class="text-left font-bold">RODRIGUEZ SIVIRA, LILIAM PASTORA</td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">24</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">25</td><td class="text-left font-bold">MARTINEZ CHANAME, JOHNNY ANTONIO</td><td class="text-left" style="color: #475569;">Limpieza</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">26</td><td class="text-left font-bold">CANDELARIO PIÑERO, ELEN</td><td class="text-left" style="color: #475569;">Laboratorio</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">27</td><td class="text-left font-bold">HUAMAN JACO, VIRGINIA BEATRIZ</td><td class="text-left" style="color: #475569;">Química Farmacéutica</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">28</td><td class="text-left font-bold">RAUSEO BERMUDEZ, VERONICA DEL CARMEN</td><td class="text-left" style="color: #475569;">Tca. Farmacia</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">29</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;">Tca. Farmacia</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">30</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;">Tca. Farmacia</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">31</td><td class="text-left font-bold">TOVAR, HENRRI JEOVANNY</td><td class="text-left" style="color: #475569;">Mantenimiento</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">32</td><td class="text-left font-bold">POMA, CARLOS</td><td class="text-left" style="color: #475569;">Escolta</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold"></td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold"></td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold"></td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold"></td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-            </tbody>
-        </table>
+        <div class="oxygen-grid" id="main-grid">
+            </div>
     </div>
 
-    <div class="page">
-        <table class="header-table">
-            <tr>
-                <td class="logo-section">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;">
-                        <path d="M19 10.5H13.5V5C13.5 4.17157 12.8284 3.5 12 3.5C11.1716 3.5 10.5 4.17157 10.5 5V10.5H5C4.17157 10.5 3.5 11.1716 3.5 12C3.5 12.8284 4.17157 13.5 5 13.5H10.5V19C10.5 19.8284 11.1716 20.5 12 20.5C12.8284 20.5 13.5 19.8284 13.5 19V13.5H19C19.8284 13.5 20.5 12.8284 20.5 12C20.5 11.1716 19.8284 10.5 19 10.5Z" fill="#0284c7"/>
-                    </svg>
-                    <div class="logo-flex">
-                        <div class="logo-text">NovoClinic</div>
-                    </div>
-                </td>
-                <td class="info-section">
-                    <div class="form-title">Ficha de Registro de Asistencia</div>
-                    <div class="meta-details">
-                        <div class="meta-row">
-                            <span class="font-bold">MES DE:</span> 
-                            <span class="highlight-box">JUNIO 2026</span>
-                        </div>
-                        <div class="meta-row" style="margin-top: 3px;">
-                            <span class="font-bold">RESPONSABLE:</span>
-                            <div class="fill-line"></div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+    <textarea id="raw-text" class="visually-hidden">📋 *REPORTE DE ESTADO DE OXÍGENO*
+🏥 *Novo Clinic*
 
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th rowspan="2" style="width: 4%;">Nº</th>
-                    <th rowspan="2" style="width: 38%;">NOMBRE Y APELLIDOS</th>
-                    <th rowspan="2" style="width: 22%;">PUESTO</th>
-                    <th rowspan="2" style="width: 10%;">DNI</th>
-                    <th colspan="2" class="day-header" style="width: 13%;"></th>
-                    <th colspan="2" class="day-header" style="width: 13%;"></th>
-                </tr>
-                <tr>
-                    <th class="sub-header">INGRESO</th>
-                    <th class="sub-header">SALIDA</th>
-                    <th class="sub-header">INGRESO</th>
-                    <th class="sub-header">SALIDA</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td class="text-center font-bold">33</td><td class="text-left font-bold">RUIZ BLANCO, ASDRUBAL JOSE</td><td class="text-left" style="color: #475569;">Director Médico</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">34</td><td class="text-left font-bold">LIZARDO CHIRINOS, RODOLFO EUDIER</td><td class="text-left" style="color: #475569;">Médico de piso</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">35</td><td class="text-left font-bold">LUGO DIAZ, WENDY RENA</td><td class="text-left" style="color: #475569;">Médico de piso</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">36</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">37</td><td class="text-left font-bold">GUACARA CAMPOS, FRANCELYS LIZANDRA</td><td class="text-left" style="color: #475569;">EKS</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">38</td><td class="text-left font-bold">ORTIZ ESPINOZA, LUIS MIGUEL</td><td class="text-left" style="color: #475569;">Encargado de SOP</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">39</td><td class="text-left font-bold">MARCANO RODRIGUEZ GERONICSIBEL</td><td class="text-left" style="color: #475569;">Laparoscopia</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">40</td><td class="text-left font-bold">RODRIGUEZ CHIRINOS MAYRA FELIPA</td><td class="text-left" style="color: #475569;">Laparoscopia</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">41</td><td class="text-left font-bold">GONZALES NATALY</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">42</td><td class="text-left font-bold">HIDALGO MARTINEZ, GELBER</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">43</td><td class="text-left font-bold">SANCHEZ JUAREZ, CRISTIAN ALEXANDER</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">44</td><td class="text-left font-bold">SALCEDO NAZARETH</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">45</td><td class="text-left font-bold">SALAS DELGADO, ANGIE YULINA</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">46</td><td class="text-left font-bold">ARTIGA, AURORA JOSÉ</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">47</td><td class="text-left font-bold">TAPULLIMA SALAS, LUDA</td><td class="text-left" style="color: #475569;">Circulante</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">48</td><td class="text-left font-bold">SEQUEIRA ESPINOZA, LUMIHYOR DEL VALLE</td><td class="text-left" style="color: #475569;">Recuperación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">49</td><td class="text-left font-bold">LOZADA ALVA, GLADYS MYLUSKA</td><td class="text-left" style="color: #475569;">Recuperación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">50</td><td class="text-left font-bold">EUDIS CUEVAS</td><td class="text-left" style="color: #475569;">Recuperación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">51</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">52</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">53</td><td class="text-left font-bold">XIOMARA LEÓN</td><td class="text-left" style="color: #475569;">Recuperación</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">54</td><td class="text-left font-bold">GUIROLA ZARRAGA JENNY JOSEFINA</td><td class="text-left" style="color: #475569;">Biomédica</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">55</td><td class="text-left font-bold">ROJAS ESTEBAN, SONIA</td><td class="text-left" style="color: #475569;">Lic. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">56</td><td class="text-left font-bold">VILLANUEVA TARAZONA, LILIANA MARCELINA</td><td class="text-left" style="color: #475569;">Lic. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">57</td><td class="text-left font-bold">MEDINA MURGIA, NARDA ESTEFANY</td><td class="text-left" style="color: #475569;">Lic. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">58</td><td class="text-left font-bold">ARQUI COLLAHUACHO, KAREM LEYDI</td><td class="text-left" style="color: #475569;">Lic. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">59</td><td class="text-left font-bold">CARRASCO QUISPE, KARINA</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">60</td><td class="text-left font-bold">ACUÑA CUMPA MARIA BETTY</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">61</td><td class="text-left font-bold">ORTIZ VILLANUEVA EDITH YEIMI</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">62</td><td class="text-left font-bold">CENAS HUAMAN CARMEN ROSA</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">63</td><td class="text-left font-bold">CARRASCO QUISPE JENNY</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">64</td><td class="text-left font-bold">SALDAÑA CHUQUITALLI KAREN ISABEL</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">65</td><td class="text-left font-bold">AUQUI FLORES ROSALINDA DELIA</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">66</td><td class="text-left font-bold">REYES LLACUENTA ROSA MILAGROS</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">67</td><td class="text-left font-bold">NAZARIO CALDERON YULISSA DIANA</td><td class="text-left" style="color: #475569;">Tca. Enfermería</td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr class="row-even"><td class="text-center font-bold">68</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td class="text-center font-bold">69</td><td class="text-left font-bold"></td><td class="text-left" style="color: #475569;"></td><td class="text-center"></td><td></td><td></td><td></td><td></td></tr>
-            </tbody>
-        </table>
-    </div>
+🛠️ *SALAS DE OPERACIONES*
+S1. *Sala 1:* 1400
+S2. *Sala 2:* 1900
+S3. *Sala 3:* 2900
 
+🛏️ *RECUPERACIÓN*
+Rb. *Pto. B:* 600
+Re. *Pto. E:* 1500
+Re. *Pto. G:* 900
+
+🏥 *UCI & NEBULIZACIÓN*
+Ca1. *Cama A1:* 1600
+Cb1. *Cama b1:* -
+Neb. *Nebulizar:* 600
+
+🏥 *HOSPITALIZACIÓN*: 3000
+📦 *RESERVAS DE GASES*
+▫️ *Reserva O2:* *04UND*
+▫️ *RESERVA CO2:* *02 UND*</textarea>
+
+    <div id="toast" class="toast">✅ ¡Copiado al portapapeles!</div>
+
+    <script>
+        // --- LÓGICA DEL MODO OSCURO NATIVO ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem("tema_oxigeno");
+            if (savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+                document.getElementById("theme-toggle").textContent = "☀️";
+            }
+            renderDashboard(); 
+        });
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            if (isDark) {
+                document.documentElement.removeAttribute("data-theme");
+                localStorage.setItem("tema_oxigeno", "light");
+                document.getElementById("theme-toggle").textContent = "🌙";
+            } else {
+                document.documentElement.setAttribute("data-theme", "dark");
+                localStorage.setItem("tema_oxigeno", "dark");
+                document.getElementById("theme-toggle").textContent = "☀️";
+            }
+        }
+
+        // --- DATOS Y RENDERIZADO ---
+        const MAX = 3000;
+        const data = {
+            salas: [
+                { tag: "S1. Sala 1", val: 1400 },
+                { tag: "S2. Sala 2", val: 1900 },
+                { tag: "S3. Sala 3", val: 2900 }
+            ],
+            uci: [
+                { tag: "Ca1. Cama A1", val: 1600 },
+                { tag: "Cb1. Cama b1", val: 0, isNull: true },
+                { tag: "Neb. Nebulizar", val: 600 }
+            ],
+            recuperacion: [
+                { tag: "Rb. Pto. B", val: 600 },
+                { tag: "Re. Pto. E", val: 1500 },
+                { tag: "Re. Pto. G", val: 900 }
+            ],
+            hospitalizacion: [
+                { tag: "Hospitalización", val: 3000 }
+            ],
+            reservas: [
+                { gas: "Reserva O2", qty: "04 UND" },
+                { gas: "RESERVA CO2", qty: "02 UND" }
+            ]
+        };
+
+        function getBar(item) {
+            // El texto a copiar para datos individuales
+            let copyText = item.isNull || item.val === 0 ? `${item.tag}: VACÍO` : `${item.tag}: ${item.val}`;
+
+            if (item.isNull || item.val === 0) {
+                return `<div class="oxygen-item">
+                    <div class="oxygen-meta">
+                        <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
+                        <span class="text-empty">VACÍO</span>
+                    </div>
+                    <div class="bar-bg bg-empty"><span class="text-empty" style="font-size:0.75rem;">VACÍO</span></div>
+                </div>`;
+            }
+            
+            let pct = (item.val / MAX) * 100;
+            let c = "blue";
+            if (item.val < 800) c = "red";
+            else if (item.val < 2000) c = "yellow";
+
+            return `<div class="oxygen-item">
+                <div class="oxygen-meta">
+                    <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
+                    <span class="text-${c}">${item.val} / ${MAX}</span>
+                </div>
+                <div class="bar-bg"><div class="bar-fill bg-${c}" style="width: ${pct}%"></div></div>
+            </div>`;
+        }
+
+        function renderDashboard() {
+            document.getElementById("main-grid").innerHTML = `
+                <div class="card">
+                    <h3>🛠️ Salas de Operaciones</h3>
+                    ${data.salas.map(getBar).join('')}
+                </div>
+                <div class="card">
+                    <h3>🏥 UCI & Nebulización</h3>
+                    ${data.uci.map(getBar).join('')}
+                </div>
+                <div class="card span-full">
+                    <h3>🛏️ Recuperación</h3>
+                    <div class="recuperacion-split">
+                        <div>${data.recuperacion.slice(0,2).map(getBar).join('')}</div>
+                        <div>${data.recuperacion.slice(2).map(getBar).join('')}</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🏥 Hospitalización</h3>
+                    ${data.hospitalizacion.map(getBar).join('')}
+                </div>
+                <div class="card">
+                    <h3>📦 Reservas de Gases</h3>
+                    <div class="widgets-container">
+                        ${data.reservas.map(w => `
+                        <div class="widget">
+                            <div class="w-label">
+                                ${w.gas} 
+                                <button class="btn-copy-small" onclick="copySingleItem('${w.gas}: ${w.qty}', this)" title="Copiar este dato">📋</button>
+                            </div>
+                            <div class="w-val">${w.qty}</div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNCIONES DE COPIADO ---
+
+        // Función para mostrar la notificación de Toast
+        function showToast() {
+            let t = document.getElementById("toast");
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        // Copiar TODO el reporte
+        function copyFullText() {
+            navigator.clipboard.writeText(document.getElementById("raw-text").value).then(() => {
+                showToast();
+            }).catch(err => console.error("Error copiando", err));
+        }
+
+        // Copiar un elemento individual
+        function copySingleItem(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Cambiar el icono visualmente por 1.5s
+                btnElement.textContent = "✅";
+                showToast();
+                setTimeout(() => {
+                    btnElement.textContent = "📋";
+                }, 1500);
+            }).catch(err => console.error("Error copiando item", err));
+        }
+    </script>
 </body>
 </html>
