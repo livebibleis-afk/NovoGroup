@@ -1,240 +1,337 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Oxígeno - Novo Clinic</title>
+    <title>Dashboard Clínico - Estado de Oxígeno</title>
     <style>
-        /* Variables Globales (Modo Claro por defecto) */
         :root {
-            --bg-default: #f4f6f9;
-            --header-bg: #1e3a5f;
-            --card-bg: #ffffff;
-            --card-border: #e2e8f0;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --shadow: 0 4px 12px rgba(203, 213, 225, 0.4);
-            --widget-bg: #f8fafc;
-            --bar-bg: #f1f5f9;
-            --empty-bg: #fee2e2;
+            --bg-color: #f4f6f9;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --header-bg: rgba(30, 58, 95, 0.85);
+            --header-text: #ffffff;
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            
+            --bar-empty-bg: #ffe5e5;
+            --color-red: #e53e3e;
+            --color-red-grad: linear-gradient(90deg, #fc8181 0%, #e53e3e 100%);
+            --color-yellow: #b7791f;
+            --color-yellow-grad: linear-gradient(90deg, #f6e05e 0%, #d69e2e 100%);
+            --color-blue: #3182ce;
+            --color-blue-grad: linear-gradient(90deg, #63b3ed 0%, #3182ce 100%);
         }
 
-        /* Variables Modo Oscuro */
         [data-theme="dark"] {
-            --bg-default: #0f172a;
-            --header-bg: #1e293b;
-            --card-bg: #1e293b;
-            --card-border: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            --widget-bg: #0f172a;
-            --bar-bg: #334155;
-            --empty-bg: #7f1d1d;
+            --bg-color: #1a202c;
+            --glass-bg: rgba(45, 55, 72, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f7fafc;
+            --text-muted: #a0aec0;
+            --header-bg: rgba(20, 35, 60, 0.9);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            
+            --bar-empty-bg: #4a2020;
+            --color-yellow: #ecc94b;
+            --color-blue: #90cdf4;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-default);
+            background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 40px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+        }
 
         /* Encabezado */
         header {
             background: var(--header-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #ffffff;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
-            transition: background-color 0.3s ease;
+            color: var(--header-text);
+            box-shadow: var(--card-shadow);
         }
 
-        header h1 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase;}
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
 
-        .header-controls {
+        .controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .btn-action {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: 0.2s;
-        }
-        .btn-action:hover { background: rgba(255, 255, 255, 0.25); }
-
-        .btn-icon {
-            padding: 8px 12px;
-            font-size: 1.1rem;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
         }
 
-        /* Grilla Principal */
-        .oxygen-grid {
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sección Oxígeno */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        .section-title svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--color-blue);
+        }
+
+        .grid-layout {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
+
         @media (min-width: 768px) {
-            .oxygen-grid { grid-template-columns: repeat(2, 1fr); }
-            .span-full { grid-column: span 2; }
-            .recuperacion-split { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .grid-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: 1 / -1;
+            }
+            .grid-inner-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--text-main);
-            border-bottom: 1px solid var(--card-border);
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--glass-border);
             padding-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        /* Lógica de Elementos y Barras */
-        .oxygen-item { margin-bottom: 15px; }
-        .oxygen-item:last-child { margin-bottom: 0; }
+        /* Barras de Progreso */
+        .item-row {
+            margin-bottom: 16px;
+        }
 
-        .oxygen-meta {
+        .item-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
             margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        .item-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Botón de copiar individual */
-        .btn-copy-small {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            opacity: 0.5;
-            transition: opacity 0.2s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-copy-small:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        .btn-copy-small:active {
-            transform: scale(0.9);
-        }
-
-        .bar-bg {
-            height: 18px;
-            background: var(--bar-bg);
-            border-radius: 9px;
+        .bar-container {
+            height: 28px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 14px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.3s ease;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .bar-container {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .bar-fill {
             height: 100%;
-            border-radius: 9px;
-            transition: width 0.8s ease;
+            border-radius: 14px;
+            transition: width 0.8s ease-in-out;
         }
 
-        /* Colores Dinámicos */
-        .text-empty { color: #ef4444; font-weight: 700; letter-spacing: 1px; }
-        .bg-empty { background: var(--empty-bg); width: 100%; justify-content: center; }
-        
-        .text-red { color: #ef4444; }
-        .bg-red { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .bar-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
 
-        .text-yellow { color: #ca8a04; }
-        [data-theme="dark"] .text-yellow { color: #facc15; }
-        .bg-yellow { background: linear-gradient(90deg, #eab308, #facc15); }
-
-        .text-blue { color: #0ea5e9; }
-        [data-theme="dark"] .text-blue { color: #38bdf8; }
-        .bg-blue { background: linear-gradient(90deg, #3b82f6, #0ea5e9); }
+        [data-theme="dark"] .bar-text {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
 
         /* Widgets Reservas */
-        .widgets-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        .reserves-grid {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
         }
+
         .widget {
-            background: var(--widget-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 20px 10px;
+            flex: 1;
+            min-width: 120px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            position: relative;
         }
-        .w-label { 
-            font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 8px;
-            display: flex; justify-content: center; align-items: center; gap: 6px;
-        }
-        .w-val { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
 
-        /* Notificación Flotante */
-        .toast {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #1e293b; color: #fff; padding: 12px 24px;
-            border-radius: 8px; opacity: 0; transform: translateY(10px);
-            transition: 0.3s; pointer-events: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        .widget-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .widget-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .badge-alert {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--color-red);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(229, 62, 62, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Utilidades de Color */
+        .bg-empty { background: var(--bar-empty-bg) !important; }
+        .bg-red { background: var(--color-red-grad) !important; }
+        .bg-yellow { background: var(--color-yellow-grad) !important; }
+        .bg-blue { background: var(--color-blue-grad) !important; }
+        
+        .text-red { color: var(--color-red) !important; }
+        .text-yellow { color: var(--color-yellow) !important; }
+        .text-blue { color: var(--color-blue) !important; }
+
+        /* Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #38a169;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
             z-index: 1000;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
         }
-        [data-theme="dark"] .toast { background: #f8fafc; color: #0f172a; }
-        .toast.show { opacity: 1; transform: translateY(0); }
-        .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
 
-        /* Estilos exclusivos para Impresión */
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* Impresión */
         @media print {
-            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
-            .container { max-width: 100%; padding: 0; }
-            header { background: #ffffff !important; color: #000000 !important; box-shadow: none; border: none; border-bottom: 2px solid #000; padding: 0 0 15px 0; border-radius: 0;}
-            header h1 { color: #000000 !important; font-size: 1.5rem; }
-            .header-controls, .btn-copy-small, .toast { display: none !important; }
-            .card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; break-inside: avoid; }
-            .bar-bg, .bg-empty, .bar-fill, .bg-red, .bg-yellow, .bg-blue {
+            body {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .glass, header, .widget {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            header {
+                color: black !important;
+            }
+            .bar-container {
+                border: 1px solid #ccc;
+            }
+            .bar-fill {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            .badge-alert {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .container {
+                max-width: 100%;
+            }
+            /* Forzar colores de texto en impresión */
+            .text-red { color: #e53e3e !important; }
+            .text-yellow { color: #b7791f !important; }
+            .text-blue { color: #3182ce !important; }
         }
     </style>
 </head>
@@ -242,186 +339,200 @@
 
     <div class="container">
         <header>
-            <h1>REPORTE DE OXÍGENO - Novo Clinic</h1>
-            <div class="header-controls">
-                <button class="btn-action btn-icon" onclick="window.print()" title="Imprimir Reporte">🖨️</button>
-                <button class="btn-action btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Alternar Modo Oscuro">🌙</button>
-                <button class="btn-action" onclick="copyFullText()">📋 Copiar Todo</button>
+            <h1 id="header-title">Novo Clinic - </h1>
+            <div class="controls no-print">
+                <button class="btn" onclick="toggleTheme()" title="Alternar Tema">
+                    🌓
+                </button>
+                <button class="btn" onclick="copyToClipboard()" title="Copiar para WhatsApp">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copiar
+                </button>
+                <button class="btn" onclick="window.print()" title="Imprimir Reporte">
+                    🖨️ Imprimir
+                </button>
             </div>
         </header>
 
-        <div class="oxygen-grid" id="main-grid">
+        <main>
+            <div class="section-title">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                </svg>
+                <h2>Oxígeno Novo Clinic</h2>
             </div>
+
+            <div class="grid-layout" id="dashboard-grid">
+                </div>
+        </main>
     </div>
 
-    <textarea id="raw-text" class="visually-hidden">📋 *REPORTE DE ESTADO DE OXÍGENO*
-🏥 *Novo Clinic*
-
-🛠️ *SALAS DE OPERACIONES*
-S1. *Sala 1:* 1400
-S2. *Sala 2:* 1900
-S3. *Sala 3:* 2900
-
-🛏️ *RECUPERACIÓN*
-Rb. *Pto. B:* 600
-Re. *Pto. E:* 1500
-Re. *Pto. G:* 900
-
-🏥 *UCI & NEBULIZACIÓN*
-Ca1. *Cama A1:* 1600
-Cb1. *Cama b1:* -
-Neb. *Nebulizar:* 600
-
-🏥 *HOSPITALIZACIÓN*: 3000
-📦 *RESERVAS DE GASES*
-▫️ *Reserva O2:* *04UND*
-▫️ *RESERVA CO2:* *02 UND*</textarea>
-
-    <div id="toast" class="toast">✅ ¡Copiado al portapapeles!</div>
+    <div id="toast">✅ Reporte copiado al portapapeles</div>
 
     <script>
-        // --- LÓGICA DEL MODO OSCURO NATIVO ---
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedTheme = localStorage.getItem("tema_oxigeno");
-            if (savedTheme === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-                document.getElementById("theme-toggle").textContent = "☀️";
-            }
-            renderDashboard(); 
-        });
+        // ==========================================
+        // PARTE 1: LÓGICA DEL DASHBOARD (NO MODIFICAR)
+        // ==========================================
+        
+        let globalWhatsappText = "";
 
+        // Fecha actual
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('header-title').innerText += new Date().toLocaleDateString('es-ES', dateOptions);
+
+        // Tema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+        
         function toggleTheme() {
-            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-            if (isDark) {
-                document.documentElement.removeAttribute("data-theme");
-                localStorage.setItem("tema_oxigeno", "light");
-                document.getElementById("theme-toggle").textContent = "🌙";
-            } else {
-                document.documentElement.setAttribute("data-theme", "dark");
-                localStorage.setItem("tema_oxigeno", "dark");
-                document.getElementById("theme-toggle").textContent = "☀️";
-            }
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
         }
 
-        // --- DATOS Y RENDERIZADO ---
-        const MAX = 3000;
-        const data = {
-            salas: [
-                { tag: "S1. Sala 1", val: 1400 },
-                { tag: "S2. Sala 2", val: 1900 },
-                { tag: "S3. Sala 3", val: 2900 }
-            ],
-            uci: [
-                { tag: "Ca1. Cama A1", val: 1600 },
-                { tag: "Cb1. Cama b1", val: 0, isNull: true },
-                { tag: "Neb. Nebulizar", val: 600 }
+        // Portapapeles
+        function copyToClipboard() {
+            navigator.clipboard.writeText(globalWhatsappText).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            }).catch(err => console.error('Error al copiar: ', err));
+        }
+
+        // Lógica de Barras
+        function getBarConfig(value) {
+            let val = parseInt(value);
+            if (isNaN(val) || val <= 0) {
+                return { width: 100, text: 'VACÍO', bg: 'bg-empty', txt: 'text-red', isZero: true };
+            }
+            
+            let percentage = (val / 3000) * 100;
+            if (percentage > 100) percentage = 100;
+
+            if (val >= 1 && val <= 799) return { width: percentage, text: val, bg: 'bg-red', txt: 'text-red', isZero: false };
+            if (val >= 800 && val <= 1999) return { width: percentage, text: val, bg: 'bg-yellow', txt: 'text-yellow', isZero: false };
+            return { width: percentage, text: val, bg: 'bg-blue', txt: 'text-blue', isZero: false };
+        }
+
+        // Renderizar Categoría de Barras
+        function createBarCard(title, items, isFullWidth = false, isInnerGrid = false) {
+            let html = `<div class="glass card ${isFullWidth ? 'full-width' : ''}">
+                            <h2>${title}</h2>
+                            <div class="${isInnerGrid ? 'grid-inner-2' : ''}">`;
+            
+            items.forEach(item => {
+                const config = getBarConfig(item.valor);
+                html += `
+                    <div class="item-row">
+                        <div class="item-header">
+                            <span>${item.nombre}</span>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-fill ${config.isZero ? '' : config.bg}" style="width: ${config.width}%;"></div>
+                            <div class="bar-text ${config.txt}">${config.text}</div>
+                        </div>
+                    </div>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+
+        // Renderizar Widgets de Reservas
+        function createReserveCard(title, items) {
+            let html = `<div class="glass card full-width">
+                            <h2>${title}</h2>
+                            <div class="reserves-grid">`;
+            
+            items.forEach(item => {
+                const isShortage = item.valor.includes("01") || item.valor.includes("02");
+                const badge = isShortage ? `<div class="badge-alert">ALERTA</div>` : '';
+                html += `
+                    <div class="widget">
+                        ${badge}
+                        <div class="widget-title">${item.nombre}</div>
+                        <div class="widget-value">${item.valor}</div>
+                    </div>`;
+            });
+            html += `</div></div>`;
+            return html;
+        }
+
+        // Función Principal
+        function renderDashboard(oxigeno, textoWpp) {
+            globalWhatsappText = textoWpp;
+            const container = document.getElementById('dashboard-grid');
+            
+            let html = "";
+            html += createBarCard("Salas de Operaciones", oxigeno.operaciones);
+            html += createBarCard("UCI & Nebulización", oxigeno.uci);
+            html += createBarCard("Recuperación", oxigeno.recuperacion, true, true);
+            html += createBarCard("Hospitalización", oxigeno.hospitalizacion);
+            html += createReserveCard("Reservas de Gases", oxigeno.reservas);
+
+            container.innerHTML = html;
+        }
+
+        initTheme();
+
+        // ==========================================
+        // PARTE 2: AÑADE TUS DATOS NUEVOS AQUÍ
+        // ==========================================
+
+        const miOxigeno = {
+            operaciones: [
+                { nombre: "Sala 1", valor: 3000 },
+                { nombre: "Sala 2", valor: 3000 },
+                { nombre: "Sala 3", valor: 2000 }
             ],
             recuperacion: [
-                { tag: "Rb. Pto. B", val: 600 },
-                { tag: "Re. Pto. E", val: 1500 },
-                { tag: "Re. Pto. G", val: 900 }
+                { nombre: "Pto. B", valor: 900 },
+                { nombre: "Pto. E", valor: 900 },
+                { nombre: "Pto. G", valor: 900 }
+            ],
+            uci: [
+                { nombre: "Cama A1", valor: 1200 },
+                { nombre: "Cama b1", valor: 0 },
+                { nombre: "Nebulizar", valor: 600 }
             ],
             hospitalizacion: [
-                { tag: "Hospitalización", val: 3000 }
+                { nombre: "HB 101B", valor: 900 }
             ],
             reservas: [
-                { gas: "Reserva O2", qty: "04 UND" },
-                { gas: "RESERVA CO2", qty: "02 UND" }
+                { nombre: "Reserva O2", valor: "02UND" },
+                { nombre: "Reserva CO2", valor: "02 UND" }
             ]
         };
 
-        function getBar(item) {
-            // El texto a copiar para datos individuales
-            let copyText = item.isNull || item.val === 0 ? `${item.tag}: VACÍO` : `${item.tag}: ${item.val}`;
+        const miTextoWhatsapp = `📋 *REPORTE DE ESTADO DE OXÍGENO*
+🏥 *Novo Clinic*
 
-            if (item.isNull || item.val === 0) {
-                return `<div class="oxygen-item">
-                    <div class="oxygen-meta">
-                        <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
-                        <span class="text-empty">VACÍO</span>
-                    </div>
-                    <div class="bar-bg bg-empty"><span class="text-empty" style="font-size:0.75rem;">VACÍO</span></div>
-                </div>`;
-            }
-            
-            let pct = (item.val / MAX) * 100;
-            let c = "blue";
-            if (item.val < 800) c = "red";
-            else if (item.val < 2000) c = "yellow";
+🛠️ *SALAS DE OPERACIONES*
+S1. *Sala 1:* 3000
+S2. *Sala 2:* 3000
+S3. *Sala 3:* 2000
 
-            return `<div class="oxygen-item">
-                <div class="oxygen-meta">
-                    <span class="item-label">${item.tag} <button class="btn-copy-small" onclick="copySingleItem('${copyText}', this)" title="Copiar este dato">📋</button></span>
-                    <span class="text-${c}">${item.val} / ${MAX}</span>
-                </div>
-                <div class="bar-bg"><div class="bar-fill bg-${c}" style="width: ${pct}%"></div></div>
-            </div>`;
-        }
+🛏️ *RECUPERACIÓN*
+Rb. *Pto. B:* 900
+Re. *Pto. E:* 900
+Re. *Pto. G:* 900
 
-        function renderDashboard() {
-            document.getElementById("main-grid").innerHTML = `
-                <div class="card">
-                    <h3>🛠️ Salas de Operaciones</h3>
-                    ${data.salas.map(getBar).join('')}
-                </div>
-                <div class="card">
-                    <h3>🏥 UCI & Nebulización</h3>
-                    ${data.uci.map(getBar).join('')}
-                </div>
-                <div class="card span-full">
-                    <h3>🛏️ Recuperación</h3>
-                    <div class="recuperacion-split">
-                        <div>${data.recuperacion.slice(0,2).map(getBar).join('')}</div>
-                        <div>${data.recuperacion.slice(2).map(getBar).join('')}</div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>🏥 Hospitalización</h3>
-                    ${data.hospitalizacion.map(getBar).join('')}
-                </div>
-                <div class="card">
-                    <h3>📦 Reservas de Gases</h3>
-                    <div class="widgets-container">
-                        ${data.reservas.map(w => `
-                        <div class="widget">
-                            <div class="w-label">
-                                ${w.gas} 
-                                <button class="btn-copy-small" onclick="copySingleItem('${w.gas}: ${w.qty}', this)" title="Copiar este dato">📋</button>
-                            </div>
-                            <div class="w-val">${w.qty}</div>
-                        </div>`).join('')}
-                    </div>
-                </div>
-            `;
-        }
+ *UCI & NEBULIZACIÓN*
+Ca1. *Cama A1:* 1200
+Cb1. *Cama b1:* -
+Neb. *Nebulizar:* 600
 
-        // --- FUNCIONES DE COPIADO ---
+🏥 *HOSPITALIZACIÓN*: 
+HB 101B: 900
+📦 *RESERVAS DE GASES*
+▫️ *Reserva O2:* *02UND*
+▫️ *RESERVA CO2:* *02 UND*`;
 
-        // Función para mostrar la notificación de Toast
-        function showToast() {
-            let t = document.getElementById("toast");
-            t.classList.add("show");
-            setTimeout(() => t.classList.remove("show"), 3000);
-        }
+        // Ejecutar renderizado
+        renderDashboard(miOxigeno, miTextoWhatsapp);
 
-        // Copiar TODO el reporte
-        function copyFullText() {
-            navigator.clipboard.writeText(document.getElementById("raw-text").value).then(() => {
-                showToast();
-            }).catch(err => console.error("Error copiando", err));
-        }
-
-        // Copiar un elemento individual
-        function copySingleItem(text, btnElement) {
-            navigator.clipboard.writeText(text).then(() => {
-                // Cambiar el icono visualmente por 1.5s
-                btnElement.textContent = "✅";
-                showToast();
-                setTimeout(() => {
-                    btnElement.textContent = "📋";
-                }, 1500);
-            }).catch(err => console.error("Error copiando item", err));
-        }
     </script>
 </body>
 </html>
