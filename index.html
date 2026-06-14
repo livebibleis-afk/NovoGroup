@@ -3,32 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programación Quirúrgica - Novo Clinic</title>
+    <title>Reporte de Sedes</title>
     <style>
-        /* Variables globales y temas */
+        /* Variables de Entorno y Temas */
         :root {
-            --bg-default: #f4f6f9;
-            --header-bg: #1e3a5f;
-            --card-bg: rgba(255, 255, 255, 0.65);
-            --card-border: rgba(255, 255, 255, 0.4);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
-            --accent: #3b82f6;
-            --glass-blur: blur(12px);
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --header-bg: #ffffff;
+            --input-border: #cbd5e0;
+            --btn-bg: #edf2f7;
+            --btn-text: #4a5568;
+            --accent-whatsapp: #25d366;
+            --accent-whatsapp-hover: #128c7e;
         }
 
-        [data-theme="dark"] {
-            --bg-default: #0f172a;
-            --header-bg: #1e293b;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --accent: #60a5fa;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --header-bg: #1e293b;
+            --input-border: #475569;
+            --btn-bg: #334155;
+            --btn-text: #f1f5f9;
         }
 
+        /* Reseteo y Estilos Base */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -36,421 +40,537 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-default);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-main);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 24px;
+            transition: background-color 0.3s, color 0.3s;
             min-height: 100vh;
-            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Encabezado */
+        /* Cabecera / Navbar */
         header {
-            background: var(--header-bg);
+            background-color: var(--header-bg);
+            padding: 18px 24px;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
-            transition: background 0.3s ease;
+            flex-wrap: wrap;
+            gap: 16px;
+            transition: background-color 0.3s;
         }
 
-        header h1 {
-            color: #ffffff;
-            font-size: 1.4rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .header-controls {
+        .title-area {
             display: flex;
             align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-input {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: inherit;
+            border: 2px dashed var(--input-border);
+            background: transparent;
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-transform: uppercase;
+            width: 260px;
+        }
+
+        .date-input:focus {
+            border-color: #3182ce;
+        }
+
+        .header-actions {
+            display: flex;
             gap: 12px;
         }
 
         .btn-action {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #ffffff;
-            padding: 8px 16px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 15px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
         }
 
         .btn-action:hover {
-            background: rgba(255, 255, 255, 0.25);
+            opacity: 0.9;
         }
 
-        .btn-icon {
-            padding: 8px 12px;
-            font-size: 1.1rem;
+        .btn-action:active {
+            transform: scale(0.97);
         }
 
-        /* Estructuras de las Secciones */
-        .sala-block {
-            margin-bottom: 35px;
+        /* Grid del Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            flex-grow: 1;
         }
 
-        .sala-subtitle {
-            font-size: 1.2rem;
+        /* Tarjetas */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Colores Superiores Destacados */
+        .card-blue { border-top: 6px solid #3182ce; }
+        .card-green { border-top: 6px solid #38a169; }
+        .card-purple { border-top: 6px solid #805ad5; }
+        .card-orange { border-top: 6px solid #dd6b20; }
+        .card-grey { border-top: 6px solid #718096; }
+        .card-red { border-top: 6px solid #e53e3e; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--input-border);
+            padding-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 17px;
             font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-copy {
+            background-color: var(--accent-whatsapp);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--accent-whatsapp-hover);
+        }
+
+        /* Contenido Interno de Tarjetas */
+        .card-body {
+            font-size: 14px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sub-section {
+            background-color: rgba(0, 0, 0, 0.02);
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--text-muted);
+        }
+
+        body.dark-mode .sub-section {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .sub-section-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .data-row {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 2px solid var(--card-border);
-            padding-bottom: 5px;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.04);
         }
 
-        /* Grid de Tarjetas Quirúrgicas */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+        body.dark-mode .data-row {
+            border-bottom: 1px dashed rgba(255,255,255,0.04);
         }
 
-        /* Tarjeta de Paciente */
-        .patient-card {
-            background: var(--card-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
+        .data-row:last-child {
+            border-bottom: none;
         }
 
-        .patient-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Botón de copia flotante (Solo Nombre y Hora) */
-        .btn-copy-card {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: var(--text-main);
-            font-size: 1.1rem;
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            transition: 0.2s;
-        }
-
-        .btn-copy-card:hover {
-            background: rgba(59, 130, 246, 0.3);
-            transform: scale(1.05);
-        }
-
-        .btn-copy-card:active {
-            transform: scale(0.95);
-        }
-
-        /* Fila de Datos */
-        .card-row {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 8px;
-            font-size: 0.92rem;
-            line-height: 1.4;
-        }
-
-        .card-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .card-label {
-            width: 140px;
-            min-width: 140px;
-            margin-right: 10px;
+        .data-label {
             font-weight: 600;
             color: var(--text-muted);
         }
 
-        .card-value {
-            flex: 1;
-            word-break: break-word;
-            color: var(--text-main);
-        }
-
-        .card-value.highlight {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 1rem;
-        }
-
-        /* Toasts de notificación */
-        .toast {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #1e293b;
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            font-size: 0.9rem;
+        .data-value {
             font-weight: 500;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s, transform 0.3s;
-            pointer-events: none;
-        }
-        [data-theme="dark"] .toast {
-            background: #f8fafc;
-            color: #0f172a;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
+            text-align: right;
         }
 
-        /* Capa de Impresión Exclusiva */
-        #print-section { display: none; }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 24px 0 8px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 40px;
+            font-weight: 600;
+            border-top: 1px solid var(--input-border);
+        }
 
+        /* Adaptabilidad Móvil */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 16px;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .date-input {
+                width: 100%;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Reglas de Impresión A4 */
         @media print {
-            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
-            .dashboard-container, header, .btn-copy-card, .toast { display: none !important; }
-            #print-section { display: block !important; max-width: 100%; }
-            @page { size: A4 portrait; margin: 15mm 12mm; }
-            .print-title { font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 5px; }
-            .print-sala-heading { font-size: 12pt; font-weight: bold; margin-top: 20px; margin-bottom: 8px; text-transform: uppercase; background: #e5e7eb; padding: 4px 8px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            th, td { border: 1px solid #4b5563; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 9.5pt; }
-            th { background-color: #f3f4f6 !important; font-weight: bold; }
-            .col-hora { width: 10%; }
-            .col-medico { width: 25%; }
-            .col-paciente { width: 25%; }
-            .col-procedimiento { width: 20%; }
-            .col-obs { width: 20%; }
+            @page {
+                size: A4;
+                margin: 15mm 10mm;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+            }
+            header {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 0 15px 0 !important;
+                margin-bottom: 20px !important;
+                background: transparent !important;
+            }
+            .date-input {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-size: 18px !important;
+                color: #000000 !important;
+                pointer-events: none;
+                width: auto !important;
+            }
+            .header-actions, .btn-copy {
+                display: none !important;
+            }
+            .dashboard-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+                background: transparent !important;
+            }
+            .card {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #cbd5e0 !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+                transform: none !important;
+                padding: 12px !important;
+            }
+            .sub-section {
+                background-color: #f7fafc !important;
+                border-left: 3px solid #718096 !important;
+            }
+            footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                text-align: center;
+                background: transparent !important;
+                padding: 10px 0 !important;
+                margin: 0 !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <header>
-            <h1>PROGRAMACIÓN QUIRÚRGICA - Novo Clinic</h1>
-            <div class="header-controls">
-                <button class="btn-action btn-icon" onclick="window.print()" title="Imprimir Programación">🖨️</button>
-                <button class="btn-action btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Alternar Modo Oscuro">🌙</button>
+    <header>
+        <div class="title-area">
+            <h1>📋 REPORTE DE SEDES</h1>
+            <input type="text" id="report-date" class="date-input" value="SABADO 13JUNO26" placeholder="Escribe la fecha...">
+        </div>
+        <div class="header-actions">
+            <button id="theme-toggle-btn" class="btn-action" onclick="toggleDarkMode()">🌙 Modo Oscuro</button>
+            <button class="btn-action" onclick="triggerPrint()">🖨️ Imprimir A4</button>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+
+        <div class="card card-blue" data-id="card1">
+            <div class="card-header">
+                <div class="card-title">✓ NOVO CLINIC</div>
+                <button class="btn-copy" onclick="copyCard('card1')">📋 Copiar</button>
             </div>
-        </header>
+            <div class="card-body">
+                <div class="sub-section">
+                    <div class="sub-section-title">🏨 Hospitalización</div>
+                    <div class="data-row"><span class="data-label">TECNICA:</span><span class="data-value">Reyna</span></div>
+                    <div class="data-row"><span class="data-label">TECNICA:</span><span class="data-value">Yeimi Ortiz</span></div>
+                    <div class="data-row"><span class="data-label">LICENCIADA:</span><span class="data-value">Sonia</span></div>
+                    <div class="data-row"><span class="data-label">Dr piso:</span><span class="data-value">Dr Wendy Lugo</span></div>
+                    <div class="data-row"><span class="data-label">Pacientes:</span><span class="data-value">11</span></div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-section-title">🔬 S.O.P</div>
+                    <div class="data-row"><span class="data-label">Recuperación:</span><span class="data-value">Eudis cuevas, Indira Pérez</span></div>
+                    <div class="data-row"><span class="data-label">Instrumentista:</span><span class="data-value">Luis Ortiz</span></div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-section-title">💊 Farmacia</div>
+                    <div class="data-row"><span class="data-label">CIRCULANTE 01:</span><span class="data-value">Alex</span></div>
+                    <div class="data-row"><span class="data-label">CIRCULANTE 02:</span><span class="data-value">Nathaly</span></div>
+                    <div class="data-row"><span class="data-label">CIRCULANTE 03:</span><span class="data-value">Nazareth</span></div>
+                </div>
+                <div class="data-row"><span class="data-label">Limpieza SOP:</span><span class="data-value">Josefa Rojas</span></div>
+                <div class="data-row"><span class="data-label">Limpieza Hosp:</span><span class="data-value">Lauri Randow</span></div>
+                <div class="data-row"><span class="data-label">Seguridad:</span><span class="data-value">Exel Fernandez</span></div>
+                <div class="data-row"><span class="data-label">Coordinador:</span><span class="data-value">Johan Barreto</span></div>
+            </div>
+        </div>
 
-        <main>
-            <section class="sala-block">
-                <div class="sala-subtitle">⚠️ SALA 1</div>
-                <div class="cards-grid" id="grid-sala-1"></div>
-            </section>
+        <div class="card card-green" data-id="card2">
+            <div class="card-header">
+                <div class="card-title">✓ NOVO INTEGRAL</div>
+                <button class="btn-copy" onclick="copyCard('card2')">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="data-row"><span class="data-label">Seguridad:</span><span class="data-value">Giovanni Vernazza</span></div>
+                <div class="data-row"><span class="data-label">Limpieza:</span><span class="data-value">-Robeth</span></div>
+                <div class="data-row"><span class="data-label">UCI:</span><span class="data-value">Dr. Diego Espinoza</span></div>
+                <div class="data-row"><span class="data-label">Procedimiento:</span><span class="data-value">01 x terminar</span></div>
+                <div class="data-row"><span class="data-label">Farmacia:</span><span class="data-value">Yuliana</span></div>
+                <div class="data-row"><span class="data-label">Laboratorio:</span><span class="data-value">Piero</span></div>
+                <div class="data-row"><span class="data-label">S.O.P.</span><span class="data-value">Lic Dayana</span></div>
+                <div class="data-row"><span class="data-label">Hospitalización:</span><span class="data-value">Dra Evelyn, TC almendra, Tc alice</span></div>
+            </div>
+        </div>
 
-            <section class="sala-block">
-                <div class="sala-subtitle">⚠️ SALA 2</div>
-                <div class="cards-grid" id="grid-sala-2"></div>
-            </section>
+        <div class="card card-purple" data-id="card3">
+            <div class="card-header">
+                <div class="card-title">✓ Novo Central</div>
+                <button class="btn-copy" onclick="copyCard('card3')">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="data-row"><span class="data-label">Coordinador:</span><span class="data-value">-</span></div>
+                <div class="data-row"><span class="data-label">Seguridad:</span><span class="data-value">José da silva</span></div>
+                <div class="data-row"><span class="data-label">Limpieza:</span><span class="data-value">-liliam monje</span></div>
+                <div class="data-row"><span class="data-label">Limpieza Alterna:</span><span class="data-value">-</span></div>
+            </div>
+        </div>
 
-            <section class="sala-block">
-                <div class="sala-subtitle">⚠️ SALA 3</div>
-                <div class="cards-grid" id="grid-sala-3"></div>
-            </section>
-        </main>
-    </div>
+        <div class="card card-orange" data-id="card4">
+            <div class="card-header">
+                <div class="card-title">✓ Esterilizacion</div>
+                <button class="btn-copy" onclick="copyCard('card4')">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="data-row"><span class="data-label">Personal asignado:</span><span class="data-value">Analy, johanender</span></div>
+            </div>
+        </div>
 
-    <div id="toast-notif" class="toast">✅ ¡Dato copiado al portapapeles!</div>
+        <div class="card card-grey" data-id="card5">
+            <div class="card-header">
+                <div class="card-title">✓ Planta Kaori</div>
+                <button class="btn-copy" onclick="copyCard('card5')">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="data-row"><span class="data-label">Seguridad:</span><span class="data-value">-</span></div>
+                <div class="data-row"><span class="data-label">Lavandería 01:</span><span class="data-value">sandra</span></div>
+                <div class="data-row"><span class="data-label">Lavandería 02:</span><span class="data-value">-</span></div>
+                <div class="data-row"><span class="data-label">Chofer:</span><span class="data-value">Yorman</span></div>
+            </div>
+        </div>
 
-    <div id="print-section">
-        <div class="print-title">PROGRAMACIÓN QUIRÚRGICA - NOVO CLINIC</div>
-        <p style="margin-bottom: 15px; font-weight: bold;">Fecha: Sábado 13 de Junio, 2026</p>
-        
-        <div class="print-sala-heading">SALA 1</div>
-        <table id="table-print-s1">
-            <thead>
-                <tr>
-                    <th class="col-hora">Hora</th>
-                    <th class="col-medico">Médico</th>
-                    <th class="col-paciente">Paciente</th>
-                    <th class="col-procedimiento">Procedimiento</th>
-                    <th class="col-obs">Observaciones</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="card card-red" data-id="card6">
+            <div class="card-header">
+                <div class="card-title">Pendiente *Novo Q:</div>
+                <button class="btn-copy" onclick="copyCard('card6')">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="data-row"><span class="data-label">Seguridad:</span><span class="data-value">Benedicto</span></div>
+                <div class="data-row"><span class="data-label">Limpieza:</span><span class="data-value">-</span></div>
+                <div class="data-row"><span class="data-label">Farmacia:</span><span class="data-value">-</span></div>
+            </div>
+        </div>
 
-        <div class="print-sala-heading">SALA 2</div>
-        <table id="table-print-s2">
-            <thead>
-                <tr>
-                    <th class="col-hora">Hora</th>
-                    <th class="col-medico">Médico</th>
-                    <th class="col-paciente">Paciente</th>
-                    <th class="col-procedimiento">Procedimiento</th>
-                    <th class="col-obs">Observaciones</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    </main>
 
-        <div class="print-sala-heading">SALA 3</div>
-        <table id="table-print-s3">
-            <thead>
-                <tr>
-                    <th class="col-hora">Hora</th>
-                    <th class="col-medico">Médico</th>
-                    <th class="col-paciente">Paciente</th>
-                    <th class="col-procedimiento">Procedimiento</th>
-                    <th class="col-obs">Observaciones</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <footer>BvanOs By Jeshua Él Mesías</footer>
 
     <script>
-        // --- TEMA CLARO/OSCURO NATIVO ---
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedTheme = localStorage.getItem("tema_programacion");
-            if (savedTheme === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-                document.getElementById("theme-toggle").textContent = "☀️";
+        /* Base de Datos de Formato Exacto de Markdown para WhatsApp */
+        const whatsappTexts = {
+            card1: `✓ *NOVO CLINIC:*	
+	_🏨 *Hospitalización:*_	
+	TECNICA:	Reyna
+	TECNICA:	Yeimi Ortiz 
+	LICENCIADA:	Sonia 
+	Dr piso:	Dr Wendy Lugo
+	Paciencientes:	11
+		
+	_*S.O.P:*_	
+	_Recuperación:_	Eudis cuevas, Indira Pérez
+	- instrumentista:	Luis Ortiz 
+	_*Farmacia:*_	
+	*CIRCULANTE 01:*	Alex 
+	*CIRCULANTE 02:*	Nathaly
+	*CIRCULANTE 03:*	Nazareth 
+		
+	_*LIMPIEZA SOP:*_	Josefa Rojas
+	_*LIMPIEZA HOSP:*_	Lauri Randow 
+	_*Seguridad:*_	Exel Fernandez
+	_Coordinador:_	Johan Barreto`,
+
+            card2: `✓ *NOVO INTEGRAL:*	
+	- Seguridad:	Giovanni Vernazza 
+	- Limpieza:	-Robeth
+	- UCI:	Dr. Diego Espinoza 
+	- Procedimiento:	01 x terminar 
+	- Farmacia:	Yuliana 
+	- Laboratorio:	Piero 
+	S.O.P.	Lic Dayana
+	Hospitalizción:	Dra Evelyn, TC almendra, Tc alice`,
+
+            card3: `✓ *Novo Central:*	
+	- *coordinador:*	-
+	- *Seguridad:*	 José da silva
+	- *Limpieza:*	-liliam monje
+	- *Limpieza:*	-`,
+
+            card4: `✓ *Esterelizacion:*	 Analy, johanender`,
+
+            card5: `✓ *Planta Kaori:* - Seguridad:	
+	- Lavandería 01:	sandra
+	- Lavandería 02:	
+	- Chofer:	Yorman`,
+
+            card6: `Pendiente 	*Novo Q:*	
+		
+	- *Seguridad:*	Benedicto 
+	- *Limpieza:*	
+	- *Farmacia:*	-`
+        };
+
+        /* Lógica del Botón de Copiado */
+        function copyCard(cardId) {
+            let baseText = whatsappTexts[cardId];
+            
+            // Inyección dinámica de cabecera si es la PRIMERA tarjeta
+            if (cardId === 'card1') {
+                const rawDate = document.getElementById('report-date').value.trim();
+                const uppercaseDate = rawDate.toUpperCase();
+                baseText = `_*REPORTE SEDE NOCHE ${uppercaseDate}*_\t\n\n` + baseText;
             }
-            renderSurgicalDashboard();
-        });
 
-        function toggleTheme() {
-            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-            if (isDark) {
-                document.documentElement.removeAttribute("data-theme");
-                localStorage.setItem("tema_programacion", "light");
-                document.getElementById("theme-toggle").textContent = "🌙";
-            } else {
-                document.documentElement.setAttribute("data-theme", "dark");
-                localStorage.setItem("tema_programacion", "dark");
-                document.getElementById("theme-toggle").textContent = "☀️";
-            }
-        }
-
-        // --- DATOS DE LA PROGRAMACIÓN ---
-        const surgicalData = [
-            // ACTUALIZACIÓN DR: PEDRO MANUEL VILLAGRA VALENCIA
-            { sala: "S1", hora: "6:00", paciente: "ALEX ALARCON", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
-            { sala: "S1", hora: "7:00", paciente: "MARIELA MILLA", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
-            { sala: "S1", hora: "7:00", paciente: "JAVIER JESUS", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
-            { sala: "S1", hora: "9:00", paciente: "LEYDI IZQUIERDO", medico: "DR: PEDRO MANUEL VILLAGRA VALENCIA", procedimiento: "SIMPATECTOMIA", obs: "PREOP: PX TRAE / TRAE ANESTESIOLOGO", h: "1 D" },
-            
-            // RESTO DE LA SALA 1
-            { sala: "S1", hora: "17:00", paciente: "", medico: "DR: VICTOR ALFREDO GOMEZ PONCE", procedimiento: "SIMPATECTOMIA", obs: "PREOP: DR / TRAE ANESTESIOLOGO", h: "2 H" },
-            { sala: "S1", hora: "18:30", paciente: "", medico: "DR: VICTOR ALFREDO GOMEZ PONCE", procedimiento: "SIMPATECTOMIA", obs: "PREOP: DR / TRAE ANESTESIOLOGO", h: "2 H" },
-            { sala: "S1", hora: "19:00", paciente: "LOPEZ TASAYCO LUIS (66a)", medico: "DR: JAVIER ELISEO CABRERA ROSAS", procedimiento: "URETROTOMIA INTERNA", obs: "", h: "3 H" },
-            
-            // SALA 2
-            { sala: "S2", hora: "4:30", paciente: "FUNEGRA MORI RICHARD", medico: "DR: ESTUARDO ANDRES RIOS CADENILLAS", procedimiento: "PENECTOMIA PARCIAL", obs: "PREOP: PX TRAE", h: "2 H" },
-            { sala: "S2", hora: "8:00", paciente: "SHEYLA RAMIREZ", medico: "DR: Mauricio De la Gala", procedimiento: "HISTEROSCOPIA", obs: "PREOP: DR", h: "2 H" },
-            { sala: "S2", hora: "10:00", paciente: "NORCA ASCUE", medico: "DR: JESUS MARTIN PARI ESPINOZA", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX / HBT: PRIVADA LA MEJOR INFLUENCER", h: "2 H" },
-            { sala: "S2", hora: "12:30", paciente: "", medico: "DR: RICKS HARDY MOSTACERO MONTALVO", procedimiento: "LIPOABDOMINO", obs: "PREOP: PX", h: "" },
-            { sala: "S2", hora: "17:00", paciente: "MEJIAS ESPINOZA MAXIMILIANA", medico: "DR: JHOHAN RUMALDO DE JESUS SOLIS", procedimiento: "PROSTARSECTOMIA RADICAL", obs: "PREOP: PX TRAE", h: "2 H" },
-            { sala: "S2", hora: "19:00", paciente: "XOLANDA LAINES TAPIA", medico: "DR: ABEL FERNANDO ALFARO OCHOA", procedimiento: "HEMORROIDECTOMIA", obs: "PREOP: PX TIENE", h: "2 H" },
-            
-            // SALA 3
-            { sala: "S3", hora: "5:00", paciente: "YINETH VILLAFRANCA", medico: "DR: JOEL SAUL SOTELO PASCUAL", procedimiento: "COLELAP", obs: "PREOP: DR", h: "2 H" },
-            { sala: "S3", hora: "8:00", paciente: "GENOVEVA TERRONES", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX", h: "2 H" },
-            { sala: "S3", hora: "10:00", paciente: "DIEGO FELIX DE LA CRUZ", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: PX", h: "2 H" },
-            { sala: "S3", hora: "12:00", paciente: "KEYLA LOPEZ", medico: "DR: YATSEN AUGUSTO LOCK VARGAS", procedimiento: "MANGA GASTRICA", obs: "PREOP: DR", h: "2 H" }
-        ];
-
-        function renderSurgicalDashboard() {
-            const grid1 = document.getElementById("grid-sala-1");
-            const grid2 = document.getElementById("grid-sala-2");
-            const grid3 = document.getElementById("grid-sala-3");
-
-            const t1 = document.getElementById("table-print-s1").querySelector("tbody");
-            const t2 = document.getElementById("table-print-s2").querySelector("tbody");
-            const t3 = document.getElementById("table-print-s3").querySelector("tbody");
-
-            surgicalData.forEach((item, index) => {
-                const pacDisplay = item.paciente.trim() || "Sin Asignar";
-                const obsDisplay = item.obs.trim() || "-";
-                const hDisplay = item.h.trim() || "-";
+            navigator.clipboard.writeText(baseText).then(() => {
+                const targetBtn = document.querySelector(`.card[data-id="${cardId}"] .btn-copy`);
+                const originalContent = targetBtn.innerHTML;
                 
-                // Texto exclusivo que se copiará: Hora y Nombre
-                const copyTextOnly = `${item.hora} - ${pacDisplay}`;
-
-                // Generar tarjeta interactiva
-                const card = document.createElement("div");
-                card.className = "patient-card";
-                card.innerHTML = `
-                    <button class="btn-copy-card" onclick="copySimpleData('${copyTextOnly}', this)" title="Copiar Hora y Nombre">📋</button>
-                    <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value ${item.paciente.trim() ? 'highlight' : ''}">${pacDisplay}</div></div>
-                    <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${item.hora}</div></div>
-                    <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${item.medico}</div></div>
-                    <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${item.procedimiento}</div></div>
-                    <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${obsDisplay}</div></div>
-                    <div class="card-row"><div class="card-label">H:</div><div class="card-value">${hDisplay}</div></div>
-                `;
-
-                // Añadir al grid correspondiente
-                if (item.sala === "S1") grid1.appendChild(card);
-                else if (item.sala === "S2") grid2.appendChild(card);
-                else if (item.sala === "S3") grid3.appendChild(card);
-
-                // Generar fila para impresión clásica
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${item.hora}</td>
-                    <td>${item.medico}</td>
-                    <td>${item.paciente.trim() ? pacDisplay : "<em>Sin paciente</em>"}</td>
-                    <td>${item.procedimiento}</td>
-                    <td>${obsDisplay}</td>
-                `;
-
-                if (item.sala === "S1") t1.appendChild(row);
-                else if (item.sala === "S2") t2.appendChild(row);
-                else if (item.sala === "S3") t3.appendChild(row);
+                // Efecto visual de verificación exitosa
+                targetBtn.innerHTML = '✔️';
+                targetBtn.style.backgroundColor = '#48bb78';
+                
+                setTimeout(() => {
+                    targetBtn.innerHTML = originalContent;
+                    targetBtn.style.backgroundColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al intentar copiar al portapapeles: ', err);
             });
         }
 
-        // --- FUNCIÓN DE COPIADO SIMPLE (Solo Nombre y Hora) ---
-        function copySimpleData(textToCopy, btnElement) {
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Mostrar Toast
-                const toast = document.getElementById("toast-notif");
-                toast.classList.add("show");
-                setTimeout(() => { toast.classList.remove("show"); }, 3000);
+        /* Mecánica del Modo Oscuro con Persistencia Local */
+        function toggleDarkMode() {
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle-btn');
+            const statusMode = body.classList.toggle('dark-mode');
+            
+            localStorage.setItem('darkModePreference', statusMode ? 'dark' : 'light');
+            btn.innerHTML = statusMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+        }
 
-                // Cambiar icono temporalmente
-                btnElement.textContent = "✅";
-                setTimeout(() => {
-                    btnElement.textContent = "📋";
-                }, 1500);
-            }).catch(err => console.error("Error al copiar al portapapeles: ", err));
+        // Carga y validación inicial de preferencias de interfaz
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUserPreference = localStorage.getItem('darkModePreference');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const btn = document.getElementById('theme-toggle-btn');
+
+            if (savedUserPreference === 'dark' || (!savedUserPreference && systemPrefersDark)) {
+                document.body.classList.add('dark-mode');
+                btn.innerHTML = '☀️ Modo Claro';
+            } else {
+                document.body.classList.remove('dark-mode');
+                btn.innerHTML = '🌙 Modo Oscuro';
+            }
+        });
+
+        /* Control de Impresión Nativa */
+        function triggerPrint() {
+            window.print();
         }
     </script>
 </body>
