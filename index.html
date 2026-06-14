@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Clínico - Novo Clinic</title>
+    <title>Novo Clinic</title>
     <style>
         :root {
             --bg-main: #f4f6f9;
@@ -61,6 +61,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-title {
@@ -72,6 +74,40 @@
             display: flex;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px 8px 35px;
+            border-radius: 20px;
+            outline: none;
+            width: 220px;
+            transition: width 0.3s, background 0.3s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 10px center;
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar:focus {
+            width: 280px;
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        body.dark-mode .search-bar {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-mode .search-bar:focus {
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .btn-icon {
@@ -143,6 +179,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
+            transition: all 0.3s ease;
         }
 
         .sala-title {
@@ -156,6 +193,7 @@
         .paciente-card {
             padding: 20px;
             position: relative;
+            transition: opacity 0.3s, transform 0.3s;
         }
 
         .btn-copy-card {
@@ -328,6 +366,13 @@
             .recup-grid { grid-template-columns: 1fr 1fr; }
         }
 
+        @media(max-width: 768px) {
+            header { flex-direction: column; align-items: stretch; }
+            .header-controls { justify-content: space-between; width: 100%; }
+            .search-bar { width: 100%; }
+            .search-bar:focus { width: 100%; }
+        }
+
         /* Utils */
         .visually-hidden {
             position: absolute;
@@ -413,8 +458,10 @@
 <body>
 
     <header>
-        <div class="header-title" id="header-date">Dashboard Clínico - Novo Clinic - </div>
+        <div class="header-title" id="header-date">Novo Clinic - </div>
         <div class="header-controls">
+            <input type="text" class="search-bar" id="search-input" placeholder="Buscar paciente o médico...">
+            
             <button class="btn-icon" id="btn-theme" title="Alternar Tema">
                 <svg viewBox="0 0 24 24"><path d="M12 21.5c-5.24 0-9.5-4.26-9.5-9.5S6.76 2.5 12 2.5s9.5 4.26 9.5 9.5-4.26 9.5-9.5 9.5zM12 4.5c-4.14 0-7.5 3.36-7.5 7.5s3.36 7.5 7.5 7.5 7.5-3.36 7.5-7.5-3.36-7.5-7.5-7.5zM12 18v-12c3.31 0 6 2.69 6 6s-2.69 6-6 6z"/></svg>
             </button>
@@ -587,6 +634,37 @@ HB 101B: 900
             salasRender.appendChild(groupDiv);
         });
 
+        // --- Search Functionality ---
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const groups = document.querySelectorAll('.sala-group');
+            
+            groups.forEach(group => {
+                const cards = group.querySelectorAll('.paciente-card');
+                let hasVisibleCards = false;
+                
+                cards.forEach(card => {
+                    const textContent = card.innerText.toLowerCase();
+                    if (textContent.includes(term)) {
+                        card.style.display = 'block';
+                        hasVisibleCards = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                const title = group.querySelector('.sala-title');
+                if (hasVisibleCards) {
+                    title.style.display = 'block';
+                    group.style.display = 'grid';
+                } else {
+                    title.style.display = 'none';
+                    group.style.display = 'none';
+                }
+            });
+        });
+
         // --- Copiar Sheets Function ---
         function copySheetsFormat(p, btn) {
             const txt = `PACIENTE:\t${p.paciente}\nHORA PROG.:\t${p.hora}\nSALA:\t${p.sala}\nMEDICO:\t${p.medico}\nPROCEDIMIENTO:\t${p.procedimiento}\nOBS:\t${p.obs}\nH:\t${p.h}`;
@@ -638,7 +716,7 @@ HB 101B: 900
         // Card 5: Reservas
         let reservasHtml = `<div class="glass ox-card"><div class="ox-card-title">📦 Reservas de Gases</div><div class="widget-container">`;
         oxigenoData.reservas.forEach(r => {
-            const hasAlert = r.val.includes('02') || r.val.includes('01'); // Mock alert logic based on low count
+            const hasAlert = r.val.includes('02') || r.val.includes('01'); 
             const badgeHtml = hasAlert ? `<div class="badge">ALERTA</div>` : '';
             reservasHtml += `
             <div class="widget">
@@ -665,3 +743,4 @@ HB 101B: 900
     </script>
 </body>
 </html>
+
