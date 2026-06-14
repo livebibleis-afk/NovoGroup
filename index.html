@@ -5,147 +5,429 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Clínico - Novo Clinic</title>
     <style>
-        /* Variables y Temas */
         :root {
-            --bg-color: #f4f6f9;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.5);
+            --bg-main: #f4f6f9;
             --text-main: #1e293b;
-            --text-muted: #64748b;
-            --header-bg: rgba(30, 58, 95, 0.95); /* #1e3a5f */
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(255, 255, 255, 0.5);
+            --header-bg: rgba(30, 58, 95, 0.9);
             --header-text: #ffffff;
             --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            
-            /* Colores de Barras */
-            --empty-bg: #fee2e2;
-            --empty-text: #ef4444;
-            --red-grad-1: #ef4444; --red-grad-2: #f87171;
-            --yellow-grad-1: #eab308; --yellow-grad-2: #facc15; --yellow-text: #ca8a04;
-            --blue-grad-1: #3b82f6; --blue-grad-2: #0ea5e9; --blue-text: #0ea5e9;
         }
 
         body.dark-mode {
-            --bg-color: #0f172a;
-            --glass-bg: rgba(30, 41, 59, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-main: #0f172a;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --header-bg: rgba(15, 23, 42, 0.9);
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(15, 23, 42, 0.95);
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
 
-        /* Reseteo */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; transition: background-color 0.3s; padding: 20px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
 
-        /* Contenedor Principal */
-        .container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+        }
 
-        /* Glassmorphism Util */
+        /* Glassmorphism Classes */
         .glass {
-            background: var(--glass-bg);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
             box-shadow: var(--shadow);
         }
 
-        /* Encabezado */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--header-bg); color: var(--header-text); border-radius: 16px; backdrop-filter: blur(10px); flex-wrap: wrap; gap: 15px; }
-        header h1 { font-size: 1.4rem; font-weight: 600; margin: 0; }
-        .header-controls { display: flex; gap: 10px; align-items: center; }
-        .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; font-family: inherit; font-size: 0.9rem; }
-        .btn-theme, .btn-print { background: rgba(255, 255, 255, 0.15); color: white; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
-        .btn-theme:hover, .btn-print:hover { background: rgba(255, 255, 255, 0.25); }
-        .btn-copy-header { background: transparent; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; display: flex; align-items: center; }
-        .btn-copy-header:hover { background: rgba(255, 255, 255, 0.2); }
-        .btn-copy-header svg { fill: white; width: 24px; height: 24px; }
+        /* Header */
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--header-text);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        /* Títulos de Sección */
-        .section-title { font-size: 1.5rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; font-weight: bold; }
-        .section-title svg { width: 28px; height: 28px; fill: currentColor; }
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
 
-        /* SECCIÓN A: PROGRAMACIÓN QUIRÚRGICA */
-        .room-section { margin-bottom: 30px; }
-        .room-title { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .patients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
-        
-        .patient-card { padding: 20px; position: relative; display: flex; flex-direction: column; gap: 8px; transition: transform 0.2s; }
-        .patient-card:hover { transform: translateY(-4px); }
-        
-        /* Filas de la Tarjeta (Reglas Estrictas) */
-        .patient-row { display: flex; align-items: flex-start; margin-bottom: 4px; font-size: 0.95rem; }
-        .patient-label { width: 145px; margin-right: 10px; word-break: break-word; font-weight: 700; flex-shrink: 0; color: var(--text-muted); font-size: 0.85rem; padding-top: 2px; }
-        .patient-value { flex-grow: 1; word-break: break-word; font-weight: 600; }
-        
-        .btn-copy-card { position: absolute; top: 15px; right: 15px; z-index: 2; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px; padding: 6px; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; }
-        .btn-copy-card:hover { background: rgba(59, 130, 246, 0.2); transform: scale(1.05); }
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
 
-        /* SECCIÓN B: ESTADO DE OXÍGENO */
-        .oxygen-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 800px) { .oxygen-grid { grid-template-columns: 1fr 1fr; } }
-        .oxy-card { padding: 22px; }
-        .oxy-card-full { grid-column: 1 / -1; }
-        .oxy-card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
-        
-        .oxy-item { margin-bottom: 16px; }
-        .oxy-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem; }
-        .oxy-bar-bg { width: 100%; height: 16px; background: rgba(0,0,0,0.06); border-radius: 8px; overflow: hidden; position: relative; }
-        body.dark-mode .oxy-bar-bg { background: rgba(255,255,255,0.05); }
-        .oxy-bar-fill { height: 100%; border-radius: 8px; }
-        
-        /* Clases Dinámicas de Barras */
-        .bar-blue { background: linear-gradient(90deg, var(--blue-grad-1), var(--blue-grad-2)); }
-        .text-blue { color: var(--blue-text); }
-        .bar-yellow { background: linear-gradient(90deg, var(--yellow-grad-1), var(--yellow-grad-2)); }
-        .text-yellow { color: var(--yellow-text); }
-        .bar-red { background: linear-gradient(90deg, var(--red-grad-1), var(--red-grad-2)); }
-        .text-red { color: var(--empty-text); }
-        
-        .bar-empty { background: var(--empty-bg); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: var(--empty-text); letter-spacing: 1px; }
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
 
-        .recuperacion-cols { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 600px) { .recuperacion-cols { grid-template-columns: 1fr 1fr; } }
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .btn-print {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--card-border);
+        }
+
+        /* Section A: Programación Quirúrgica */
+        .salas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sala-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .sala-title {
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: -10px;
+        }
+
+        .paciente-card {
+            padding: 20px;
+            position: relative;
+        }
+
+        .btn-copy-card {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 2;
+            background: var(--bg-main);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+        .btn-copy-card:active {
+            transform: scale(0.9);
+        }
+
+        .card-row {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-start;
+        }
+
+        .card-label {
+            width: 145px;
+            min-width: 145px;
+            margin-right: 10px;
+            font-weight: 700;
+            word-break: break-word;
+            color: #64748b;
+        }
+
+        body.dark-mode .card-label { color: #94a3b8; }
+
+        .card-value {
+            flex: 1;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        /* Section B: Oxígeno */
+        .oxigeno-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media(min-width: 768px) {
+            .oxigeno-grid { grid-template-columns: 1fr 1fr; }
+            .ox-full { grid-column: 1 / -1; }
+        }
+
+        .ox-card {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ox-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .ox-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .ox-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .ox-bar-container {
+            height: 24px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode .ox-bar-container { background-color: #334155; }
+
+        .ox-bar-fill {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 0.5s ease-out;
+        }
+
+        .ox-bar-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 1;
+        }
 
         /* Widgets Reservas */
-        .reserves-grid { display: flex; gap: 15px; flex-wrap: wrap; }
-        .widget { flex: 1; min-width: 140px; background: rgba(0,0,0,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px 15px; text-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; }
-        body.dark-mode .widget { background: rgba(255,255,255,0.02); }
-        .widget-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .widget-value { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
-        .badge { position: absolute; top: -8px; right: -8px; background: var(--blue-grad-1); color: white; font-size: 0.75rem; padding: 4px 8px; border-radius: 12px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .widget-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-        /* Toast Notificación */
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; }
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .widget {
+            flex: 1;
+            min-width: 120px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+        }
 
-        /* Visibilidad y Utilidades */
-        .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
-        .screen-only { display: block; }
-        .print-only { display: none; }
+        body.dark-mode .widget { background: rgba(0, 0, 0, 0.2); }
 
-        /* IMPRESIÓN A4 */
+        .widget-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #64748b;
+        }
+        
+        body.dark-mode .widget-title { color: #94a3b8; }
+
+        .widget-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-top: 5px;
+            color: #0ea5e9;
+        }
+
+        .badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Recuperación 2 Cols */
+        .recup-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media(min-width: 768px) {
+            .recup-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Utils */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Print Table (Hidden on Screen) */
+        #print-section { display: none; }
+
+        /* Print Styles */
         @media print {
             @page { size: A4 portrait; margin: 15mm; }
-            body { background: #fff !important; color: #000 !important; padding: 0 !important; font-family: Arial, sans-serif; }
-            .screen-only { display: none !important; }
-            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            header, main > section:not(#print-section), .btn-copy-card { display: none !important; }
+            #print-section { display: block; width: 100%; }
             
-            #print-view h2 { text-align: center; font-size: 16pt; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; text-transform: uppercase; }
-            table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin-bottom: 20px; page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            th, td { border: 1px solid #333; padding: 8px; text-align: left; vertical-align: top; }
-            th { background-color: #e5e7eb !important; font-weight: bold; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .room-header td { background-color: #f3f4f6 !important; font-weight: bold; text-align: center; font-size: 11pt; padding: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; letter-spacing: 1px; }
+            .print-title {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                text-transform: uppercase;
+            }
+
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+
+            .print-table th, .print-table td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .print-table th {
+                background-color: #e2e8f0 !important;
+                -webkit-print-color-adjust: exact;
+                color: black;
+                font-weight: bold;
+            }
+            
+            .print-sala-row {
+                background-color: #cbd5e1 !important;
+                -webkit-print-color-adjust: exact;
+                font-weight: bold;
+                text-align: center !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="toast">¡Reporte copiado al portapapeles!</div>
+    <header>
+        <div class="header-title" id="header-date">Dashboard Clínico - Novo Clinic - </div>
+        <div class="header-controls">
+            <button class="btn-icon" id="btn-theme" title="Alternar Tema">
+                <svg viewBox="0 0 24 24"><path d="M12 21.5c-5.24 0-9.5-4.26-9.5-9.5S6.76 2.5 12 2.5s9.5 4.26 9.5 9.5-4.26 9.5-9.5 9.5zM12 4.5c-4.14 0-7.5 3.36-7.5 7.5s3.36 7.5 7.5 7.5 7.5-3.36 7.5-7.5-3.36-7.5-7.5-7.5zM12 18v-12c3.31 0 6 2.69 6 6s-2.69 6-6 6z"/></svg>
+            </button>
+            <button class="btn-icon" id="btn-copy-wpp" title="Copiar Reporte Oxígeno para WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            </button>
+            <button class="btn-print" onclick="window.print()">
+                <span>🖨️</span> Imprimir
+            </button>
+        </div>
+    </header>
 
-    <textarea id="whatsapp-text" class="visually-hidden">📋 *REPORTE DE ESTADO DE OXÍGENO*
+    <textarea id="whatsapp-report" class="visually-hidden">📋 *REPORTE DE ESTADO DE OXÍGENO*
 🏥 *Novo Clinic*
 
 🛠️ *SALAS DE OPERACIONES*
@@ -169,283 +451,217 @@ HB 101B: 900
 ▫️ *Reserva O2:* *02UND*
 ▫️ *RESERVA CO2:* *02 UND*</textarea>
 
-    <div class="container screen-only">
-        <header>
-            <h1>Dashboard Clínico - Novo Clinic - DOMIN 14JUN26</h1>
-            <div class="header-controls">
-                <button class="btn btn-theme" onclick="toggleTheme()" id="theme-btn">🌙 Oscuro</button>
-                <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
-                <button class="btn-copy-header" onclick="copyOxygen()" title="Copiar Estado de Oxígeno (WhatsApp)">
-                    <svg viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                </button>
-            </div>
-        </header>
+    <div id="toast">¡Reporte copiado al portapapeles!</div>
 
-        <section id="surgical-schedule-screen">
-            <h2 class="section-title">
-                <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                Programación Quirúrgica
-            </h2>
-
-            <div class="room-section">
-                <div class="room-title">### SALA 1</div>
-                <div class="patients-grid">
-                    
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">JORGE GASPAR</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">6:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S1</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DR: ALEXIS DAVID OJEDA HUARANCCA</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">COLELAP</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">2 H</div></div>
-                    </div>
-
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">ALVARO CARRILO</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">8:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S1</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DR: VICTOR ALFREDO GOMEZ PONCE</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">PECTUS</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR, TRAE ANESTESIOLOGO</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">3 H</div></div>
-                    </div>
-
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">JUAN VIDAL GONZALES PARADO</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">11:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S1</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DR: WILBER AVELINO GONZALES TORRES</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">RINOSEPTOPLASTIA</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">4 H</div></div>
-                    </div>
-
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">-</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">15:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S1</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DR: EDUARDO ARTURO SERRANO CARLOS</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">COLELAP</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">2 H</div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="room-section">
-                <div class="room-title">### SALA 2</div>
-                <div class="patients-grid">
-                    
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">MIGUEL GARGATE</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">5:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S2</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DR: JOEL SAUL SOTELO PASCUAL</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">QUISTE PILONIDAL</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">2 H</div></div>
-                    </div>
-
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">DIEGO OLLERO MENDOZA</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">7:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S2</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DRA: LOURDES VERONICA ROMANI MONTORO</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">RINOPLASTIA</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: PX TRAE</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">4 H</div></div>
-                    </div>
-
-                    <div class="patient-card glass">
-                        <button class="btn-copy-card" onclick="copyPatient(this)" title="Copiar formato Sheets">📋</button>
-                        <div class="patient-row"><div class="patient-label">PACIENTE:</div><div class="patient-value">ETY CHUCHUCAN COBA (28#)</div></div>
-                        <div class="patient-row"><div class="patient-label">HORA PROG.:</div><div class="patient-value">11:00</div></div>
-                        <div class="patient-row"><div class="patient-label">SALA:</div><div class="patient-value">S2</div></div>
-                        <div class="patient-row"><div class="patient-label">MEDICO:</div><div class="patient-value">DRA: LOURDES VERONICA ROMANI MONTORO</div></div>
-                        <div class="patient-row"><div class="patient-label">PROCEDIMIENTO:</div><div class="patient-value">RINOPLASTIA</div></div>
-                        <div class="patient-row"><div class="patient-label">OBS:</div><div class="patient-value">PREOP: DR</div></div>
-                        <div class="patient-row"><div class="patient-label">H:</div><div class="patient-value">4 H</div></div>
-                    </div>
-                </div>
-            </div>
+    <main>
+        <section id="print-section">
+            <div class="print-title" id="print-date-title">PROGRAMACIÓN QUIRÚRGICA - </div>
+            <table class="print-table" id="print-table-content">
+                <thead>
+                    <tr>
+                        <th>HORA</th>
+                        <th>MÉDICO</th>
+                        <th>PACIENTE</th>
+                        <th>PROCEDIMIENTO</th>
+                        <th>OBSERVACIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
         </section>
 
-        <section id="oxygen-status">
+        <section id="prog-quirurgica">
+            <h2 class="section-title">🏥 Programación Quirúrgica</h2>
+            <div class="salas-container" id="salas-render">
+                </div>
+        </section>
+
+        <section id="estado-oxigeno">
             <h2 class="section-title">
-                <svg viewBox="0 0 24 24"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2zm1-10h-2v4H9v2h2v4h2v-4h2v-2h-2v-4z"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M12 22A10 10 0 1 1 12 2a10 10 0 0 1 0 20z"></path><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"></path><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
                 Oxígeno Novo Clinic
             </h2>
             
-            <div class="oxygen-grid">
-                
-                <div class="oxy-card glass">
-                    <div class="oxy-card-title">🛠️ SALAS DE OPERACIONES</div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>S1. Sala 1:</span><span class="text-blue">3000</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-blue" style="width: 100%"></div></div>
-                    </div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>S2. Sala 2:</span><span class="text-blue">3000</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-blue" style="width: 100%"></div></div>
-                    </div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>S3. Sala 3:</span><span class="text-blue">2000</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-blue" style="width: 66.67%"></div></div>
-                    </div>
+            <div class="oxigeno-grid" id="oxigeno-render">
                 </div>
-
-                <div class="oxy-card glass">
-                    <div class="oxy-card-title">⚕️ UCI & NEBULIZACIÓN</div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>Ca1. Cama A1:</span><span class="text-yellow">1200</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-yellow" style="width: 40%"></div></div>
-                    </div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>Cb1. Cama b1:</span><span class="text-red">0</span></div>
-                        <div class="oxy-bar-bg bar-empty">VACÍO</div>
-                    </div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>Neb. Nebulizar:</span><span class="text-red">600</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-red" style="width: 20%"></div></div>
-                    </div>
-                </div>
-
-                <div class="oxy-card glass oxy-card-full">
-                    <div class="oxy-card-title">🛏️ RECUPERACIÓN</div>
-                    <div class="recuperacion-cols">
-                        <div class="oxy-item">
-                            <div class="oxy-header"><span>Rb. Pto. B:</span><span class="text-yellow">900</span></div>
-                            <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-yellow" style="width: 30%"></div></div>
-                        </div>
-                        <div class="oxy-item">
-                            <div class="oxy-header"><span>Re. Pto. E:</span><span class="text-yellow">900</span></div>
-                            <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-yellow" style="width: 30%"></div></div>
-                        </div>
-                        <div class="oxy-item">
-                            <div class="oxy-header"><span>Re. Pto. G:</span><span class="text-yellow">900</span></div>
-                            <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-yellow" style="width: 30%"></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="oxy-card glass">
-                    <div class="oxy-card-title">🏥 HOSPITALIZACIÓN</div>
-                    <div class="oxy-item">
-                        <div class="oxy-header"><span>HB 101B:</span><span class="text-yellow">900</span></div>
-                        <div class="oxy-bar-bg"><div class="oxy-bar-fill bar-yellow" style="width: 30%"></div></div>
-                    </div>
-                </div>
-
-                <div class="oxy-card glass">
-                    <div class="oxy-card-title">📦 RESERVAS DE GASES</div>
-                    <div class="reserves-grid">
-                        <div class="widget">
-                            <div class="widget-label">Reserva O2</div>
-                            <div class="widget-value">02 UND</div>
-                        </div>
-                        <div class="widget">
-                            <div class="widget-label">RESERVA CO2</div>
-                            <div class="widget-value">02 UND</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
         </section>
-    </div>
-
-    <div id="print-view" class="print-only">
-        <h2>PROGRAMACIÓN QUIRÚRGICA - DOMIN 14JUN26</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Hora</th>
-                    <th>Médico</th>
-                    <th>Paciente</th>
-                    <th>Procedimiento</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="room-header"><td colspan="5">SALA 1</td></tr>
-                <tr><td>6:00</td><td>DR: ALEXIS DAVID OJEDA HUARANCCA</td><td>JORGE GASPAR</td><td>COLELAP</td><td>PREOP: DR - 2 H</td></tr>
-                <tr><td>8:00</td><td>DR: VICTOR ALFREDO GOMEZ PONCE</td><td>ALVARO CARRILO</td><td>PECTUS</td><td>PREOP: DR, TRAE ANESTESIOLOGO - 3 H</td></tr>
-                <tr><td>11:00</td><td>DR: WILBER AVELINO GONZALES TORRES</td><td>JUAN VIDAL GONZALES PARADO</td><td>RINOSEPTOPLASTIA</td><td>PREOP: DR - 4 H</td></tr>
-                <tr><td>15:00</td><td>DR: EDUARDO ARTURO SERRANO CARLOS</td><td></td><td>COLELAP</td><td>PREOP: DR - 2 H</td></tr>
-                
-                <tr class="room-header"><td colspan="5">SALA 2</td></tr>
-                <tr><td>5:00</td><td>DR: JOEL SAUL SOTELO PASCUAL</td><td>MIGUEL GARGATE</td><td>QUISTE PILONIDAL</td><td>PREOP: DR - 2 H</td></tr>
-                <tr><td>7:00</td><td>DRA: LOURDES VERONICA ROMANI MONTORO</td><td>DIEGO OLLERO MENDOZA</td><td>RINOPLASTIA</td><td>PREOP: PX TRAE - 4 H</td></tr>
-                <tr><td>11:00</td><td>DRA: LOURDES VERONICA ROMANI MONTORO</td><td>ETY CHUCHUCAN COBA (28#)</td><td>RINOPLASTIA</td><td>PREOP: DR - 4 H</td></tr>
-            </tbody>
-        </table>
-    </div>
+    </main>
 
     <script>
-        // Tema Claro/Oscuro con localStorage
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('dashboard_theme', isDark ? 'dark' : 'light');
-            document.getElementById('theme-btn').innerText = isDark ? '☀️ Claro' : '🌙 Oscuro';
-        }
+        // --- Data Definitions ---
+        const cirugiasData = [
+            {
+                sala: "SALA 1",
+                pacientes: [
+                    { paciente: "JORGE GASPAR", hora: "6:00", sala: "S1", medico: "DR: ALEXIS DAVID OJEDA HUARANCCA", procedimiento: "COLELAP", obs: "PREOP: DR", h: "2 H" },
+                    { paciente: "ALVARO CARRILO", hora: "8:00", sala: "S1", medico: "DR: VICTOR ALFREDO GOMEZ PONCE", procedimiento: "PECTUS", obs: "PREOP: DR, TRAE ANESTESIOLOGO", h: "3 H" },
+                    { paciente: "JUAN VIDAL GONZALES PARADO", hora: "11:00", sala: "S1", medico: "DR: WILBER AVELINO GONZALES TORRES", procedimiento: "RINOSEPTOPLASTIA", obs: "PREOP: DR", h: "4 H" },
+                    { paciente: "SIN ESPECIFICAR", hora: "15:00", sala: "S1", medico: "DR: EDUARDO ARTURO SERRANO CARLOS", procedimiento: "COLELAP", obs: "PREOP: DR", h: "2 H" }
+                ]
+            },
+            {
+                sala: "SALA 2",
+                pacientes: [
+                    { paciente: "MIGUEL GARGATE", hora: "5:00", sala: "S2", medico: "DR: JOEL SAUL SOTELO PASCUAL", procedimiento: "QUISTE PILONIDAL", obs: "PREOP: DR", h: "2 H" },
+                    { paciente: "DIEGO OLLERO MENDOZA", hora: "7:00", sala: "S2", medico: "DRA: LOURDES VERONICA ROMANI MONTORO", procedimiento: "RINOPLASTIA", obs: "PREOP: PX TRAE", h: "4 H" },
+                    { paciente: "ETY CHUCHUCAN COBA (28#)", hora: "11:00", sala: "S2", medico: "DRA: LOURDES VERONICA ROMANI MONTORO", procedimiento: "RINOPLASTIA", obs: "PREOP: DR", h: "4 H" }
+                ]
+            }
+        ];
 
-        // Cargar tema guardado
-        if (localStorage.getItem('dashboard_theme') === 'dark' || (!localStorage.getItem('dashboard_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.body.classList.add('dark-mode');
-            document.getElementById('theme-btn').innerText = '☀️ Claro';
-        }
+        const oxigenoData = {
+            sop: [ { name: "S1. Sala 1", val: 3000 }, { name: "S2. Sala 2", val: 3000 }, { name: "S3. Sala 3", val: 2000 } ],
+            uci: [ { name: "Ca1. Cama A1", val: 1200 }, { name: "Cb1. Cama b1", val: 0 }, { name: "Neb. Nebulizar", val: 600 } ],
+            recup: [ { name: "Rb. Pto. B", val: 900 }, { name: "Re. Pto. E", val: 900 }, { name: "Re. Pto. G", val: 900 } ],
+            hosp: [ { name: "HB 101B", val: 900 } ],
+            reservas: [ { name: "Reserva O2", val: "02UND" }, { name: "Reserva CO2", val: "02 UND" } ]
+        };
 
-        // Mostrar Toast
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
+        // --- Date setup ---
+        const today = new Date();
+        const dateString = today.toLocaleDateString('es-ES', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        document.getElementById('header-date').textContent += dateString;
+        document.getElementById('print-date-title').textContent += dateString;
 
-        // Copiar paciente a Sheets (\t y \n)
-        function copyPatient(btn) {
-            const card = btn.closest('.patient-card');
-            const rows = card.querySelectorAll('.patient-row');
-            let copyString = '';
+        // --- Theme Logic ---
+        const btnTheme = document.getElementById('btn-theme');
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        
+        btnTheme.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        // --- Render Programación Quirúrgica (Screen & Print) ---
+        const salasRender = document.getElementById('salas-render');
+        const printTableBody = document.querySelector('#print-table-content tbody');
+
+        cirugiasData.forEach(salaGroup => {
+            // Screen
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'sala-group';
+            groupDiv.innerHTML = `<div class="sala-title">${salaGroup.sala}</div>`;
             
-            rows.forEach(row => {
-                const labelElement = row.querySelector('.patient-label');
-                const valueElement = row.querySelector('.patient-value');
-                if (labelElement && valueElement) {
-                    const labelText = labelElement.innerText.replace(/:$/, '').trim(); // Quitar los dos puntos al final si hay
-                    const valueText = valueElement.innerText.trim();
-                    copyString += `${labelText}\t${valueText}\n`;
-                }
+            // Print Table Row (Sala Header)
+            const trSala = document.createElement('tr');
+            trSala.innerHTML = `<td colspan="5" class="print-sala-row">${salaGroup.sala}</td>`;
+            printTableBody.appendChild(trSala);
+
+            salaGroup.pacientes.forEach((p, idx) => {
+                // Render Screen Card
+                const card = document.createElement('div');
+                card.className = 'glass paciente-card';
+                
+                const btnCopy = document.createElement('button');
+                btnCopy.className = 'btn-copy-card';
+                btnCopy.textContent = '📋';
+                btnCopy.title = 'Copiar formato Sheets';
+                btnCopy.onclick = () => copySheetsFormat(p, btnCopy);
+
+                card.appendChild(btnCopy);
+
+                const renderRow = (lbl, val) => `<div class="card-row"><div class="card-label">${lbl}:</div><div class="card-value">${val}</div></div>`;
+                
+                card.innerHTML += renderRow("PACIENTE", p.paciente);
+                card.innerHTML += renderRow("HORA PROG.", p.hora);
+                card.innerHTML += renderRow("SALA", p.sala);
+                card.innerHTML += renderRow("MÉDICO", p.medico);
+                card.innerHTML += renderRow("PROCEDIMIENTO", p.procedimiento);
+                card.innerHTML += renderRow("OBSERVACIONES", p.obs);
+                card.innerHTML += renderRow("H", p.h);
+                
+                groupDiv.appendChild(card);
+
+                // Render Print Table Row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.hora}</td>
+                    <td>${p.medico}</td>
+                    <td>${p.paciente}</td>
+                    <td>${p.procedimiento}</td>
+                    <td>${p.obs} (H: ${p.h})</td>
+                `;
+                printTableBody.appendChild(tr);
             });
+            salasRender.appendChild(groupDiv);
+        });
 
-            navigator.clipboard.writeText(copyString).then(() => {
-                const originalIcon = btn.innerText;
-                btn.innerText = '✅';
-                setTimeout(() => {
-                    btn.innerText = originalIcon;
-                }, 1500);
-            }).catch(err => console.error('Error al copiar paciente: ', err));
+        // --- Copiar Sheets Function ---
+        function copySheetsFormat(p, btn) {
+            const txt = `PACIENTE:\t${p.paciente}\nHORA PROG.:\t${p.hora}\nSALA:\t${p.sala}\nMEDICO:\t${p.medico}\nPROCEDIMIENTO:\t${p.procedimiento}\nOBS:\t${p.obs}\nH:\t${p.h}`;
+            navigator.clipboard.writeText(txt).then(() => {
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = '📋', 1500);
+            });
         }
 
-        // Copiar Reporte de Oxígeno
-        function copyOxygen() {
-            const text = document.getElementById('whatsapp-text').value;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('¡Reporte copiado al portapapeles!');
-            }).catch(err => console.error('Error al copiar oxígeno: ', err));
+        // --- Render Estado Oxígeno ---
+        function getOxColorStyle(val) {
+            if (val === 0) return { bg: '#fee2e2', fill: 'transparent', text: '#ef4444', label: 'VACÍO', width: '100%' };
+            let pct = (val / 3000) * 100;
+            if(pct > 100) pct = 100;
+            
+            if (val >= 1 && val <= 799) return { bg: '#fef2f2', fill: 'linear-gradient(90deg, #ef4444, #f87171)', text: '#ef4444', label: val, width: pct+'%' };
+            if (val >= 800 && val <= 1999) return { bg: '#fefce8', fill: 'linear-gradient(90deg, #eab308, #facc15)', text: '#ca8a04', label: val, width: pct+'%' };
+            return { bg: '#eff6ff', fill: 'linear-gradient(90deg, #3b82f6, #0ea5e9)', text: '#0ea5e9', label: val, width: pct+'%' };
         }
+
+        function createOxList(items, isGrid = false) {
+            let html = isGrid ? `<div class="recup-grid">` : `<div>`;
+            items.forEach(i => {
+                const style = getOxColorStyle(i.val);
+                html += `
+                <div class="ox-item" style="margin-bottom:10px;">
+                    <div class="ox-header"><span>${i.name}</span></div>
+                    <div class="ox-bar-container" style="background-color: ${i.val === 0 ? '#fee2e2' : ''}">
+                        <div class="ox-bar-fill" style="width: ${style.width}; background: ${style.fill};"></div>
+                        <div class="ox-bar-text" style="color: ${style.text}">${style.label}</div>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        const oxContainer = document.getElementById('oxigeno-render');
+
+        // Card 1: SOP
+        oxContainer.innerHTML += `<div class="glass ox-card"><div class="ox-card-title">🛠️ Salas de Operaciones</div>${createOxList(oxigenoData.sop)}</div>`;
+        // Card 2: UCI
+        oxContainer.innerHTML += `<div class="glass ox-card"><div class="ox-card-title">🔬 UCI & Nebulización</div>${createOxList(oxigenoData.uci)}</div>`;
+        // Card 3: Recuperacion (Full Width)
+        oxContainer.innerHTML += `<div class="glass ox-card ox-full"><div class="ox-card-title">🛏️ Recuperación</div>${createOxList(oxigenoData.recup, true)}</div>`;
+        // Card 4: Hosp
+        oxContainer.innerHTML += `<div class="glass ox-card"><div class="ox-card-title">🏥 Hospitalización</div>${createOxList(oxigenoData.hosp)}</div>`;
+        
+        // Card 5: Reservas
+        let reservasHtml = `<div class="glass ox-card"><div class="ox-card-title">📦 Reservas de Gases</div><div class="widget-container">`;
+        oxigenoData.reservas.forEach(r => {
+            const hasAlert = r.val.includes('02') || r.val.includes('01'); // Mock alert logic based on low count
+            const badgeHtml = hasAlert ? `<div class="badge">ALERTA</div>` : '';
+            reservasHtml += `
+            <div class="widget">
+                ${badgeHtml}
+                <div class="widget-title">${r.name}</div>
+                <div class="widget-value">${r.val}</div>
+            </div>`;
+        });
+        reservasHtml += `</div></div>`;
+        oxContainer.innerHTML += reservasHtml;
+
+        // --- WhatsApp Copy ---
+        const btnWpp = document.getElementById('btn-copy-wpp');
+        const txtWpp = document.getElementById('whatsapp-report');
+        const toast = document.getElementById('toast');
+
+        btnWpp.addEventListener('click', () => {
+            navigator.clipboard.writeText(txtWpp.value).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            });
+        });
+
     </script>
 </body>
 </html>
