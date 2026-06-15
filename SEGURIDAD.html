@@ -1,70 +1,661 @@
-	"Actúa como un desarrollador web experto. Quiero que crees un reporte en un solo archivo HTML5 con CSS y JavaScript integrados.
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Sedes</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --header-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --btn-bg: #e4e6eb;
+            --btn-text: #333333;
+            
+            --color-azul: #007bff;
+            --color-verde: #28a745;
+            --color-morado: #6f42c1;
+            --color-naranja: #fd7e14;
+            --color-gris: #6c757d;
+            --color-rojo: #dc3545;
+        }
 
-El reporte debe tener las siguientes características:
-1. Diseño visual moderno e inspirado en dashboards: Fondo suave (#f4f6f9), tarjetas blancas con bordes redondeados y sombras suaves. Añade una línea superior de color distinta para cada tarjeta (azul, verde, morado, naranja, gris, rojo) y emojis en los títulos.
-2. Responsive: Debe adaptarse perfectamente a dispositivos móviles y computadoras de escritorio.
-3. Modo Oscuro: Un botón funcional en la cabecera (🌙/☀️) que alterne entre modo claro y oscuro, y que guarde la preferencia en el localStorage.
-4. Botón de Impresión A4: Un botón funcional en la cabecera (🖨️) que active la impresión del documento. Debe existir una regla CSS `@media print` que fuerce el tamaño a A4, organice las tarjetas en 2 columnas, elimine fondos/sombras oscuras para ahorrar tinta, y oculte los botones interactivos (imprimir, modo oscuro, botones de copia).
-5. Título con Fecha Editable: El título principal debe ser ""📋 REPORTE DE SEDES"" seguido de un input de texto integrado visualmente donde pueda escribir manualmente la fecha (ej. ""DOMINGO 10MAYO26""). Al imprimir el documento, este input debe verse como texto normal impreso sin bordes.
-6. Botón de Copiar para WhatsApp: Cada tarjeta debe tener un botón de copiar. Al presionarlo, debe copiar el contenido de esa tarjeta específica al portapapeles con el formato exacto de Markdown para WhatsApp (negritas, cursivas, saltos de línea). El ícono debe cambiar a un check verde por 2 segundos tras copiar exitosamente.
-7. Lógica Dinámica de Copiado: Al copiar la PRIMERA tarjeta, el script debe tomar automáticamente el valor escrito en el input de la fecha y colocarlo como cabecera del texto copiado en formato `_*REPORTE SEDE NOCHE [FECHA]*_`.
-8. Omite cualquier texto que diga ""Reporte generado automáticamente"".
-9. Firma Personal: En la parte inferior de la página, añade un footer pequeño y centrado que diga ""BvanOs By Jeshua Él Mesías"". El diseño y el JavaScript deben asegurar que esta firma NUNCA se copie al portapapeles al usar los botones de las tarjetas.
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --border-color: #333333;
+            --header-bg: #1e1e1e;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --btn-bg: #3a3b3c;
+            --btn-text: #ffffff;
+        }
 
-IMPORTANTE: Entrega todo el código final completo en un solo bloque de código (code block) listo para copiar y pegar. No recortes partes del código por longitud.
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
 
-Aquí están los datos estructurados que deben ir dentro de cada tarjeta del reporte para la interfaz visual y el texto oculto de WhatsApp:
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.5;
+        }
 
-[Inserta aquí los datos crudos del reporte]
-"	
-	_*REPORTE SEDE NOCHE DOMINGO 14JUNO26*_	
-✓	*NOVO CLINIC:*	
-	_🏨 *Hospitalización:*_	
-	TECNICA:	Karina
-	TECNICA:	
-	LICENCIADA:	Juliana Villanueva 
-	Dr piso:	Dr Rodolfo Luzardo 
-	Paciencientes:	6
-		
-	_*S.O.P:*_	
-	_Recuperación:_	
-	- instrumentista:	Isabel
-	_*Farmacia:*_	Verónica Raucedo 
-	*CIRCULANTE 01:*	Luda
-	*CIRCULANTE 02:*	Helber
-	*CIRCULANTE 03:*	
-		
-	_*LIMPIEZA SOP:*_	Josefa Rojas
-	_*LIMPIEZA HOSP:*_	Lauri Randow 
-	_*Seguridad:*_	Exel Fernandez
-	_Coordinador:_	Alexander Intriago 
-		
-Pendiente 	*NOVO INTEGRAL:*	
-	- Seguridad:	Simón ( lavandería )
-	- Limpieza:	
-	- UCI:	
-	- Procedimiento:	
-	- Farmacia:	
-	- Laboratorio:	
-	S.O.P.	
-	Hospitalizción:	
-		
-✓ 	*Novo Central:*	
-	- *coordinador:*	-
-	- *Seguridad:*	 José da silva
-	- *Limpieza:*	liliam monje
-	- *Limpieza:*	-
-		
-✓	*Esterelizacion:*	 Bricelia, Eneida 
-		
-✓	*Planta Kaori:* 	
-	- Seguridad:	
-	- Lavandería 01:	luis
-	- Lavandería 02:	
-	- Chofer:	Carlos carpio 
-		
-Pendiente 	*Novo Q:*	
-		
-	- *Seguridad:*	
-	- *Limpieza:*	
-	- *Farmacia:*	-
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .title-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .title-main {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .date-input-container {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .date-input {
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            width: 220px;
+            text-transform: uppercase;
+        }
+
+        .date-input:focus {
+            outline: 2px solid var(--color-azul);
+        }
+
+        .actions-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .card.azul::before { background-color: var(--color-azul); }
+        .card.verde::before { background-color: var(--color-verde); }
+        .card.morado::before { background-color: var(--color-morado); }
+        .card.naranja::before { background-color: var(--color-naranja); }
+        .card.gris::before { background-color: var(--color-gris); }
+        .card.rojo::before { background-color: var(--color-rojo); }
+
+        .card-header {
+            padding: 15px 20px 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-check {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .status-pending {
+            background-color: rgba(253, 126, 20, 0.15);
+            color: #fd7e14;
+        }
+
+        .btn-copy {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .btn-copy.success {
+            border-color: var(--color-verde);
+            color: var(--color-verde);
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        .card-body {
+            padding: 20px;
+            font-size: 14px;
+            flex-grow: 1;
+        }
+
+        .section-block {
+            margin-bottom: 12px;
+        }
+
+        .section-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .sub-section-title {
+            font-style: italic;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            padding-left: 5px;
+        }
+
+        .data-list {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .data-item {
+            display: flex;
+            margin-bottom: 3px;
+            border-bottom: 1px dashed rgba(0,0,0,0.03);
+            padding-bottom: 2px;
+        }
+        
+        [data-theme="dark"] .data-item {
+            border-bottom: 1px dashed rgba(255,255,255,0.03);
+        }
+
+        .data-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .data-value {
+            font-weight: 600;
+        }
+
+        .data-value.empty {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .bullet-item {
+            margin-bottom: 3px;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .actions-area {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .date-input {
+                width: 100%;
+            }
+        }
+
+        /* Print styling for A4 Budget Friendly */
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm 10mm;
+            }
+            
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0;
+                font-size: 11pt;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            header {
+                box-shadow: none !important;
+                padding: 10px 0;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #333 !important;
+                border-radius: 0;
+                background-color: transparent !important;
+            }
+
+            .actions-area {
+                display: none !important;
+            }
+
+            .date-input {
+                border: none !important;
+                background-color: transparent !important;
+                color: #000000 !important;
+                padding: 0;
+                width: auto;
+                font-size: 16px;
+            }
+
+            .dashboard-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 15px !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #666666 !important;
+                background-color: #ffffff !important;
+                page-break-inside: avoid;
+                border-radius: 4px !important;
+            }
+
+            .card::before {
+                height: 4px !important;
+            }
+
+            .btn-copy, .status-badge {
+                display: none !important;
+            }
+
+            .card-header {
+                padding: 10px 15px;
+                background-color: #f0f0f0 !important;
+                border-bottom: 1px solid #666666 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .card-body {
+                padding: 12px;
+            }
+
+            footer {
+                border-top: 1px solid #666666 !important;
+                color: #000000 !important;
+                margin-top: 20px;
+                padding: 10px 0;
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="title-area">
+            <span class="title-main">📋 REPORTE DE SEDES</span>
+            <div class="date-input-container">
+                <input type="text" id="fechaReporte" class="date-input" value="DOMINGO 14JUNO26">
+            </div>
+        </div>
+        <div class="actions-area">
+            <button class="btn-action" id="themeToggle" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌙</button>
+            <button class="btn-action" onclick="window.print()" title="Imprimir reporte en A4">🖨️</button>
+        </div>
+    </header>
+
+    <div class="dashboard-grid">
+        <div class="card azul" id="card-1">
+            <div class="card-header">
+                <div class="card-title">🏢 NOVO CLINIC <span class="status-badge status-check">✓</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(1)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <div class="section-title">🏨 Hospitalización</div>
+                    <ul class="data-list">
+                        <li class="data-item"><span class="data-label">TECNICA:</span><span class="data-value">Karina</span></li>
+                        <li class="data-item"><span class="data-label">TECNICA:</span><span class="data-value empty">-</span></li>
+                        <li class="data-item"><span class="data-label">LICENCIADA:</span><span class="data-value">Juliana Villanueva</span></li>
+                        <li class="data-item"><span class="data-label">Dr piso:</span><span class="data-value">Dr Rodolfo Luzardo</span></li>
+                        <li class="data-item"><span class="data-label">Pacientes:</span><span class="data-value">6</span></li>
+                    </ul>
+                </div>
+                <div class="section-block">
+                    <div class="section-title">⚔️ S.O.P.</div>
+                    <div class="sub-section-title">Recuperación</div>
+                    <ul class="bullet-list">
+                        <li class="bullet-item"><span class="data-label">- instrumentista:</span><span class="data-value">Isabel</span></li>
+                    </ul>
+                    <ul class="data-list" style="margin-top: 5px;">
+                        <li class="data-item"><span class="data-label">Farmacia:</span><span class="data-value">Verónica Raucedo</span></li>
+                        <li class="data-item"><span class="data-label">CIRCULANTE 01:</span><span class="data-value">Luda</span></li>
+                        <li class="data-item"><span class="data-label">CIRCULANTE 02:</span><span class="data-value">Helber</span></li>
+                        <li class="data-item"><span class="data-label">CIRCULANTE 03:</span><span class="data-value empty">-</span></li>
+                    </ul>
+                </div>
+                <div class="section-block">
+                    <div class="section-title">✨ Servicios de Apoyo</div>
+                    <ul class="data-list">
+                        <li class="data-item"><span class="data-label">LIMPIEZA SOP:</span><span class="data-value">Josefa Rojas</span></li>
+                        <li class="data-item"><span class="data-label">LIMPIEZA HOSP:</span><span class="data-value">Lauri Randow</span></li>
+                        <li class="data-item"><span class="data-label">Seguridad:</span><span class="data-value">Exel Fernandez</span></li>
+                        <li class="data-item"><span class="data-label">Coordinador:</span><span class="data-value">Alexander Intriago</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card naranja" id="card-2">
+            <div class="card-header">
+                <div class="card-title">🏥 NOVO INTEGRAL <span class="status-badge status-pending">Pendiente</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(2)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <ul class="bullet-list">
+                        <li class="bullet-item"><span class="data-label">- Seguridad:</span><span class="data-value">Simón ( lavandería )</span></li>
+                        <li class="bullet-item"><span class="data-label">- Limpieza:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- UCI:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Procedimiento:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Farmacia:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Laboratorio:</span><span class="data-value empty">-</span></li>
+                    </ul>
+                </div>
+                <div class="section-block">
+                    <ul class="data-list">
+                        <li class="data-item"><span class="data-label">S.O.P.:</span><span class="data-value empty">-</span></li>
+                        <li class="data-item"><span class="data-label">Hospitalización:</span><span class="data-value empty">-</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card verde" id="card-3">
+            <div class="card-header">
+                <div class="card-title">🏢 Novo Central <span class="status-badge status-check">✓</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(3)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <ul class="bullet-list">
+                        <li class="bullet-item"><span class="data-label">- coordinador:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Seguridad:</span><span class="data-value">José da silva</span></li>
+                        <li class="bullet-item"><span class="data-label">- Limpieza:</span><span class="data-value">liliam monje</span></li>
+                        <li class="bullet-item"><span class="data-label">- Limpieza:</span><span class="data-value empty">-</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card morado" id="card-4">
+            <div class="card-header">
+                <div class="card-title">🧪 Esterilizacion <span class="status-badge status-check">✓</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(4)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <ul class="data-list">
+                        <li class="data-item"><span class="data-label">Personal:</span><span class="data-value">Bricelia, Eneida</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card gris" id="card-5">
+            <div class="card-header">
+                <div class="card-title">🏭 Planta Kaori <span class="status-badge status-check">✓</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(5)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <ul class="bullet-list">
+                        <li class="bullet-item"><span class="data-label">- Seguridad:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Lavandería 01:</span><span class="data-value">luis</span></li>
+                        <li class="bullet-item"><span class="data-label">- Lavandería 02:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Chofer:</span><span class="data-value">Carlos carpio</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rojo" id="card-6">
+            <div class="card-header">
+                <div class="card-title">🏥 Novo Q <span class="status-badge status-pending">Pendiente</span></div>
+                <button class="btn-copy" onclick="copiarTarjeta(6)">📋 Copiar</button>
+            </div>
+            <div class="card-body">
+                <div class="section-block">
+                    <ul class="bullet-list">
+                        <li class="bullet-item"><span class="data-label">- Seguridad:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Limpieza:</span><span class="data-value empty">-</span></li>
+                        <li class="bullet-item"><span class="data-label">- Farmacia:</span><span class="data-value empty">-</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        BvanOs By Jeshua Él Mesías
+    </footer>
+</div>
+
+<script>
+    // Configuración del Modo Oscuro/Claro
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeToggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Estructuras de texto en Markdown para WhatsApp para cada tarjeta
+    const markdownTexts = {
+        1: () => {
+            const fecha = document.getElementById('fechaReporte').value.toUpperCase();
+            return `_*REPORTE SEDE NOCHE [${fecha}]*_\n\n` +
+                   `✓ *NOVO CLINIC:*\n` +
+                   ` _🏨 *Hospitalización:*_\n` +
+                   ` TECNICA:\tKarina\n` +
+                   ` TECNICA:\t\n` +
+                   ` LICENCIADA:\tJuliana Villanueva \n` +
+                   ` Dr piso:\tDr Rodolfo Luzardo \n` +
+                   ` Paciencientes:\t6\n\n` +
+                   ` _*S.O.P:*_\n` +
+                   ` _Recuperación:_\n` +
+                   ` - instrumentista:\tIsabel\n` +
+                   ` _*Farmacia:*_\tVerónica Raucedo \n` +
+                   ` *CIRCULANTE 01:*\tLuda\n` +
+                   ` *CIRCULANTE 02:*\tHelber\n` +
+                   ` *CIRCULANTE 03:*\t\n\n` +
+                   ` _*LIMPIEZA SOP:*_\tJosefa Rojas\n` +
+                   ` _*LIMPIEZA HOSP:*_\tLauri Randow \n` +
+                   ` _*Seguridad:*_\tExel Fernandez\n` +
+                   ` _Coordinador:_\tAlexander Intriago`;
+        },
+        2: () => {
+            return `Pendiente *NOVO INTEGRAL:*\n` +
+                   ` - Seguridad:\tSimón ( lavandería )\n` +
+                   ` - Limpieza:\t\n` +
+                   ` - UCI:\t\n` +
+                   ` - Procedimiento:\t\n` +
+                   ` - Farmacia:\t\n` +
+                   ` - Laboratorio:\t\n` +
+                   ` S.O.P.\t\n` +
+                   ` Hospitalizción:\t`;
+        },
+        3: () => {
+            return `✓ *Novo Central:*\n` +
+                   ` - *coordinador:*\t-\n` +
+                   ` - *Seguridad:*\t José da silva\n` +
+                   ` - *Limpieza:*\tliliam monje\n` +
+                   ` - *Limpieza:*\t-`;
+        },
+        4: () => {
+            return `✓ *Esterelizacion:*\t Bricelia, Eneida`;
+        },
+        5: () => {
+            return `✓ *Planta Kaori:* \n` +
+                   ` - Seguridad:\t\n` +
+                   ` - Lavandería 01:\tluis\n` +
+                   ` - Lavandería 02:\t\n` +
+                   ` - Chofer:\tCarlos carpio`;
+        },
+        6: () => {
+            return `Pendiente *Novo Q:*\n\n` +
+                   ` - *Seguridad:*\t\n` +
+                   ` - *Limpieza:*\t\n` +
+                   ` - *Farmacia:*\t-`;
+        }
+    };
+
+    // Función que gestiona la copia al portapapeles y los cambios en la UI
+    function copiarTarjeta(id) {
+        const textToCopy = markdownTexts[id]();
+        const button = document.querySelector(`#card-${id} .btn-copy`);
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Copiado';
+            button.classList.add('success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('success');
+            }, 2000);
+        }).catch(err => {
+            console.error('Error al copiar: ', err);
+            alert('No se pudo copiar el texto. Asegúrate de haber dado permisos al navegador.');
+        });
+    }
+
+    // Inicializar el tema oscuro/claro al cargar la página
+    initTheme();
+</script>
+
+</body>
+</html>
