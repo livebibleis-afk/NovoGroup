@@ -706,66 +706,35 @@
          * PARTE 2: AÑADE TUS DATOS NUEVOS AQUÍ                *
          *******************************************************/
 
+        // 1. REEMPLAZA ESTE ARREGLO CON LAS CIRUGÍAS DEL DÍA
         const misCirugias = [
-            { paciente: 'JORGE GASPAR', hora: '6:00', sala: 'S1', medico: 'DR: ALEXIS DAVID OJEDA HUARANCCA', procedimiento: 'COLELAP', obs: 'PREOP: DR', h: '2 H' },
-            { paciente: 'ALVARO CARRILO', hora: '8:00', sala: 'S1', medico: 'DR: VICTOR ALFREDO GOMEZ PONCE', procedimiento: 'PECTUS', obs: 'PREOP: DR, TRAE ANESTESIOLOGO', h: '3 H' },
-            { paciente: 'JUAN VIDAL GONZALES PARADO', hora: '11:00', sala: 'S1', medico: 'DR: WILBER AVELINO GONZALES TORRES', procedimiento: 'RINOSEPTOPLASTIA', obs: 'PREOP: DR', h: '4 H' },
-            { paciente: '', hora: '15:00', sala: 'S1', medico: 'DR: EDUARDO ARTURO SERRANO CARLOS', procedimiento: 'COLELAP', obs: 'PREOP: DR', h: '2 H' },
-            { paciente: 'MIGUEL GARGATE', hora: '5:00', sala: 'S2', medico: 'DR: JOEL SAUL SOTELO PASCUAL', procedimiento: 'QUISTE PILONIDAL', obs: 'PREOP: DR', h: '2 H' },
-            { paciente: 'DIEGO OLLERO MENDOZA', hora: '7:00', sala: 'S2', medico: 'DRA: LOURDES VERONICA ROMANI MONTORO', procedimiento: 'RINOPLASTIA', obs: 'PREOP: PX TRAE', h: '4 H' },
-            { paciente: 'ETY CHUCHUCAN COBA (28#)', hora: '11:00', sala: 'S2', medico: 'DRA: LOURDES VERONICA ROMANI MONTORO', procedimiento: 'RINOPLASTIA', obs: 'PREOP: DR', h: '4 H' }
+            // EJEMPLO DE CÓMO LLENAR LOS DATOS (Puedes borrar esta línea):
+            // { paciente: 'NOMBRE APELLIDO', hora: '00:00', sala: 'S1', medico: 'DR. APELLIDO', procedimiento: 'NOMBRE PROCEDIMIENTO', obs: 'OBSERVACIONES', h: '0 H' }
         ];
 
+        // 2. ACTUALIZA LOS VALORES DEL OXÍGENO AQUÍ
         const miOxigeno = {
             operaciones: [
-                { label: 'Sala 1', val: '3000' },
-                { label: 'Sala 2', val: '3000' },
-                { label: 'Sala 3', val: '2000' }
+                // Ej: { label: 'Sala 1', val: '3000' }
             ],
             recuperacion: [
-                { label: 'Pto. B', val: '900' },
-                { label: 'Pto. E', val: '900' },
-                { label: 'Pto. G', val: '900' }
+                // Ej: { label: 'Pto. B', val: '900' }
             ],
             uci: [
-                { label: 'Cama A1', val: '1200' },
-                { label: 'Cama b1', val: '-' },
-                { label: 'Nebulizar', val: '600' }
+                // Ej: { label: 'Cama A1', val: '1200' }
             ],
             hospitalizacion: [
-                { label: 'HB 101B', val: '900' }
+                // Ej: { label: 'HB 101B', val: '900' }
             ],
             reservas: [
-                { label: 'Reserva O2', val: '02UND' },
-                { label: 'RESERVA CO2', val: '02 UND' }
+                // Ej: { label: 'Reserva O2', val: '02UND' }
             ]
         };
 
-        const miTextoWhatsapp = `📋 *REPORTE DE ESTADO DE OXÍGENO*
-🏥 *Novo Clinic*
+        // 3. PEGA AQUÍ EL TEXTO PARA WHATSAPP
+        const miTextoWhatsapp = ``;
 
-🛠️ *SALAS DE OPERACIONES*
-S1. *Sala 1:* 3000
-S2. *Sala 2:* 3000
-S3. *Sala 3:* 2000
-
-🛏️ *RECUPERACIÓN*
-Rb. *Pto. B:* 900
-Re. *Pto. E:* 900
-Re. *Pto. G:* 900
-
- *UCI & NEBULIZACIÓN*
-Ca1. *Cama A1:* 1200
-Cb1. *Cama b1:* -
-Neb. *Nebulizar:* 600
-
-🏥 *HOSPITALIZACIÓN*: 
-HB 101B: 900
-📦 *RESERVAS DE GASES*
-▫️ *Reserva O2:* *02UND*
-▫️ *RESERVA CO2:* *02 UND*`;
-
-        // Llamada de inicio
+        // Llamada de inicio (NO BORRAR ESTA LÍNEA)
         renderDashboard(misCirugias, miOxigeno, miTextoWhatsapp);
 
     </script>
