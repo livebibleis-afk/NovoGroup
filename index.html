@@ -40,49 +40,20 @@
             --admision-border: #4b6584;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s, color 0.3s; min-height: 100vh; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 12px;
-        }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 12px; }
 
         /* HEADER DASHBOARD */
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--header-bg); color: var(--header-text);
-            padding: 15px 20px; display: flex; flex-direction: column;
-            gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        header { position: sticky; top: 0; z-index: 100; background: var(--header-bg); color: var(--header-text); padding: 15px 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
         .search-bar { padding: 10px 15px; border-radius: 20px; border: none; background: var(--input-bg); color: var(--text-color); outline: none; flex-grow: 1; min-width: 150px; }
         .icon-btn { background: transparent; border: none; color: var(--header-text); cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; width: 40px; height: 40px; }
         .icon-btn:hover { background: var(--btn-hover); }
         .icon-btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
-        @media (min-width: 768px) {
-            header { flex-direction: row; justify-content: space-between; align-items: center; }
-            .search-bar { width: 300px; flex-grow: 0; }
-            .header-controls { justify-content: flex-end; }
-        }
+        @media (min-width: 768px) { header { flex-direction: row; justify-content: space-between; align-items: center; } .search-bar { width: 300px; flex-grow: 0; } .header-controls { justify-content: flex-end; } }
 
         /* MAIN DASHBOARD */
         main { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 30px; }
@@ -184,8 +155,6 @@
         .reg-age-calculator-wrapper span { color: #546e7a; margin-right: 6px; font-weight: 500; }
         [data-theme="dark"] .reg-age-calculator-wrapper span { color: #a4b0be; }
         .reg-age-calculator-wrapper input[type="date"] { border: none; background: transparent; font-size: 9pt; color: var(--admision-text); outline: none; cursor: pointer; }
-        
-        /* Ocultar icono del calendario por defecto en Chrome/Safari para mantener diseño */
         .reg-age-calculator-wrapper input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; filter: opacity(0.6); }
         [data-theme="dark"] .reg-age-calculator-wrapper input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
 
@@ -208,10 +177,13 @@
         .reg-footer-branding { text-align: center; font-size: 10pt; font-weight: bold; color: #028090; border-top: 1px dashed var(--admision-border); padding-top: 12px; margin-top: 30px; letter-spacing: 0.8px; }
         [data-theme="dark"] .reg-footer-branding { color: #00d2c4; }
 
-        /* IMPRESIÓN (Global + Modal) */
+        /* ===================================================================== */
+        /* IMPRESIÓN ESTRICTA A4 (Global + Modal)                                */
+        /* ===================================================================== */
         .print-only { display: none; }
         @media print {
-            body { background: white !important; color: black !important; margin: 0; padding: 0; }
+            @page { size: A4 portrait; margin: 0; } 
+            body { background: white !important; color: black !important; margin: 0; padding: 0; overflow: hidden; }
             .no-print, header, .search-bar, .oxy-section, .toast { display: none !important; }
             
             /* Impresión Normal del Dashboard */
@@ -222,14 +194,28 @@
             .print-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
             .sala-separator td { background-color: #ddd !important; -webkit-print-color-adjust: exact; text-align: center; font-weight: bold; }
 
-            /* Impresión del Modal de Admisión (Oculta todo lo demás) */
+            /* Impresión del Modal de Admisión (Forzar 1 sola página A4) */
+            body.printing-modal { width: 210mm; height: 297mm; overflow: hidden !important; display: block; }
             body.printing-modal > * { display: none !important; }
             body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: #2c3e50 !important; background-color: white !important; }
-            body.printing-modal .modal { position: absolute; left: 0; top: 0; width: 210mm; height: auto; }
-            body.printing-modal .modal-content { box-shadow: none; border: none; width: 100%; max-width: 210mm; padding: 10mm; margin: 0; }
-            body.printing-modal .reg-actions-container, body.printing-modal .close-btn, body.printing-modal .reg-form-copy-cell, body.printing-modal .reg-btn-copy-mini { display: none !important; }
+            body.printing-modal .modal { position: absolute; left: 0; top: 0; width: 210mm; height: 297mm; overflow: hidden; }
+            body.printing-modal .modal-content { 
+                box-shadow: none; border: none; 
+                width: 210mm; height: 297mm !important; max-width: 210mm; max-height: 297mm; 
+                padding: 12mm 15mm; margin: 0; 
+                overflow: hidden !important; 
+                page-break-after: avoid; page-break-inside: avoid;
+            }
+            body.printing-modal .reg-actions-container, body.printing-modal .close-btn, body.printing-modal .reg-form-copy-cell, body.printing-modal .reg-btn-copy-mini, body.printing-modal .no-print { display: none !important; }
             
-            /* Ajustes finos impresión Formulario */
+            /* Ajustes finos para comprimir el formulario y que encaje en el A4 */
+            body.printing-modal .reg-header-table { margin-bottom: 15px; padding-bottom: 8px; }
+            body.printing-modal .reg-form-table { border-spacing: 0 8px !important; }
+            body.printing-modal .reg-section-heading { margin-top: 15px; margin-bottom: 10px; }
+            body.printing-modal .reg-dni-card { aspect-ratio: 2 / 1; min-height: 50px; }
+            body.printing-modal .reg-footer-branding { margin-top: 15px; padding-top: 8px; position: absolute; bottom: 12mm; left: 0; right: 0; width: 100%; }
+
+            /* Ajustes estéticos impresión */
             body.printing-modal .reg-header-cell-main h1 { color: #028090 !important; -webkit-print-color-adjust: exact; }
             body.printing-modal .reg-sala-box { border: 2px solid #028090 !important; background-color: #f0f9f9 !important; -webkit-print-color-adjust: exact; }
             body.printing-modal .reg-form-input-cell { width: 78% !important; }
@@ -683,45 +669,67 @@ HB 202: 2000
             setTimeout(() => toast.classList.remove('show'), 2000);
         };
 
-        /* FUNCIONES DE REGISTRO (MODAL) */
+        /* FUNCIONES DE REGISTRO (MODAL AVANZADO) */
         const modal = document.getElementById("registrationModal");
 
         function openRegistrationModal(encodedData) {
             let data = null;
             if (encodedData) {
-                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error(e); }
+                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error("Error leyendo datos del paciente", e); }
             }
 
-            // Resetear todo el formulario primero (incluye imagenes y checkboxes)
+            // 1. Limpieza Profunda (Deep Clean)
             document.querySelectorAll('.reg-form-control, .reg-sala-box input, .reg-inline-input').forEach(input => input.value = '');
             document.querySelectorAll('.modal input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('reg-calc-fecha-nac').value = '';
             
-            // Resetear imagenes DNI
+            // Vaciar imágenes de DNI de pacientes anteriores
             document.getElementById('preview-anverso').style.display = 'none';
             document.getElementById('preview-reverso').style.display = 'none';
             document.getElementById('label-anverso').style.display = 'block';
             document.getElementById('label-reverso').style.display = 'block';
             document.getElementById('card-anverso').classList.remove('has-image');
             document.getElementById('card-reverso').classList.remove('has-image');
+            document.querySelectorAll('.reg-dni-card input[type="file"]').forEach(fileInput => fileInput.value = '');
 
-            // Autocompletar si hay datos
+            // 2. Autocompletado Básico
             if (data) {
                 document.getElementById('reg-input-paciente').value = data.paciente || '';
                 document.getElementById('reg-input-medico').value = data.medico || '';
                 document.getElementById('reg-input-procedimiento').value = data.procedimiento || '';
                 document.getElementById('reg-input-sala').value = data.sala || '';
                 
-                // Formatear la fecha actual a DD/MM/YYYY
                 const today = new Date();
                 const dd = String(today.getDate()).padStart(2, '0');
                 const mm = String(today.getMonth() + 1).padStart(2, '0'); 
                 const yyyy = today.getFullYear();
                 document.getElementById('reg-input-fecha').value = `${dd}/${mm}/${yyyy}`;
                 
-                // Limpiar la hora para mostrar solo formato ej: 10:00 (Quitando texto basura)
                 let cleanTime = data.hora ? data.hora.replace(/[^0-9:]/g, '') : '';
                 document.getElementById('reg-input-h-ingreso').value = cleanTime;
+
+                // 3. Auto-Check Inteligente (Lee la columna OBS)
+                const obsTexto = (data.obs || '').toUpperCase();
+                const checkBoxesWrappers = Array.from(document.querySelectorAll('.reg-checkbox-wrapper'));
+                
+                const checkByText = (text) => {
+                    const label = checkBoxesWrappers.find(l => l.textContent.toUpperCase().includes(text.toUpperCase()));
+                    if (label) label.querySelector('input[type="checkbox"]').checked = true;
+                };
+
+                // Asume Exámenes
+                if (obsTexto.includes('DR') || obsTexto.includes('MEDICO') || obsTexto.includes('MÉDICO')) checkByText('Médico Tratante');
+                if (obsTexto.includes('PX') || obsTexto.includes('PACIENTE')) checkByText('Paciente');
+
+                // Tipos de Exámenes
+                if (obsTexto.includes('PREOP')) checkByText('Pre Operatorio');
+                if (obsTexto.includes('EKG') || obsTexto.includes('CARDIO')) checkByText('Riesgo Cardiológico (EKG)');
+
+                // 4. Auto-Focus (Salta directo al campo de fecha de nacimiento)
+                setTimeout(() => {
+                    const dobInput = document.getElementById('reg-calc-fecha-nac');
+                    if(dobInput) dobInput.focus();
+                }, 200);
             }
             modal.style.display = "block";
         }
@@ -729,7 +737,6 @@ HB 202: 2000
         function closeRegistrationModal() { modal.style.display = "none"; document.body.classList.remove('printing-modal'); }
         window.onclick = function(event) { if (event.target == modal) closeRegistrationModal(); }
 
-        // Funciones portadas de ADMISION.html
         function loadDniReg(input, previewId, labelId, cardId) {
             const file = input.files[0];
             if (file) {
@@ -777,7 +784,7 @@ HB 202: 2000
             const element = document.getElementById(inputId);
             const value = element ? element.value.trim() : "";
             if (!value) { showToast("⚠️ El campo está vacío"); return; }
-            copyTextUniversal(value).then(() => showToast("📋 Copiado: \"" + value + "\"")).catch(err => alert('Error al copiar: ' + err));
+            copyTextUniversal(value).then(() => showToast("📋 Copiado")).catch(err => alert('Error al copiar: ' + err));
         }
 
         function copyAllPatientDataReg() {
@@ -801,12 +808,14 @@ HB 202: 2000
             copyTextUniversal(compiledText).then(() => showToast('📋 Todo el formato copiado')).catch(err => alert('Error al copiar: ' + err));
         }
 
+        // Función de impresión forzada A4
         function printRegistration() {
             document.body.classList.add('printing-modal');
-            window.print();
-            setTimeout(() => { document.body.classList.remove('printing-modal'); }, 1000);
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => { document.body.classList.remove('printing-modal'); }, 1000);
+            }, 100);
         }
-
 
         /* RENDERIZADOR DASHBOARD */
         function renderDashboard(cirugias, oxigeno, textoWpp) {
