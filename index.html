@@ -486,10 +486,8 @@
 
     <script>
         /*******************************************************
-         * PARTE 1: LÓGICA DE RENDERIZADO, EVENTOS Y FUNCIONES *
+         * PARTE 1: LÓGICA DE RENDERIZADO, EVENTOS Y TEMAS     *
          *******************************************************/
-        
-        // 1. Configuración Inicial y Temas
         const initTheme = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -503,7 +501,6 @@
             localStorage.setItem('theme', newTheme);
         });
 
-        // 2. Fecha Actual
         const setDateHeaders = () => {
             const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
@@ -511,7 +508,6 @@
         };
         setDateHeaders();
 
-        // 3. Toast function
         const showToast = (message) => {
             const toast = document.getElementById('toast');
             toast.innerText = message;
@@ -519,7 +515,6 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         };
 
-        // 4. Lógica de Oxígeno (Colores y Barras)
         const getOxyStyles = (valStr) => {
             const val = parseInt(valStr) || 0;
             const isEmpty = val === 0 || valStr.trim() === '-';
@@ -539,10 +534,7 @@
             return { width, bg, color, isEmpty };
         };
 
-        // 5. Motor de Renderizado Principal
         function renderDashboard(cirugias, oxigeno, textoWpp) {
-            
-            // --- A) Render Programación Quirúrgica ---
             const renderCirugias = (filtro = '') => {
                 const container = document.getElementById('cirugias-container');
                 const printTbody = document.getElementById('print-tbody');
@@ -556,7 +548,6 @@
                     (c.procedimiento || '').toLowerCase().includes(searchLower)
                 );
 
-                // Agrupar por Sala
                 const salas = {};
                 filtered.forEach(c => {
                     if (!salas[c.sala]) salas[c.sala] = [];
@@ -564,7 +555,6 @@
                 });
 
                 for (const [salaName, list] of Object.entries(salas)) {
-                    // UI Container
                     const groupDiv = document.createElement('div');
                     groupDiv.className = 'sala-group';
                     groupDiv.innerHTML = `<div class="sala-title">${salaName.toUpperCase()}</div>`;
@@ -572,39 +562,36 @@
                     const gridDiv = document.createElement('div');
                     gridDiv.className = 'cards-grid';
 
-                    // Print Separator
                     const sepTr = document.createElement('tr');
                     sepTr.className = 'sala-separator';
                     sepTr.innerHTML = `<td colspan="5">${salaName.toUpperCase()}</td>`;
                     printTbody.appendChild(sepTr);
 
                     list.forEach(c => {
-                        // Construir Tarjeta
                         const card = document.createElement('div');
                         card.className = 'glass patient-card';
                         
-                        const copyDataStr = `PACIENTE:\t${c.paciente}\nHORA PROG.:\t${c.hora}\nSALA:\t${c.sala}\nMEDICO:\t${c.medico}\nPROCEDIMIENTO:\t${c.procedimiento}\nOBS:\t${c.obs}\nH:\t${c.h}`;
+                        const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
                         
                         card.innerHTML = `
                             <button class="copy-card-btn" title="Copiar fila para Excel" data-clipboard="${encodeURIComponent(copyDataStr)}">📋</button>
                             <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value">${c.paciente || '---'}</div></div>
-                            <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${c.hora}</div></div>
-                            <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${c.sala}</div></div>
-                            <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${c.medico}</div></div>
-                            <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${c.procedimiento}</div></div>
-                            <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${c.obs}</div></div>
-                            <div class="card-row"><div class="card-label">H:</div><div class="card-value">${c.h}</div></div>
+                            <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${c.hora || ''}</div></div>
+                            <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${c.sala || ''}</div></div>
+                            <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${c.medico || ''}</div></div>
+                            <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${c.procedimiento || ''}</div></div>
+                            <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${c.obs || ''}</div></div>
+                            <div class="card-row"><div class="card-label">H:</div><div class="card-value">${c.h || ''}</div></div>
                         `;
                         gridDiv.appendChild(card);
 
-                        // Construir Fila de Impresión
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td>${c.hora}</td>
-                            <td>${c.medico}</td>
+                            <td>${c.hora || ''}</td>
+                            <td>${c.medico || ''}</td>
                             <td>${c.paciente || ''}</td>
-                            <td>${c.procedimiento}</td>
-                            <td>${c.obs}</td>
+                            <td>${c.procedimiento || ''}</td>
+                            <td>${c.obs || ''}</td>
                         `;
                         printTbody.appendChild(tr);
                     });
@@ -613,7 +600,6 @@
                     container.appendChild(groupDiv);
                 }
 
-                // Attach Events to internal copy buttons
                 document.querySelectorAll('.copy-card-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const data = decodeURIComponent(this.getAttribute('data-clipboard'));
@@ -625,13 +611,11 @@
                 });
             };
 
-            // Búsqueda en vivo
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 renderCirugias(e.target.value);
             });
             renderCirugias();
 
-            // --- B) Render Estado de Oxígeno ---
             const renderOxyList = (list) => {
                 return list.map(item => {
                     const style = getOxyStyles(item.val);
@@ -677,7 +661,7 @@
             `;
 
             oxigeno.reservas.forEach(r => {
-                const needsBadge = r.val.includes('01') || r.val.includes('02');
+                const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
                 oxyHtml += `
                     <div class="glass reserva-widget">
                         ${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}
@@ -690,7 +674,6 @@
             oxyHtml += `</div></div>`;
             oxyContainer.innerHTML = oxyHtml;
 
-            // --- C) Eventos Globales (WhatsApp e Impresión) ---
             document.getElementById('copyWppBtn').onclick = () => {
                 navigator.clipboard.writeText(textoWpp).then(() => {
                     showToast('Reporte WhatsApp copiado');
@@ -703,39 +686,257 @@
         }
 
         /*******************************************************
-         * PARTE 2: AÑADE TUS DATOS NUEVOS AQUÍ                *
+         * PARTE 2: PARSERS AUTOMÁTICOS (MAGIA)                *
          *******************************************************/
+        function parseCirugiasText(text) {
+            const cirugias = [];
+            let currentSala = '';
+            let currentCirugia = null;
 
-        // 1. REEMPLAZA ESTE ARREGLO CON LAS CIRUGÍAS DEL DÍA
-        const misCirugias = [
-            // EJEMPLO DE CÓMO LLENAR LOS DATOS (Puedes borrar esta línea):
-            // { paciente: 'NOMBRE APELLIDO', hora: '00:00', sala: 'S1', medico: 'DR. APELLIDO', procedimiento: 'NOMBRE PROCEDIMIENTO', obs: 'OBSERVACIONES', h: '0 H' }
-        ];
+            const lines = text.split('\n');
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
 
-        // 2. ACTUALIZA LOS VALORES DEL OXÍGENO AQUÍ
-        const miOxigeno = {
-            operaciones: [
-                // Ej: { label: 'Sala 1', val: '3000' }
-            ],
-            recuperacion: [
-                // Ej: { label: 'Pto. B', val: '900' }
-            ],
-            uci: [
-                // Ej: { label: 'Cama A1', val: '1200' }
-            ],
-            hospitalizacion: [
-                // Ej: { label: 'HB 101B', val: '900' }
-            ],
-            reservas: [
-                // Ej: { label: 'Reserva O2', val: '02UND' }
-            ]
-        };
+                if (line.startsWith('###')) {
+                    currentSala = line.replace('###', '').trim();
+                    continue;
+                }
 
-        // 3. PEGA AQUÍ EL TEXTO PARA WHATSAPP
-        const miTextoWhatsapp = ``;
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim().toUpperCase();
+                    const val = line.substring(colonIndex + 1).trim();
 
-        // Llamada de inicio (NO BORRAR ESTA LÍNEA)
-        renderDashboard(misCirugias, miOxigeno, miTextoWhatsapp);
+                    if (key === 'PACIENTE') {
+                        if (currentCirugia) cirugias.push(currentCirugia);
+                        currentCirugia = { sala: currentSala, paciente: val };
+                    } else if (currentCirugia) {
+                        if (key === 'HORA PROG.') currentCirugia.hora = val;
+                        else if (key === 'SALA') currentCirugia.sala = val;
+                        else if (key === 'MEDICO') currentCirugia.medico = val;
+                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
+                        else if (key === 'OBS') currentCirugia.obs = val;
+                        else if (key === 'H') currentCirugia.h = val;
+                    }
+                }
+            }
+            if (currentCirugia) cirugias.push(currentCirugia);
+            return cirugias;
+        }
+
+        function parseOxigenoText(text) {
+            const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+            let currentCategory = '';
+
+            const lines = text.split('\n');
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+
+                const upper = line.toUpperCase();
+                if (upper.includes('SALAS DE OPERACIONES')) { currentCategory = 'operaciones'; continue; }
+                if (upper.includes('RECUPERACIÓN')) { currentCategory = 'recuperacion'; continue; }
+                if (upper.includes('UCI & NEBULIZACIÓN')) { currentCategory = 'uci'; continue; }
+                if (upper.includes('HOSPITALIZACIÓN')) { currentCategory = 'hospitalizacion'; continue; }
+                if (upper.includes('RESERVAS DE GASES')) { currentCategory = 'reservas'; continue; }
+
+                if (!currentCategory) continue;
+
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    const rawLabel = parts[0];
+                    const rawValue = parts.slice(1).join(':');
+
+                    let cleanLabel = rawLabel.replace(/\*/g, '').replace(/^[^\s]+\.\s*/, '').replace(/^[^\w\s]+\s*/, '').trim();
+                    let cleanValue = rawValue.replace(/\*/g, '').trim();
+
+                    if (currentCategory === 'hospitalizacion' && rawLabel.toUpperCase().includes('HOSPITALIZACIÓN')) {
+                        if(cleanValue) ox.hospitalizacion.push({ label: 'General', val: cleanValue });
+                        continue;
+                    }
+
+                    if (cleanLabel && cleanValue) {
+                        ox[currentCategory].push({ label: cleanLabel, val: cleanValue });
+                    }
+                }
+            }
+            return ox;
+        }
+
+        /*******************************************************
+         * PARTE 3: ZONA DE INGRESO DE DATOS                   *
+         *******************************************************/
+        
+        // 1. PEGA AQUÍ TU TEXTO BRUTO DE CIRUGÍAS (Entre las comillas invertidas ` `)
+        const textoBrutoCirugias = `### SALA 1		
+PACIENTE:	ROMULO NUÑEZ	
+HORA PROG.:	10:00	
+SALA:	S1	
+MEDICO:	DR: ANTONIO LAHOUD VELAOCHAGA	
+PROCEDIMIENTO:	BYPASS	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:	JESMI GOMEZ	
+HORA PROG.:	12:00	
+SALA:	S1	
+MEDICO:	DR: ANTONIO LAHOUD VELAOCHAGA	
+PROCEDIMIENTO:	MANGA GATRICA	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:	DIAZ ESCUE	
+HORA PROG.:	14:00	
+SALA:	S1	
+MEDICO:	DR: DANIEL EDUARDO HIDALGO CUELLAR	
+PROCEDIMIENTO:	RTU BIPOLAR	
+OBS:	PREOP: PX	
+H:	3 H	
+		
+PACIENTE:	MILAGROS D' AMORE PALACIOS	
+HORA PROG.:	20:00	
+SALA:	S1	
+MEDICO:	DR: JAVIER ELISEO CABRERA ROSAS	
+PROCEDIMIENTO:	URETEROSCOPIA + PIELOGRAFIA ASCENDENTE	
+OBS:	PREOP: DR	
+H:	3 H	
+		
+### SALA 2		
+PACIENTE:	ANDREA SECLEN	
+HORA PROG.:	7:00	
+SALA:	S2	
+MEDICO:	DR: HOSHE LEE JOO FERNANDEZ	
+PROCEDIMIENTO:	MANGA GASTRICA	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:	VICTOR VELASQUEZ	
+HORA PROG.:	9:00	
+SALA:	S2	
+MEDICO:	DR: HOSHE LEE JOO FERNANDEZ	
+PROCEDIMIENTO:	MANGA GASTRICA	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:	JULIA ORELLANA	
+HORA PROG.:	11:00	
+SALA:	S2	
+MEDICO:	DR: HOSHE LEE JOO FERNANDEZ	
+PROCEDIMIENTO:	MANGA GASTRICA	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:	ELIZABETH GUILLEN	
+HORA PROG.:	13:00	
+SALA:	S2	
+MEDICO:	DR: YATSEN AUGUSTO LOCK VARGAS	
+PROCEDIMIENTO:	MANGA ENDOSCOPICA	
+OBS:	PREOP: PX	
+H:	2 H	
+		
+PACIENTE:	DANIELA LOPEZ CHUMPITAZ	
+HORA PROG.:	15:00	
+SALA:	S2	
+MEDICO:	DR: ALEXIS DAVID OJEDA HUARANCCA	
+PROCEDIMIENTO:	MANGA GASTRICA	
+OBS:	PREOP: DR	
+H:	2 H	
+		
+PACIENTE:		
+HORA PROG.:	19:00	
+SALA:	S2	
+MEDICO:	DR: LUIS NICOLAI ILITCH GARCIA JOIJA	
+PROCEDIMIENTO:	CX COORPORAL	
+OBS:	PREOP: DR	
+H:		
+		
+### SALA 3		
+PACIENTE:	MIRTHA AGUIRRE	
+HORA PROG.:	8:00	
+SALA:	S3	
+MEDICO:	DR: ELVIS NEIL DURAND MENDOZA	
+PROCEDIMIENTO:	COLELAP	
+OBS:	PREOP: DR	
+H:	2H	
+		
+PACIENTE:	VALERIA FLORES	
+HORA PROG.:	10:00	
+SALA:	S3	
+MEDICO:	DR: YATSEN AUGUSTO LOCK VARGAS	
+PROCEDIMIENTO:	MANGA GASTRICA CRURO	
+OBS:	PREOP: PX	
+H:	1D	
+		
+PACIENTE:	KATTY CASTILLO	
+HORA PROG.:	11:00	
+SALA:	S3	
+MEDICO:	DR: YATSEN AUGUSTO LOCK VARGAS	
+PROCEDIMIENTO:	MANGA GASTRICA CRURO	
+OBS:	PREOP: PX	
+H:		
+		
+PACIENTE:	EVELYN DOMINGUEZ VICTOR DE LA CRUZ	
+HORA PROG.:	13:00	
+SALA:	S3	
+MEDICO:	DRA: EYLLIN ANNA KARINA VASQUEZ ORDINOLA	
+PROCEDIMIENTO:	BLEFAROPLASTIA	
+OBS:	PREOP: PX	
+H:	2H	
+		
+PACIENTE:	DANIEL RIOS	
+HORA PROG.:	15:00	
+SALA:	S3	
+MEDICO:	DR: EDUARDO ARTURO SERRANO CARLOS	
+PROCEDIMIENTO:	FISTULA PERIANAL	
+OBS:	PREOP: DR	
+H:	2H	
+		
+PACIENTE:	ALEJANDRINA RAMIREZ	
+HORA PROG.:	19:00	
+SALA:	S3	
+MEDICO:	DR: PEDRO ALEJANDRO GIANINO TORRES	
+PROCEDIMIENTO:	COLELAP	
+OBS:	PREOP: PX	
+H:	2H	
+		
+PACIENTE:	GARCIA RUIZ PILAR CRUZ	
+HORA PROG.:	21:00	
+SALA:	S3	
+MEDICO:		
+PROCEDIMIENTO:	BIOPSIA DE PARED	
+OBS:	CON ANESTESIA LOCAL	
+H:`;
+
+        // 2. PEGA AQUÍ TU TEXTO BRUTO DE OXÍGENO (Entre las comillas invertidas ` `)
+        const textoBrutoOxigeno = `📋 *REPORTE DE ESTADO DE OXÍGENO*
+🏥 *Novo Clinic*
+
+🛠️ *SALAS DE OPERACIONES*
+S1. *Sala 1:* 2600
+S2. *Sala 2:* 2400
+S3. *Sala 3:* 1600
+
+🛏️ *RECUPERACIÓN*
+Rb. *Pto. B:* 500
+Re. *Pto. E:* 900
+Re. *Pto. G:* 900
+
+ *UCI & NEBULIZACIÓN*
+Ca1. *Cama A1:* 1600
+Cb1. *Cama b1:* -
+Neb. *Nebulizar:* 600
+
+🏥 *HOSPITALIZACIÓN*: 900
+HB 202: 2000
+📦 *RESERVAS DE GASES*
+▫️ *Reserva O2:* *03UND*
+▫️ *RESERVA CO2:* *02 UND*`;
+
+        // Procesamiento e inicio automático
+        const cirugiasProcesadas = parseCirugiasText(textoBrutoCirugias);
+        const oxigenoProcesado = parseOxigenoText(textoBrutoOxigeno);
+        renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoBrutoOxigeno);
 
     </script>
 </body>
