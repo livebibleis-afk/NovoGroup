@@ -6,6 +6,9 @@
     <title>Novo Clinic - Dashboard Clínico</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* ===================================================================== */
+        /* VARIABLES Y ESTILOS GLOBALES (DASHBOARD)                              */
+        /* ===================================================================== */
         :root {
             --bg-color: #f4f6f9;
             --text-color: #333333;
@@ -17,6 +20,9 @@
             --card-hover: rgba(255, 255, 255, 0.9);
             --input-bg: rgba(255, 255, 255, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.2);
+            --admision-bg: #ffffff;
+            --admision-text: #2c3e50;
+            --admision-border: #cfd8dc;
         }
 
         [data-theme="dark"] {
@@ -29,6 +35,9 @@
             --card-hover: rgba(30, 45, 65, 0.8);
             --input-bg: rgba(20, 30, 45, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.1);
+            --admision-bg: #1a252f;
+            --admision-text: #ecf0f1;
+            --admision-border: #4b6584;
         }
 
         * {
@@ -56,111 +65,38 @@
             border-radius: 12px;
         }
 
-        /* HEADER RESPONSIVE */
+        /* HEADER DASHBOARD */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--header-bg);
-            color: var(--header-text);
-            padding: 15px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+            background: var(--header-bg); color: var(--header-text);
+            padding: 15px 20px; display: flex; flex-direction: column;
+            gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        .header-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-
-        .search-bar {
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: none;
-            background: var(--input-bg);
-            color: var(--text-color);
-            outline: none;
-            flex-grow: 1;
-            min-width: 150px;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--header-text);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            flex-shrink: 0;
-            width: 40px;
-            height: 40px;
-        }
-
+        .header-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
+        .search-bar { padding: 10px 15px; border-radius: 20px; border: none; background: var(--input-bg); color: var(--text-color); outline: none; flex-grow: 1; min-width: 150px; }
+        .icon-btn { background: transparent; border: none; color: var(--header-text); cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; width: 40px; height: 40px; }
         .icon-btn:hover { background: var(--btn-hover); }
         .icon-btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
-
         @media (min-width: 768px) {
             header { flex-direction: row; justify-content: space-between; align-items: center; }
             .search-bar { width: 300px; flex-grow: 0; }
             .header-controls { justify-content: flex-end; }
         }
 
-        /* MAIN CONTAINER */
-        main {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+        /* MAIN DASHBOARD */
+        main { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 30px; }
+        .section-title { font-size: 1.3rem; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid rgba(150, 150, 150, 0.2); display: flex; align-items: center; gap: 10px; }
 
-        .section-title {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid rgba(150, 150, 150, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* CIRUGIAS */
+        /* CARDS CIRUGIAS */
         .sala-group { margin-bottom: 25px; }
         .sala-title { font-size: 1.1rem; color: #4a90e2; margin-bottom: 10px; font-weight: 600; }
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
         .patient-card { padding: 15px; position: relative; transition: transform 0.2s; }
         .patient-card:hover { transform: translateY(-2px); background: var(--card-hover); }
-
-        .action-buttons-card {
-            position: absolute; top: 10px; right: 10px; z-index: 2;
-            display: flex; flex-direction: column; gap: 5px;
-        }
-        .card-action-btn {
-            background: var(--bg-color); border: 1px solid var(--glass-border);
-            border-radius: 8px; cursor: pointer; padding: 6px; font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; color: var(--text-color); width: 32px; height: 32px;
-        }
+        .action-buttons-card { position: absolute; top: 10px; right: 10px; z-index: 2; display: flex; flex-direction: column; gap: 5px; }
+        .card-action-btn { background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; padding: 6px; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--text-color); width: 32px; height: 32px; }
         .card-action-btn:hover { background: #4a90e2; color: white; }
-
         .card-row { display: flex; margin-bottom: 6px; font-size: 0.9rem; }
         .card-label { width: 120px; min-width: 120px; margin-right: 10px; font-weight: 600; color: #777; }
         [data-theme="dark"] .card-label { color: #aaa; }
@@ -177,79 +113,133 @@
         .progress-bar { height: 100%; border-radius: 8px; transition: width 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .progress-empty { background: #ffe6e6 !important; border: 1px solid #ff4d4d; }
         .progress-empty .progress-text { color: #ff4d4d; position: absolute; width: 100%; text-align: center; text-shadow: none; }
-        
         .reserva-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
         .reserva-widget { padding: 10px; text-align: center; position: relative; }
         .reserva-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
         .reserva-val { font-size: 1.5rem; font-weight: 700; }
         .badge-alert { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 8px; font-weight: bold; }
-
         .recuperacion-cols { display: grid; grid-template-columns: 1fr; gap: 10px; }
         @media (min-width: 768px) { .recuperacion-cols { grid-template-columns: 1fr 1fr; } }
 
-        /* TOAST */
-        .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #333; color: white; padding: 10px 20px; border-radius: 20px;
-            font-size: 0.9rem; opacity: 0; transition: all 0.3s; z-index: 2000;
-        }
+        /* TOAST GENERAL */
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: all 0.3s; z-index: 3000; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* MODAL DE AFILIACIÓN */
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
-        }
-        .modal-content {
-            background-color: var(--bg-color); margin: 5% auto; padding: 20px;
-            border: 1px solid var(--glass-border); width: 95%; max-width: 800px;
-            border-radius: 12px; position: relative;
-        }
-        .close-btn { position: absolute; right: 15px; top: 10px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        /* ===================================================================== */
+        /* ESTILOS DEL MODAL Y FORMULARIO DE ADMISIÓN                            */
+        /* ===================================================================== */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+        .modal-content { background-color: var(--admision-bg); color: var(--admision-text); margin: 2% auto; padding: 20px; width: 95%; max-width: 210mm; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; transition: background-color 0.3s, color 0.3s; }
+        .close-btn { position: absolute; right: 20px; top: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10; }
         .close-btn:hover { color: var(--text-color); }
 
-        /* ESTILOS INTERNOS DEL FORMULARIO DE REGISTRO */
-        .reg-container h1 { font-size: 1.2rem; color: #028090; text-transform: uppercase; margin-bottom: 15px; }
-        [data-theme="dark"] .reg-container h1 { color: #00d2c4; }
-        .reg-sala-box { display: inline-flex; align-items: center; border: 2px solid #028090; padding: 5px 8px; border-radius: 4px; font-weight: bold; font-size: 1rem; background-color: rgba(2, 128, 144, 0.1); margin-bottom: 15px; }
+        .reg-header-table { display: table; width: 100%; border-bottom: 2px solid #00a896; padding-bottom: 12px; margin-bottom: 20px; }
+        .reg-header-row { display: table-row; }
+        .reg-header-cell-main { display: table-cell; vertical-align: bottom; }
+        .reg-header-cell-side { display: table-cell; vertical-align: bottom; text-align: right; }
+        .reg-header-cell-main h1 { margin: 0; font-size: 18pt; color: #028090; text-transform: uppercase; letter-spacing: 0.5px; }
+        [data-theme="dark"] .reg-header-cell-main h1 { color: #00d2c4; }
+
+        .reg-sala-box { display: inline-flex; align-items: center; border: 2px solid #028090; padding: 6px 10px; border-radius: 4px; font-weight: bold; font-size: 11pt; background-color: rgba(2, 128, 144, 0.1); }
         [data-theme="dark"] .reg-sala-box { border-color: #00d2c4; background-color: rgba(0, 210, 196, 0.1); }
         .reg-sala-box span { color: #028090; margin-right: 5px; }
         [data-theme="dark"] .reg-sala-box span { color: #00d2c4; }
-        .reg-sala-box input { border: none; background: transparent; font-weight: bold; font-size: 1rem; width: 50px; color: var(--text-color); outline: none; }
+        .reg-sala-box input { border: none; background: transparent; font-weight: bold; font-size: 11pt; width: 40px; color: var(--admision-text); text-align: center; outline: none; }
 
-        .reg-form-table { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        .reg-form-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .reg-form-label { width: 120px; font-weight: bold; font-size: 0.85rem; color: var(--text-color); text-transform: uppercase; }
-        .reg-form-input-cell { flex-grow: 1; min-width: 200px; }
-        .reg-form-control { width: 100%; border: none; border-bottom: 1px solid #cfd8dc; padding: 5px 0; font-size: 1rem; color: var(--text-color); outline: none; background: transparent; }
-        [data-theme="dark"] .reg-form-control { border-bottom-color: #4b6584; }
+        .reg-actions-container { margin-bottom: 15px; text-align: right; }
+        .reg-btn-action { color: white; border: none; padding: 8px 14px; border-radius: 4px; font-size: 9.5pt; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; }
+        .reg-btn-copy { background-color: #028090; }
+        .reg-btn-print { background-color: #ff9f43; }
+        .reg-btn-action span { margin-right: 6px; font-size: 11pt; }
 
-        .reg-actions-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .reg-btn-action { padding: 8px 15px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
-        .reg-btn-copy { background: #028090; }
-        .reg-btn-print { background: #ff9f43; }
+        .reg-btn-copy-mini { background: none; border: none; color: #028090; cursor: pointer; font-size: 11pt; padding: 2px 6px; margin-left: 5px; border-radius: 3px; display: inline-block; vertical-align: middle; }
+        [data-theme="dark"] .reg-btn-copy-mini { color: #00d2c4; }
 
-        .reg-section-heading { font-size: 1rem; font-weight: bold; color: #028090; border-bottom: 1px solid #ccc; margin: 20px 0 10px 0; padding-bottom: 5px; }
-        [data-theme="dark"] .reg-section-heading { color: #00d2c4; border-bottom-color: #4b6584; }
+        .reg-dni-section { display: table; width: 100%; margin-bottom: 25px; }
+        .reg-dni-row { display: table-row; }
+        .reg-dni-col { display: table-cell; width: 50%; }
+        .reg-dni-col:first-child { padding-right: 10px; }
+        .reg-dni-col:last-child { padding-left: 10px; }
+        .reg-dni-card { border: 2px dashed #b2bec3; border-radius: 8px; aspect-ratio: 1.58 / 1; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
+        [data-theme="dark"] .reg-dni-card { border-color: #4b6584; }
+        .reg-dni-card.has-image { border: 2px solid transparent; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18); }
+        .reg-dni-card input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+        .reg-dni-label { display: block; font-size: 9.5pt; color: #636e72; font-weight: 500; }
+        [data-theme="dark"] .reg-dni-label { color: #d1d8e0; }
+        .reg-dni-label span { display: block; font-size: 8pt; color: #b2bec3; margin-top: 4px; }
+        .reg-dni-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 1; }
 
-        /* IMPRESIÓN */
+        .reg-form-table { display: table; width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .reg-form-row { display: table-row; }
+        .reg-form-label { display: table-cell; width: 22%; font-weight: bold; font-size: 9.5pt; color: #455a64; text-transform: uppercase; vertical-align: middle; padding-right: 10px; }
+        [data-theme="dark"] .reg-form-label { color: #cbd5e1; }
+        .reg-form-input-cell { display: table-cell; width: 73%; vertical-align: middle; }
+        .reg-form-copy-cell { display: table-cell; width: 5%; text-align: right; vertical-align: middle; }
+        .reg-form-control { width: 100%; border: none; border-bottom: 1px solid var(--admision-border); padding: 5px 0; font-size: 11pt; color: var(--admision-text); outline: none; background: transparent; transition: border-color 0.2s; }
+        .reg-form-control:focus { border-bottom-color: #028090; }
+        [data-theme="dark"] .reg-form-control:focus { border-bottom-color: #00d2c4; }
+
+        .reg-age-flex-container { display: flex; align-items: center; width: 100%; }
+        .reg-age-calculator-wrapper { margin-left: 10px; display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 4px; font-size: 9pt; border: 1px solid var(--admision-border); background: rgba(150, 150, 150, 0.1); }
+        .reg-age-calculator-wrapper span { color: #546e7a; margin-right: 6px; font-weight: 500; }
+        [data-theme="dark"] .reg-age-calculator-wrapper span { color: #a4b0be; }
+        .reg-age-calculator-wrapper input[type="date"] { border: none; background: transparent; font-size: 9pt; color: var(--admision-text); outline: none; cursor: pointer; }
+        
+        /* Ocultar icono del calendario por defecto en Chrome/Safari para mantener diseño */
+        .reg-age-calculator-wrapper input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; filter: opacity(0.6); }
+        [data-theme="dark"] .reg-age-calculator-wrapper input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
+
+        .reg-section-heading { font-size: 11pt; font-weight: bold; color: #028090; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--admision-border); padding-bottom: 6px; margin-top: 25px; margin-bottom: 14px; }
+        [data-theme="dark"] .reg-section-heading { color: #00d2c4; }
+
+        .reg-checkbox-grid { display: table; width: 100%; }
+        .reg-checkbox-row { display: table-row; }
+        .reg-checkbox-cell { display: table-cell; width: 50%; padding: 6px 0; vertical-align: middle; }
+        .reg-checkbox-wrapper { position: relative; display: inline-block; cursor: pointer; font-size: 10pt; padding-left: 26px; color: var(--admision-text); user-select: none; }
+        .reg-checkbox-wrapper input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .reg-checkmark { position: absolute; top: 0; left: 0; height: 17px; width: 17px; border: 2px solid #b2bec3; border-radius: 3px; }
+        [data-theme="dark"] .reg-checkmark { border-color: #4b6584; }
+        .reg-checkbox-wrapper input:checked ~ .reg-checkmark { background-color: #028090; border-color: #028090; }
+        .reg-checkmark:after { content: ""; position: absolute; display: none; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .reg-checkbox-wrapper input:checked ~ .reg-checkmark:after { display: block; }
+        
+        .reg-inline-input { border: none; border-bottom: 1px solid var(--admision-border); outline: none; padding: 2px 0; font-size: 10pt; width: 60%; margin-left: 8px; color: var(--admision-text); background: transparent; }
+
+        .reg-footer-branding { text-align: center; font-size: 10pt; font-weight: bold; color: #028090; border-top: 1px dashed var(--admision-border); padding-top: 12px; margin-top: 30px; letter-spacing: 0.8px; }
+        [data-theme="dark"] .reg-footer-branding { color: #00d2c4; }
+
+        /* IMPRESIÓN (Global + Modal) */
         .print-only { display: none; }
         @media print {
-            body { background: white !important; color: black !important; }
-            .no-print, header, .search-bar, .oxy-section, .modal, .toast { display: none !important; }
-            body.printing-modal > * { display: none !important; }
-            body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: black !important; }
-            body.printing-modal .modal { position: absolute; left: 0; top: 0; }
-            body.printing-modal .modal-content { box-shadow: none; border: none; width: 100%; padding: 0; }
-            body.printing-modal .reg-actions-container, body.printing-modal .close-btn { display: none !important; }
-
+            body { background: white !important; color: black !important; margin: 0; padding: 0; }
+            .no-print, header, .search-bar, .oxy-section, .toast { display: none !important; }
+            
+            /* Impresión Normal del Dashboard */
             .print-only { display: block; }
             .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
             .print-table { width: 100%; border-collapse: collapse; font-size: 10pt; }
             .print-table th, .print-table td { border: 1px solid #000; padding: 5px; text-align: left; }
             .print-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
             .sala-separator td { background-color: #ddd !important; -webkit-print-color-adjust: exact; text-align: center; font-weight: bold; }
+
+            /* Impresión del Modal de Admisión (Oculta todo lo demás) */
+            body.printing-modal > * { display: none !important; }
+            body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: #2c3e50 !important; background-color: white !important; }
+            body.printing-modal .modal { position: absolute; left: 0; top: 0; width: 210mm; height: auto; }
+            body.printing-modal .modal-content { box-shadow: none; border: none; width: 100%; max-width: 210mm; padding: 10mm; margin: 0; }
+            body.printing-modal .reg-actions-container, body.printing-modal .close-btn, body.printing-modal .reg-form-copy-cell, body.printing-modal .reg-btn-copy-mini { display: none !important; }
+            
+            /* Ajustes finos impresión Formulario */
+            body.printing-modal .reg-header-cell-main h1 { color: #028090 !important; -webkit-print-color-adjust: exact; }
+            body.printing-modal .reg-sala-box { border: 2px solid #028090 !important; background-color: #f0f9f9 !important; -webkit-print-color-adjust: exact; }
+            body.printing-modal .reg-form-input-cell { width: 78% !important; }
+            body.printing-modal .reg-dni-card { border: 1px dashed #999 !important; }
+            body.printing-modal .reg-dni-card.has-image { border: none !important; }
+            body.printing-modal .reg-dni-label span { display: none; }
+            body.printing-modal .reg-form-control, body.printing-modal .reg-inline-input { border-bottom: 1px solid #999 !important; }
+            body.printing-modal .reg-section-heading { color: #028090 !important; border-bottom: 1px solid #eceff1 !important; -webkit-print-color-adjust: exact; }
+            body.printing-modal .reg-checkmark { border: 2px solid #555 !important; }
+            body.printing-modal input::placeholder { color: transparent !important; }
         }
     </style>
 </head>
@@ -463,52 +453,187 @@ HB 202: 2000
     <div id="registrationModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeRegistrationModal()">&times;</span>
-            <div class="reg-container" id="printable-reg">
-                <h1>Registro de Admisión Quirúrgica</h1>
-                
-                <div class="reg-sala-box">
-                    <span>SALA:</span>
-                    <input type="text" id="reg-input-sala" placeholder="...">
-                </div>
-
-                <div class="reg-actions-container">
-                    <button class="reg-btn-action reg-btn-copy" onclick="copyAllPatientData()">📋 Copiar Todo</button>
-                    <button class="reg-btn-action reg-btn-print" onclick="printRegistration()">🖨️ Imprimir Formato</button>
-                </div>
-
-                <div class="reg-form-table">
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">Paciente:</div>
-                        <div class="reg-form-input-cell"><input type="text" id="reg-input-paciente" class="reg-form-control"></div>
+            
+            <div class="reg-header-table">
+                <div class="reg-header-row">
+                    <div class="reg-header-cell-main">
+                        <h1>Registro de Admisión Quirúrgica</h1>
                     </div>
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">H. Ingreso:</div>
-                        <div class="reg-form-input-cell"><input type="text" id="reg-input-h-ingreso" class="reg-form-control"></div>
-                    </div>
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">Edad / F. Nac:</div>
-                        <div class="reg-form-input-cell" style="display: flex; gap:10px;">
-                            <input type="text" id="reg-input-edad" class="reg-form-control" placeholder="Edad" style="width: 40%;">
-                            <input type="date" id="reg-calc-fecha-nac" class="reg-form-control" onchange="calculateAge()" style="width: 60%;">
+                    <div class="reg-header-cell-side">
+                        <div class="reg-sala-box">
+                            <span>SALA:</span>
+                            <input type="text" id="reg-input-sala" value="" placeholder="...">
+                            <button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-sala')" title="Copiar Sala">📋</button>
                         </div>
                     </div>
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">Médico Tratante:</div>
-                        <div class="reg-form-input-cell"><input type="text" id="reg-input-medico" class="reg-form-control"></div>
+                </div>
+            </div>
+
+            <div class="reg-actions-container">
+                <button class="reg-btn-action reg-btn-copy" onclick="copyAllPatientDataReg()">
+                    <span>📋</span> Copiar Todo el Formato
+                </button>
+                <button class="reg-btn-action reg-btn-print" onclick="printRegistration()">
+                    <span>🖨️</span> Imprimir Formato
+                </button>
+            </div>
+
+            <div class="reg-dni-section">
+                <div class="reg-dni-row">
+                    <div class="reg-dni-col">
+                        <div class="reg-dni-card" id="card-anverso">
+                            <span class="reg-dni-label" id="label-anverso">🔍 Cargar DNI Anverso<span>(Click para seleccionar imagen)</span></span>
+                            <img id="preview-anverso" class="reg-dni-preview" alt="DNI Anverso">
+                            <input type="file" accept="image/*" onchange="loadDniReg(this, 'preview-anverso', 'label-anverso', 'card-anverso')">
+                        </div>
                     </div>
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">Fecha Cirugía:</div>
-                        <div class="reg-form-input-cell"><input type="text" id="reg-input-fecha" class="reg-form-control"></div>
-                    </div>
-                    <div class="reg-form-row">
-                        <div class="reg-form-label">Procedimiento:</div>
-                        <div class="reg-form-input-cell"><input type="text" id="reg-input-procedimiento" class="reg-form-control"></div>
+                    <div class="reg-dni-col">
+                        <div class="reg-dni-card" id="card-reverso">
+                            <span class="reg-dni-label" id="label-reverso">🔍 Cargar DNI Reverso<span>(Click para seleccionar imagen)</span></span>
+                            <img id="preview-reverso" class="reg-dni-preview" alt="DNI Reverso">
+                            <input type="file" accept="image/*" onchange="loadDniReg(this, 'preview-reverso', 'label-reverso', 'card-reverso')">
+                        </div>
                     </div>
                 </div>
-
-                <div class="reg-section-heading">Exámenes / Notas</div>
-                <input type="text" class="reg-form-control" placeholder="Especifique detalles adicionales aquí...">
             </div>
+
+            <div class="reg-form-table">
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Paciente:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-paciente" class="reg-form-control" placeholder="Nombres y Apellidos completos"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-paciente')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">H. Ingreso:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-h-ingreso" class="reg-form-control" placeholder="Hora de ingreso programada"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-h-ingreso')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Edad:</div>
+                    <div class="reg-form-input-cell">
+                        <div class="reg-age-flex-container">
+                            <input type="text" id="reg-input-edad" class="reg-form-control" placeholder="Ej. 43 Años">
+                            <div class="reg-age-calculator-wrapper no-print">
+                                <span>F. Nac:</span>
+                                <input type="date" id="reg-calc-fecha-nac" onchange="calculateAgeReg()" oninput="calculateAgeReg()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-edad')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Teléfono Paciente:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-tel-paciente" class="reg-form-control" placeholder="Número principal del paciente"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-tel-paciente')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Teléfono Familiar:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-tel-familiar" class="reg-form-control" placeholder="Nombre y parentesco / Teléfono"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-tel-familiar')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Médico Tratante:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-medico" class="reg-form-control" placeholder="Nombre del cirujano / especialista encargado"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-medico')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Fecha de Cirugía:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-fecha" class="reg-form-control" placeholder="DD/MM/AAAA"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-fecha')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">Procedimiento:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-procedimiento" class="reg-form-control" placeholder="Ej. Hernia umbilical"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-procedimiento')" title="Copiar dato">📋</button></div>
+                </div>
+            </div>
+
+            <div class="reg-section-heading">Exámenes a Cirugía</div>
+            
+            <div class="reg-checkbox-grid">
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Pre Operatorio
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Pre Operatorio Pediátrico
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Prueba COVID
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Riesgo Cardiológico (EKG)
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Hemograma Completo
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Riesgo Neurológico
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Coagulación y Sangría
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Otros:
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                            <input type="text" id="reg-input-otros" class="reg-inline-input" placeholder="Especifique otros exámenes">
+                            <button class="reg-btn-copy-mini no-print" onclick="copySingleValueReg('reg-input-otros')" title="Copiar dato">📋</button>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-section-heading">¿Quién asume exámenes?</div>
+            
+            <div class="reg-checkbox-grid">
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Médico Tratante
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">Paciente
+                            <input type="checkbox">
+                            <span class="reg-checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-footer-branding">
+                BvankOs Power By jeshua Él Mesías
+            </div>
+
         </div>
     </div>
 
@@ -528,15 +653,12 @@ HB 202: 2000
     </div>
 
     <script>
-        /* INICIO SISTEMA */
+        /* INICIO SISTEMA Y THEME */
         const initTheme = () => {
             try {
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.documentElement.setAttribute('data-theme', savedTheme);
-            } catch (e) {
-                // Previene fallos en navegadores privados
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
         };
         initTheme();
 
@@ -561,16 +683,7 @@ HB 202: 2000
             setTimeout(() => toast.classList.remove('show'), 2000);
         };
 
-        const getOxyStyles = (valStr) => {
-            const val = parseInt(valStr) || 0;
-            const isEmpty = val === 0 || valStr.trim() === '-';
-            const width = isEmpty ? 0 : Math.min((val / 3000) * 100, 100);
-            let bg = isEmpty ? 'transparent' : (val <= 799 ? 'linear-gradient(90deg, #ff4b1f 0%, #ff9068 100%)' : (val <= 1999 ? 'linear-gradient(90deg, #f7b733 0%, #fc4a1a 100%)' : 'linear-gradient(90deg, #36D1DC 0%, #5B86E5 100%)'));
-            let color = isEmpty ? '#ff4d4d' : (val > 799 && val <= 1999 ? '#000000' : '#ffffff');
-            return { width, bg, color, isEmpty };
-        };
-
-        /* MODAL DE REGISTRO */
+        /* FUNCIONES DE REGISTRO (MODAL) */
         const modal = document.getElementById("registrationModal");
 
         function openRegistrationModal(encodedData) {
@@ -579,20 +692,36 @@ HB 202: 2000
                 try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error(e); }
             }
 
+            // Resetear todo el formulario primero (incluye imagenes y checkboxes)
+            document.querySelectorAll('.reg-form-control, .reg-sala-box input, .reg-inline-input').forEach(input => input.value = '');
+            document.querySelectorAll('.modal input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('reg-calc-fecha-nac').value = '';
+            
+            // Resetear imagenes DNI
+            document.getElementById('preview-anverso').style.display = 'none';
+            document.getElementById('preview-reverso').style.display = 'none';
+            document.getElementById('label-anverso').style.display = 'block';
+            document.getElementById('label-reverso').style.display = 'block';
+            document.getElementById('card-anverso').classList.remove('has-image');
+            document.getElementById('card-reverso').classList.remove('has-image');
+
+            // Autocompletar si hay datos
             if (data) {
                 document.getElementById('reg-input-paciente').value = data.paciente || '';
                 document.getElementById('reg-input-medico').value = data.medico || '';
                 document.getElementById('reg-input-procedimiento').value = data.procedimiento || '';
                 document.getElementById('reg-input-sala').value = data.sala || '';
-                document.getElementById('reg-input-h-ingreso').value = data.hora || '';
                 
+                // Formatear la fecha actual a DD/MM/YYYY
                 const today = new Date();
                 const dd = String(today.getDate()).padStart(2, '0');
                 const mm = String(today.getMonth() + 1).padStart(2, '0'); 
                 const yyyy = today.getFullYear();
                 document.getElementById('reg-input-fecha').value = `${dd}/${mm}/${yyyy}`;
-            } else {
-                document.querySelectorAll('.reg-form-control, .reg-sala-box input').forEach(input => input.value = '');
+                
+                // Limpiar la hora para mostrar solo formato ej: 10:00 (Quitando texto basura)
+                let cleanTime = data.hora ? data.hora.replace(/[^0-9:]/g, '') : '';
+                document.getElementById('reg-input-h-ingreso').value = cleanTime;
             }
             modal.style.display = "block";
         }
@@ -600,32 +729,86 @@ HB 202: 2000
         function closeRegistrationModal() { modal.style.display = "none"; document.body.classList.remove('printing-modal'); }
         window.onclick = function(event) { if (event.target == modal) closeRegistrationModal(); }
 
-        function calculateAge() {
-            const dobInput = document.getElementById('reg-calc-fecha-nac').value;
-            if (!dobInput) return;
-            const birthYear = parseInt(dobInput.split('-')[0], 10);
-            const age = new Date().getFullYear() - birthYear;
-            document.getElementById('reg-input-edad').value = age > 0 ? age + " Años" : "";
+        // Funciones portadas de ADMISION.html
+        function loadDniReg(input, previewId, labelId, cardId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(previewId);
+                    const label = document.getElementById(labelId);
+                    const card = document.getElementById(cardId);
+                    img.src = e.target.result; img.style.display = 'block'; label.style.display = 'none'; card.classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
-        function copyAllPatientData() {
+        function calculateAgeReg() {
+            const dobInput = document.getElementById('reg-calc-fecha-nac').value;
+            if (!dobInput) return;
+            const parts = dobInput.split('-');
+            const birthYear = parseInt(parts[0], 10);
+            const birthMonth = parseInt(parts[1], 10) - 1;
+            const birthDay = parseInt(parts[2], 10);
+            
+            const today = new Date();
+            let age = today.getFullYear() - birthYear;
+            const monthDiff = today.getMonth() - birthMonth;
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDay)) age--;
+            if (age >= 0) document.getElementById('reg-input-edad').value = age + " Años";
+        }
+
+        function copyTextUniversal(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; textArea.style.left = "-9999px"; textArea.style.top = "-9999px";
+                document.body.appendChild(textArea); textArea.focus(); textArea.select();
+                try { document.execCommand('copy'); document.body.removeChild(textArea); return Promise.resolve(); } 
+                catch (err) { document.body.removeChild(textArea); return Promise.reject(err); }
+            }
+        }
+
+        function copySingleValueReg(inputId) {
+            const element = document.getElementById(inputId);
+            const value = element ? element.value.trim() : "";
+            if (!value) { showToast("⚠️ El campo está vacío"); return; }
+            copyTextUniversal(value).then(() => showToast("📋 Copiado: \"" + value + "\"")).catch(err => alert('Error al copiar: ' + err));
+        }
+
+        function copyAllPatientDataReg() {
             const fields = [
-                { l: 'SALA', v: document.getElementById('reg-input-sala').value },
-                { l: 'PACIENTE', v: document.getElementById('reg-input-paciente').value },
-                { l: 'H. INGRESO', v: document.getElementById('reg-input-h-ingreso').value },
-                { l: 'MÉDICO TRATANTE', v: document.getElementById('reg-input-medico').value },
-                { l: 'PROCEDIMIENTO', v: document.getElementById('reg-input-procedimiento').value }
+                { l: 'SALA', id: 'reg-input-sala' },
+                { l: 'PACIENTE', id: 'reg-input-paciente' },
+                { l: 'H. INGRESO', id: 'reg-input-h-ingreso' },
+                { l: 'EDAD', id: 'reg-input-edad' },
+                { l: 'TELÉFONO PACIENTE', id: 'reg-input-tel-paciente' },
+                { l: 'TELÉFONO FAMILIAR', id: 'reg-input-tel-familiar' },
+                { l: 'MÉDICO TRATANTE', id: 'reg-input-medico' },
+                { l: 'FECHA DE CIRUGÍA', id: 'reg-input-fecha' },
+                { l: 'PROCEDIMIENTO', id: 'reg-input-procedimiento' }
             ];
-            let txt = "--- REGISTRO ---\n" + fields.map(f => `${f.l}: ${f.v || '---'}`).join('\n');
-            navigator.clipboard.writeText(txt).then(() => showToast('📋 Formato copiado'));
+            let compiledText = "--- REGISTRO DE ADMISIÓN QUIRÚRGICA ---\n";
+            fields.forEach(field => {
+                const element = document.getElementById(field.id);
+                const value = element ? element.value.trim() : "";
+                compiledText += field.l + ": " + (value || '(No registrado)') + "\n";
+            });
+            copyTextUniversal(compiledText).then(() => showToast('📋 Todo el formato copiado')).catch(err => alert('Error al copiar: ' + err));
         }
 
         function printRegistration() {
-            document.body.classList.add('printing-modal'); window.print();
-            setTimeout(() => { document.body.classList.remove('printing-modal'); }, 500);
+            document.body.classList.add('printing-modal');
+            window.print();
+            setTimeout(() => { document.body.classList.remove('printing-modal'); }, 1000);
         }
 
-        /* RENDERIZADOR */
+
+        /* RENDERIZADOR DASHBOARD */
         function renderDashboard(cirugias, oxigeno, textoWpp) {
             const renderCirugias = (filtro = '') => {
                 const container = document.getElementById('cirugias-container');
@@ -661,8 +844,8 @@ HB 202: 2000
 
                         card.innerHTML = `
                             <div class="action-buttons-card">
-                                <button class="card-action-btn copy-card-btn" data-clipboard="${encodeURIComponent(copyDataStr)}">📋</button>
-                                <button class="card-action-btn" onclick="openRegistrationModal('${safeModalPayload}')">📝</button>
+                                <button class="card-action-btn copy-card-btn" data-clipboard="${encodeURIComponent(copyDataStr)}" title="Copiar Fila">📋</button>
+                                <button class="card-action-btn" onclick="openRegistrationModal('${safeModalPayload}')" title="Registro de Admisión">📝</button>
                             </div>
                             <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value">${c.paciente || '---'}</div></div>
                             <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${c.hora || ''}</div></div>
@@ -682,7 +865,7 @@ HB 202: 2000
 
                 document.querySelectorAll('.copy-card-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        navigator.clipboard.writeText(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
+                        copyTextUniversal(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
                             this.innerHTML = '✅'; setTimeout(() => { this.innerHTML = '📋'; }, 1500);
                         });
                     });
@@ -691,6 +874,15 @@ HB 202: 2000
 
             document.getElementById('searchInput').addEventListener('input', (e) => renderCirugias(e.target.value));
             renderCirugias();
+
+            const getOxyStyles = (valStr) => {
+                const val = parseInt(valStr) || 0;
+                const isEmpty = val === 0 || valStr.trim() === '-';
+                const width = isEmpty ? 0 : Math.min((val / 3000) * 100, 100);
+                let bg = isEmpty ? 'transparent' : (val <= 799 ? 'linear-gradient(90deg, #ff4b1f 0%, #ff9068 100%)' : (val <= 1999 ? 'linear-gradient(90deg, #f7b733 0%, #fc4a1a 100%)' : 'linear-gradient(90deg, #36D1DC 0%, #5B86E5 100%)'));
+                let color = isEmpty ? '#ff4d4d' : (val > 799 && val <= 1999 ? '#000000' : '#ffffff');
+                return { width, bg, color, isEmpty };
+            };
 
             const renderOxyList = (list) => {
                 return list.map(item => {
@@ -721,11 +913,11 @@ HB 202: 2000
             });
             oxyContainer.innerHTML = oxyHtml + `</div></div>`;
 
-            document.getElementById('copyWppBtn').onclick = () => navigator.clipboard.writeText(textoWpp).then(() => showToast('Reporte WhatsApp copiado'));
+            document.getElementById('copyWppBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('Reporte WhatsApp copiado'));
             document.getElementById('printBtn').onclick = () => window.print();
         }
 
-        /* PARSERS */
+        /* PARSERS AUTOMÁTICOS */
         function parseCirugiasText(text) {
             const cirugias = []; let currentSala = ''; let currentCirugia = null;
             text.split('\n').forEach(line => {
@@ -781,13 +973,10 @@ HB 202: 2000
         /* INICIALIZACIÓN PRINCIPAL */
         window.onload = () => {
             try {
-                // Leemos los datos directo del HTML en lugar de variables de JavaScript
                 const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
                 const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
-
                 const cirugiasProcesadas = parseCirugiasText(textoCirugias);
                 const oxigenoProcesado = parseOxigenoText(textoOxigeno);
-                
                 renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoOxigeno.trim());
             } catch (error) {
                 console.error("Error crítico al arrancar la app:", error);
