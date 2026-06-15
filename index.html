@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang=""es"">
+<html lang="es">
 <head>
-    <meta charset=""UTF-8"">
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Novo Clinic - Dashboard Clínico</title>
-    <link href=""https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"" rel=""stylesheet"">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -12,20 +12,20 @@
             --glass-bg: rgba(255, 255, 255, 0.6);
             --glass-border: rgba(255, 255, 255, 0.4);
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            --header-bg: rgba(30, 58, 95, 0.85);
+            --header-bg: rgba(30, 58, 95, 0.95);
             --header-text: #ffffff;
-            --card-hover: rgba(255, 255, 255, 0.8);
+            --card-hover: rgba(255, 255, 255, 0.9);
             --input-bg: rgba(255, 255, 255, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.2);
         }
 
-        [data-theme=""dark""] {
+        [data-theme="dark"] {
             --bg-color: #121820;
             --text-color: #e0e0e0;
             --glass-bg: rgba(20, 30, 45, 0.6);
             --glass-border: rgba(255, 255, 255, 0.05);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --header-bg: rgba(15, 30, 50, 0.9);
+            --header-bg: rgba(15, 30, 50, 0.95);
             --card-hover: rgba(30, 45, 65, 0.8);
             --input-bg: rgba(20, 30, 45, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.1);
@@ -36,6 +36,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -43,9 +44,9 @@
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Glassmorphism Utilities */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -55,20 +56,16 @@
             border-radius: 12px;
         }
 
-        /* Header */
+        /* HEADER RESPONSIVE */
         header {
             position: sticky;
             top: 0;
             z-index: 100;
             background: var(--header-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             color: var(--header-text);
             padding: 15px 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
@@ -86,21 +83,18 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            justify-content: space-between;
         }
 
         .search-bar {
-            padding: 8px 15px;
+            padding: 10px 15px;
             border-radius: 20px;
             border: none;
             background: var(--input-bg);
             color: var(--text-color);
             outline: none;
-            width: 250px;
-            transition: width 0.3s;
-        }
-
-        .search-bar:focus {
-            box-shadow: 0 0 0 2px #4a90e2;
+            flex-grow: 1;
+            min-width: 150px;
         }
 
         .icon-btn {
@@ -114,19 +108,21 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
         }
 
-        .icon-btn:hover {
-            background: var(--btn-hover);
+        .icon-btn:hover { background: var(--btn-hover); }
+        .icon-btn svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
+        @media (min-width: 768px) {
+            header { flex-direction: row; justify-content: space-between; align-items: center; }
+            .search-bar { width: 300px; flex-grow: 0; }
+            .header-controls { justify-content: flex-end; }
         }
 
-        .icon-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        /* Main Container */
+        /* MAIN CONTAINER */
         main {
             max-width: 1200px;
             margin: 20px auto;
@@ -137,7 +133,7 @@
         }
 
         .section-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
             padding-bottom: 5px;
             border-bottom: 2px solid rgba(150, 150, 150, 0.2);
@@ -146,634 +142,121 @@
             gap: 10px;
         }
 
-        /* Section A: Programación Quirúrgica */
-        .sala-group {
-            margin-bottom: 25px;
-        }
+        /* CIRUGIAS */
+        .sala-group { margin-bottom: 25px; }
+        .sala-title { font-size: 1.1rem; color: #4a90e2; margin-bottom: 10px; font-weight: 600; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .patient-card { padding: 15px; position: relative; transition: transform 0.2s; }
+        .patient-card:hover { transform: translateY(-2px); background: var(--card-hover); }
 
-        .sala-title {
-            font-size: 1.2rem;
-            color: #4a90e2;
-            margin-bottom: 10px;
-            font-weight: 600;
+        .action-buttons-card {
+            position: absolute; top: 10px; right: 10px; z-index: 2;
+            display: flex; flex-direction: column; gap: 5px;
         }
+        .card-action-btn {
+            background: var(--bg-color); border: 1px solid var(--glass-border);
+            border-radius: 8px; cursor: pointer; padding: 6px; font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; color: var(--text-color); width: 32px; height: 32px;
+        }
+        .card-action-btn:hover { background: #4a90e2; color: white; }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 15px;
-        }
+        .card-row { display: flex; margin-bottom: 6px; font-size: 0.9rem; }
+        .card-label { width: 120px; min-width: 120px; margin-right: 10px; font-weight: 600; color: #777; }
+        [data-theme="dark"] .card-label { color: #aaa; }
+        .card-value { flex: 1; font-weight: 500; word-break: break-word; }
 
-        .patient-card {
-            padding: 15px;
-            position: relative;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        .patient-card:hover {
-            transform: translateY(-3px);
-            background: var(--card-hover);
-        }
-
-        .copy-card-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 2;
-            background: var(--bg-color);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 6px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            color: var(--text-color);
-        }
-
-        .copy-card-btn:hover {
-            background: #4a90e2;
-            color: white;
-        }
-
-        .card-row {
-            display: flex;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-
-        .card-label {
-            width: 145px;
-            min-width: 145px;
-            margin-right: 10px;
-            word-break: break-word;
-            font-weight: 600;
-            color: #777;
-        }
+        /* OXIGENO */
+        .oxygen-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .oxygen-grid { grid-template-columns: 1fr 1fr; } .recuperacion-full { grid-column: 1 / -1; } }
+        .oxy-category { padding: 15px; }
+        .oxy-category h3 { margin-bottom: 12px; font-size: 1.05rem; color: #4a90e2; }
+        .oxy-item { margin-bottom: 12px; }
+        .oxy-item-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
+        .progress-bg { background: rgba(150, 150, 150, 0.2); border-radius: 8px; height: 16px; width: 100%; overflow: hidden; position: relative; }
+        .progress-bar { height: 100%; border-radius: 8px; transition: width 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .progress-empty { background: #ffe6e6 !important; border: 1px solid #ff4d4d; }
+        .progress-empty .progress-text { color: #ff4d4d; position: absolute; width: 100%; text-align: center; text-shadow: none; }
         
-        [data-theme=""dark""] .card-label {
-            color: #aaa;
-        }
+        .reserva-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
+        .reserva-widget { padding: 10px; text-align: center; position: relative; }
+        .reserva-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .reserva-val { font-size: 1.5rem; font-weight: 700; }
+        .badge-alert { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 8px; font-weight: bold; }
 
-        .card-value {
-            flex: 1;
-            font-weight: 500;
-        }
+        .recuperacion-cols { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 768px) { .recuperacion-cols { grid-template-columns: 1fr 1fr; } }
 
-        /* Section B: Oxígeno */
-        .oxygen-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        @media (min-width: 768px) {
-            .oxygen-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .recuperacion-full {
-                grid-column: 1 / -1;
-            }
-        }
-
-        .oxy-category {
-            padding: 20px;
-        }
-
-        .oxy-category h3 {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            color: #4a90e2;
-        }
-
-        .oxy-item {
-            margin-bottom: 15px;
-        }
-
-        .oxy-item-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .progress-bg {
-            background: rgba(150, 150, 150, 0.2);
-            border-radius: 8px;
-            height: 18px;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 8px;
-            transition: width 0.5s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .progress-empty {
-            background: #ffe6e6 !important;
-            border: 1px solid #ff4d4d;
-        }
-
-        .progress-empty .progress-text {
-            color: #ff4d4d;
-            font-weight: bold;
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            line-height: 16px;
-            text-shadow: none;
-        }
-
-        /* Widgets Reservas */
-        .reserva-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-        }
-
-        .reserva-widget {
-            padding: 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .reserva-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .reserva-val {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .badge-alert {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff4d4d;
-            color: white;
-            font-size: 0.7rem;
-            padding: 3px 6px;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .recuperacion-cols {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        @media (min-width: 768px) {
-            .recuperacion-cols {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        /* Toast */
+        /* TOAST */
         .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #333;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 1000;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #333; color: white; padding: 10px 20px; border-radius: 20px;
+            font-size: 0.9rem; opacity: 0; transition: all 0.3s; z-index: 2000;
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Print Layer */
-        .print-only {
-            display: none;
+        /* MODAL DE AFILIACIÓN */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
         }
+        .modal-content {
+            background-color: var(--bg-color); margin: 5% auto; padding: 20px;
+            border: 1px solid var(--glass-border); width: 95%; max-width: 800px;
+            border-radius: 12px; position: relative;
+        }
+        .close-btn { position: absolute; right: 15px; top: 10px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: var(--text-color); }
 
+        /* ESTILOS INTERNOS DEL FORMULARIO DE REGISTRO */
+        .reg-container h1 { font-size: 1.2rem; color: #028090; text-transform: uppercase; margin-bottom: 15px; }
+        [data-theme="dark"] .reg-container h1 { color: #00d2c4; }
+        .reg-sala-box { display: inline-flex; align-items: center; border: 2px solid #028090; padding: 5px 8px; border-radius: 4px; font-weight: bold; font-size: 1rem; background-color: rgba(2, 128, 144, 0.1); margin-bottom: 15px; }
+        [data-theme="dark"] .reg-sala-box { border-color: #00d2c4; background-color: rgba(0, 210, 196, 0.1); }
+        .reg-sala-box span { color: #028090; margin-right: 5px; }
+        [data-theme="dark"] .reg-sala-box span { color: #00d2c4; }
+        .reg-sala-box input { border: none; background: transparent; font-weight: bold; font-size: 1rem; width: 50px; color: var(--text-color); outline: none; }
+
+        .reg-form-table { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .reg-form-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .reg-form-label { width: 120px; font-weight: bold; font-size: 0.85rem; color: var(--text-color); text-transform: uppercase; }
+        .reg-form-input-cell { flex-grow: 1; min-width: 200px; }
+        .reg-form-control { width: 100%; border: none; border-bottom: 1px solid #cfd8dc; padding: 5px 0; font-size: 1rem; color: var(--text-color); outline: none; background: transparent; }
+        [data-theme="dark"] .reg-form-control { border-bottom-color: #4b6584; }
+
+        .reg-actions-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .reg-btn-action { padding: 8px 15px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
+        .reg-btn-copy { background: #028090; }
+        .reg-btn-print { background: #ff9f43; }
+
+        .reg-section-heading { font-size: 1rem; font-weight: bold; color: #028090; border-bottom: 1px solid #ccc; margin: 20px 0 10px 0; padding-bottom: 5px; }
+        [data-theme="dark"] .reg-section-heading { color: #00d2c4; border-bottom-color: #4b6584; }
+
+        /* IMPRESIÓN */
+        .print-only { display: none; }
         @media print {
-            @page {
-                size: A4 portrait;
-                margin: 15mm;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-            }
-            .no-print, header, .search-bar, .oxy-section {
-                display: none !important;
-            }
-            .print-only {
-                display: block;
-            }
-            .print-header {
-                text-align: center;
-                margin-bottom: 20px;
-                border-bottom: 2px solid black;
-                padding-bottom: 10px;
-            }
-            .print-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 11pt;
-            }
-            .print-table th, .print-table td {
-                border: 1px solid #000;
-                padding: 6px;
-                text-align: left;
-            }
-            .print-table th {
-                background-color: #f0f0f0 !important;
-                -webkit-print-color-adjust: exact;
-                font-weight: bold;
-            }
-            .sala-separator td {
-                background-color: #e0e0e0 !important;
-                -webkit-print-color-adjust: exact;
-                font-weight: bold;
-                text-align: center;
-            }
+            body { background: white !important; color: black !important; }
+            .no-print, header, .search-bar, .oxy-section, .modal, .toast { display: none !important; }
+            body.printing-modal > * { display: none !important; }
+            body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: black !important; }
+            body.printing-modal .modal { position: absolute; left: 0; top: 0; }
+            body.printing-modal .modal-content { box-shadow: none; border: none; width: 100%; padding: 0; }
+            body.printing-modal .reg-actions-container, body.printing-modal .close-btn { display: none !important; }
+
+            .print-only { display: block; }
+            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+            .print-table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 5px; text-align: left; }
+            .print-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
+            .sala-separator td { background-color: #ddd !important; -webkit-print-color-adjust: exact; text-align: center; font-weight: bold; }
         }
     </style>
 </head>
 <body>
 
-    <div class=""no-print"">
-        <header>
-            <div class=""header-title"">
-                <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z""/></svg>
-                <span id=""main-title"">Novo Clinic</span>
-            </div>
-            <div class=""header-controls"">
-                <input type=""text"" id=""searchInput"" class=""search-bar"" placeholder=""🔍 Buscar paciente, médico, procedimiento..."">
-                
-                <button class=""icon-btn"" id=""themeToggle"" title=""Modo Claro/Oscuro"">
-                    <svg viewBox=""0 0 24 24""><path d=""M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z""/></svg>
-                </button>
-                
-                <button class=""icon-btn"" id=""copyWppBtn"" title=""Copiar Reporte WhatsApp"">
-                    <svg viewBox=""0 0 24 24""><path d=""M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z""/></svg>
-                </button>
-                
-                <button class=""icon-btn"" id=""printBtn"" title=""Imprimir Programación"">
-                    <svg viewBox=""0 0 24 24""><path d=""M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z""/></svg>
-                </button>
-            </div>
-        </header>
-
-        <main>
-            <section id=""cirugias-section"">
-                <h2 class=""section-title"">
-                    <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z""/></svg>
-                    Programación Quirúrgica
-                </h2>
-                <div id=""cirugias-container""></div>
-            </section>
-
-            <section class=""oxy-section"" id=""oxigeno-section"">
-                <h2 class=""section-title"">
-                    <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z""/></svg>
-                    Oxígeno Novo Clinic
-                </h2>
-                <div class=""oxygen-grid"" id=""oxigeno-container""></div>
-            </section>
-        </main>
-    </div>
-
-    <div id=""toast"" class=""toast"">Copiado al portapapeles</div>
-
-    <div class=""print-only"">
-        <div class=""print-header"">
-            <h2>Programación Quirúrgica - Novo Clinic</h2>
-            <p id=""print-date""></p>
-        </div>
-        <table class=""print-table"" id=""print-table"">
-            <thead>
-                <tr>
-                    <th>Hora</th>
-                    <th>Médico</th>
-                    <th>Paciente</th>
-                    <th>Procedimiento</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody id=""print-tbody""></tbody>
-        </table>
-    </div>
-
-    <script>
-        /*******************************************************
-         * PARTE 1: LÓGICA DE RENDERIZADO, EVENTOS Y TEMAS     *
-         *******************************************************/
-        const initTheme = () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        };
-        initTheme();
-
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-
-        const setDateHeaders = () => {
-            const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
-            document.getElementById('print-date').innerText = `Fecha: ${dateStr}`;
-        };
-        setDateHeaders();
-
-        const showToast = (message) => {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        };
-
-        const getOxyStyles = (valStr) => {
-            const val = parseInt(valStr) || 0;
-            const isEmpty = val === 0 || valStr.trim() === '-';
-            const width = isEmpty ? 0 : Math.min((val / 3000) * 100, 100);
-            
-            let bg = '';
-            let color = '';
-            if (isEmpty) {
-                bg = 'transparent'; color = '#ff4d4d';
-            } else if (val <= 799) {
-                bg = 'linear-gradient(90deg, #ff4b1f 0%, #ff9068 100%)'; color = '#ffffff';
-            } else if (val <= 1999) {
-                bg = 'linear-gradient(90deg, #f7b733 0%, #fc4a1a 100%)'; color = '#000000';
-            } else {
-                bg = 'linear-gradient(90deg, #36D1DC 0%, #5B86E5 100%)'; color = '#ffffff';
-            }
-            return { width, bg, color, isEmpty };
-        };
-
-        function renderDashboard(cirugias, oxigeno, textoWpp) {
-            const renderCirugias = (filtro = '') => {
-                const container = document.getElementById('cirugias-container');
-                const printTbody = document.getElementById('print-tbody');
-                container.innerHTML = '';
-                printTbody.innerHTML = '';
-
-                const searchLower = filtro.toLowerCase();
-                const filtered = cirugias.filter(c => 
-                    (c.paciente || '').toLowerCase().includes(searchLower) ||
-                    (c.medico || '').toLowerCase().includes(searchLower) ||
-                    (c.procedimiento || '').toLowerCase().includes(searchLower)
-                );
-
-                const salas = {};
-                filtered.forEach(c => {
-                    if (!salas[c.sala]) salas[c.sala] = [];
-                    salas[c.sala].push(c);
-                });
-
-                for (const [salaName, list] of Object.entries(salas)) {
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = 'sala-group';
-                    groupDiv.innerHTML = `<div class=""sala-title"">${salaName.toUpperCase()}</div>`;
-                    
-                    const gridDiv = document.createElement('div');
-                    gridDiv.className = 'cards-grid';
-
-                    const sepTr = document.createElement('tr');
-                    sepTr.className = 'sala-separator';
-                    sepTr.innerHTML = `<td colspan=""5"">${salaName.toUpperCase()}</td>`;
-                    printTbody.appendChild(sepTr);
-
-                    list.forEach(c => {
-                        const card = document.createElement('div');
-                        card.className = 'glass patient-card';
-                        
-                        const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
-                        
-                        card.innerHTML = `
-                            <button class=""copy-card-btn"" title=""Copiar fila para Excel"" data-clipboard=""${encodeURIComponent(copyDataStr)}"">📋</button>
-                            <div class=""card-row""><div class=""card-label"">PACIENTE:</div><div class=""card-value"">${c.paciente || '---'}</div></div>
-                            <div class=""card-row""><div class=""card-label"">HORA PROG.:</div><div class=""card-value"">${c.hora || ''}</div></div>
-                            <div class=""card-row""><div class=""card-label"">SALA:</div><div class=""card-value"">${c.sala || ''}</div></div>
-                            <div class=""card-row""><div class=""card-label"">MEDICO:</div><div class=""card-value"">${c.medico || ''}</div></div>
-                            <div class=""card-row""><div class=""card-label"">PROCEDIMIENTO:</div><div class=""card-value"">${c.procedimiento || ''}</div></div>
-                            <div class=""card-row""><div class=""card-label"">OBS:</div><div class=""card-value"">${c.obs || ''}</div></div>
-                            <div class=""card-row""><div class=""card-label"">H:</div><div class=""card-value"">${c.h || ''}</div></div>
-                        `;
-                        gridDiv.appendChild(card);
-
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${c.hora || ''}</td>
-                            <td>${c.medico || ''}</td>
-                            <td>${c.paciente || ''}</td>
-                            <td>${c.procedimiento || ''}</td>
-                            <td>${c.obs || ''}</td>
-                        `;
-                        printTbody.appendChild(tr);
-                    });
-
-                    groupDiv.appendChild(gridDiv);
-                    container.appendChild(groupDiv);
-                }
-
-                document.querySelectorAll('.copy-card-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const data = decodeURIComponent(this.getAttribute('data-clipboard'));
-                        navigator.clipboard.writeText(data).then(() => {
-                            this.innerHTML = '✅';
-                            setTimeout(() => { this.innerHTML = '📋'; }, 1500);
-                        });
-                    });
-                });
-            };
-
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                renderCirugias(e.target.value);
-            });
-            renderCirugias();
-
-            const renderOxyList = (list) => {
-                return list.map(item => {
-                    const style = getOxyStyles(item.val);
-                    const emptyClass = style.isEmpty ? 'progress-empty' : '';
-                    const displayVal = style.isEmpty ? '<span class=""progress-text"">VACÍO</span>' : item.val;
-                    return `
-                        <div class=""oxy-item"">
-                            <div class=""oxy-item-header"">
-                                <span>${item.label}</span>
-                                <span style=""color: ${style.color === '#ffffff' ? 'inherit' : style.color}"">${item.val}</span>
-                            </div>
-                            <div class=""progress-bg ${emptyClass}"">
-                                <div class=""progress-bar"" style=""width: ${style.width}%; background: ${style.bg}; color: ${style.color}"">${displayVal}</div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            };
-
-            const oxyContainer = document.getElementById('oxigeno-container');
-            let oxyHtml = `
-                <div class=""glass oxy-category"">
-                    <h3>🛠️ Salas de Operaciones</h3>
-                    ${renderOxyList(oxigeno.operaciones)}
-                </div>
-                <div class=""glass oxy-category"">
-                    <h3>🩺 UCI & Nebulización</h3>
-                    ${renderOxyList(oxigeno.uci)}
-                </div>
-                <div class=""glass oxy-category recuperacion-full"">
-                    <h3>🛏️ Recuperación</h3>
-                    <div class=""recuperacion-cols"">
-                        ${renderOxyList(oxigeno.recuperacion)}
-                    </div>
-                </div>
-                <div class=""glass oxy-category"">
-                    <h3>🏥 Hospitalización</h3>
-                    ${renderOxyList(oxigeno.hospitalizacion)}
-                </div>
-                <div class=""glass oxy-category"">
-                    <h3>📦 Reservas de Gases</h3>
-                    <div class=""reserva-grid"">
-            `;
-
-            oxigeno.reservas.forEach(r => {
-                const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
-                oxyHtml += `
-                    <div class=""glass reserva-widget"">
-                        ${needsBadge ? '<span class=""badge-alert"">¡ALERTA!</span>' : ''}
-                        <div class=""reserva-title"">${r.label}</div>
-                        <div class=""reserva-val"" style=""color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}"">${r.val}</div>
-                    </div>
-                `;
-            });
-
-            oxyHtml += `</div></div>`;
-            oxyContainer.innerHTML = oxyHtml;
-
-            document.getElementById('copyWppBtn').onclick = () => {
-                navigator.clipboard.writeText(textoWpp).then(() => {
-                    showToast('Reporte WhatsApp copiado');
-                });
-            };
-
-            document.getElementById('printBtn').onclick = () => {
-                window.print();
-            };
-        }
-
-        /*******************************************************
-         * PARTE 2: PARSERS AUTOMÁTICOS (MAGIA)                *
-         *******************************************************/
-        function parseCirugiasText(text) {
-            const cirugias = [];
-            let currentSala = '';
-            let currentCirugia = null;
-
-            const lines = text.split('\n');
-            for (let line of lines) {
-                line = line.trim();
-                if (!line) continue;
-
-                if (line.startsWith('###')) {
-                    currentSala = line.replace('###', '').trim();
-                    continue;
-                }
-
-                const colonIndex = line.indexOf(':');
-                if (colonIndex > -1) {
-                    const key = line.substring(0, colonIndex).trim().toUpperCase();
-                    const val = line.substring(colonIndex + 1).trim();
-
-                    if (key === 'PACIENTE') {
-                        if (currentCirugia) cirugias.push(currentCirugia);
-                        currentCirugia = { sala: currentSala, paciente: val };
-                    } else if (currentCirugia) {
-                        if (key === 'HORA PROG.') currentCirugia.hora = val;
-                        else if (key === 'SALA') currentCirugia.sala = val;
-                        else if (key === 'MEDICO') currentCirugia.medico = val;
-                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
-                        else if (key === 'OBS') currentCirugia.obs = val;
-                        else if (key === 'H') currentCirugia.h = val;
-                    }
-                }
-            }
-            if (currentCirugia) cirugias.push(currentCirugia);
-            return cirugias;
-        }
-
-        function parseOxigenoText(text) {
-            const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
-            let currentCategory = '';
-
-            const lines = text.split('\n');
-            for (let line of lines) {
-                line = line.trim();
-                if (!line) continue;
-
-                const upper = line.toUpperCase();
-                if (upper.includes('SALAS DE OPERACIONES')) { currentCategory = 'operaciones'; continue; }
-                if (upper.includes('RECUPERACIÓN')) { currentCategory = 'recuperacion'; continue; }
-                if (upper.includes('UCI & NEBULIZACIÓN')) { currentCategory = 'uci'; continue; }
-                if (upper.includes('HOSPITALIZACIÓN')) { currentCategory = 'hospitalizacion'; continue; }
-                if (upper.includes('RESERVAS DE GASES')) { currentCategory = 'reservas'; continue; }
-
-                if (!currentCategory) continue;
-
-                const parts = line.split(':');
-                if (parts.length >= 2) {
-                    const rawLabel = parts[0];
-                    const rawValue = parts.slice(1).join(':');
-
-                    let cleanLabel = rawLabel.replace(/\*/g, '').replace(/^[^\s]+\.\s*/, '').replace(/^[^\w\s]+\s*/, '').trim();
-                    let cleanValue = rawValue.replace(/\*/g, '').trim();
-
-                    if (currentCategory === 'hospitalizacion' && rawLabel.toUpperCase().includes('HOSPITALIZACIÓN')) {
-                        if(cleanValue) ox.hospitalizacion.push({ label: 'General', val: cleanValue });
-                        continue;
-                    }
-
-                    if (cleanLabel && cleanValue) {
-                        ox[currentCategory].push({ label: cleanLabel, val: cleanValue });
-                    }
-                }
-            }
-            return ox;
-        }
-"
-"/*******************************************************
-         * PARTE 3: ZONA DE INGRESO DE DATOS                   *
-         *******************************************************/
-        
-        // 1. PEGA AQUÍ TU TEXTO BRUTO DE CIRUGÍAS (Entre las comillas invertidas ` `)
-        const textoBrutoCirugias =
-"
-"[PEGAR AQUÍ LOS DATOS DE LA PROGRAMACIÓN QUIRÚRGICA]
-"
-"### SALA 1		
+    <script type="text/plain" id="datos-cirugias">
+### SALA 1		
 PACIENTE:	ROMULO NUÑEZ	
 HORA PROG.:	10:00	
 SALA:	S1	
@@ -910,11 +393,11 @@ SALA:	S3
 MEDICO:		
 PROCEDIMIENTO:	BIOPSIA DE PARED	
 OBS:	CON ANESTESIA LOCAL	
-H:		"
-"/ 2. PEGA AQUÍ TU TEXTO BRUTO DE OXÍGENO (Entre las comillas invertidas ` `)
-        const textoBrutoOxigeno = `
-"
-"""📋 *REPORTE DE ESTADO DE OXÍGENO*
+H:
+    </script>
+
+    <script type="text/plain" id="datos-oxigeno">
+📋 *REPORTE DE ESTADO DE OXÍGENO*
 🏥 *Novo Clinic*
 
 🛠️ *SALAS DE OPERACIONES*
@@ -924,7 +407,7 @@ S3. *Sala 3:* 1600
 
 🛏️ *RECUPERACIÓN*
 Rb. *Pto. B:* 500
-Re. *Pto. E:*  900
+Re. *Pto. E:* 900
 Re. *Pto. G:* 900
 
  *UCI & NEBULIZACIÓN*
@@ -936,12 +419,381 @@ Neb. *Nebulizar:* 600
 HB 202: 2000
 📦 *RESERVAS DE GASES*
 ▫️ *Reserva O2:* *03UND*
-▫️ *RESERVA CO2:* *02 UND*"""
-" // Procesamiento e inicio automático
-        const cirugiasProcesadas = parseCirugiasText(textoBrutoCirugias);
-        const oxigenoProcesado = parseOxigenoText(textoBrutoOxigeno);
-        renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoBrutoOxigeno);
+▫️ *RESERVA CO2:* *02 UND*
+    </script>
+    <div class="no-print" id="main-interface">
+        <header>
+            <div class="header-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                <span id="main-title">Novo Clinic</span>
+            </div>
+            <div class="header-controls">
+                <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar paciente...">
+                <button class="icon-btn" id="themeToggle" title="Modo Claro/Oscuro">
+                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z"/></svg>
+                </button>
+                <button class="icon-btn" id="copyWppBtn" title="Copiar Reporte WhatsApp">
+                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                </button>
+                <button class="icon-btn" id="printBtn" title="Imprimir Programación">
+                    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+                </button>
+            </div>
+        </header>
 
+        <main>
+            <section id="cirugias-section">
+                <div class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z"/></svg>
+                    Programación Quirúrgica
+                </div>
+                <div id="cirugias-container"></div>
+            </section>
+
+            <section class="oxy-section" id="oxigeno-section">
+                <div class="section-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z"/></svg>
+                    Oxígeno Novo Clinic
+                </div>
+                <div class="oxygen-grid" id="oxigeno-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeRegistrationModal()">&times;</span>
+            <div class="reg-container" id="printable-reg">
+                <h1>Registro de Admisión Quirúrgica</h1>
+                
+                <div class="reg-sala-box">
+                    <span>SALA:</span>
+                    <input type="text" id="reg-input-sala" placeholder="...">
+                </div>
+
+                <div class="reg-actions-container">
+                    <button class="reg-btn-action reg-btn-copy" onclick="copyAllPatientData()">📋 Copiar Todo</button>
+                    <button class="reg-btn-action reg-btn-print" onclick="printRegistration()">🖨️ Imprimir Formato</button>
+                </div>
+
+                <div class="reg-form-table">
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">Paciente:</div>
+                        <div class="reg-form-input-cell"><input type="text" id="reg-input-paciente" class="reg-form-control"></div>
+                    </div>
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">H. Ingreso:</div>
+                        <div class="reg-form-input-cell"><input type="text" id="reg-input-h-ingreso" class="reg-form-control"></div>
+                    </div>
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">Edad / F. Nac:</div>
+                        <div class="reg-form-input-cell" style="display: flex; gap:10px;">
+                            <input type="text" id="reg-input-edad" class="reg-form-control" placeholder="Edad" style="width: 40%;">
+                            <input type="date" id="reg-calc-fecha-nac" class="reg-form-control" onchange="calculateAge()" style="width: 60%;">
+                        </div>
+                    </div>
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">Médico Tratante:</div>
+                        <div class="reg-form-input-cell"><input type="text" id="reg-input-medico" class="reg-form-control"></div>
+                    </div>
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">Fecha Cirugía:</div>
+                        <div class="reg-form-input-cell"><input type="text" id="reg-input-fecha" class="reg-form-control"></div>
+                    </div>
+                    <div class="reg-form-row">
+                        <div class="reg-form-label">Procedimiento:</div>
+                        <div class="reg-form-input-cell"><input type="text" id="reg-input-procedimiento" class="reg-form-control"></div>
+                    </div>
+                </div>
+
+                <div class="reg-section-heading">Exámenes / Notas</div>
+                <input type="text" class="reg-form-control" placeholder="Especifique detalles adicionales aquí...">
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Copiado al portapapeles</div>
+
+    <div class="print-only">
+        <div class="print-header">
+            <h2>Programación Quirúrgica - Novo Clinic</h2>
+            <p id="print-date"></p>
+        </div>
+        <table class="print-table" id="print-table">
+            <thead>
+                <tr><th>Hora</th><th>Médico</th><th>Paciente</th><th>Procedimiento</th><th>Observaciones</th></tr>
+            </thead>
+            <tbody id="print-tbody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        /* INICIO SISTEMA */
+        const initTheme = () => {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch (e) {
+                // Previene fallos en navegadores privados
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        };
+        initTheme();
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            try { localStorage.setItem('theme', newTheme); } catch(e){}
+        });
+
+        const setDateHeaders = () => {
+            const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
+            document.getElementById('print-date').innerText = `Fecha: ${dateStr}`;
+        };
+        setDateHeaders();
+
+        const showToast = (message) => {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        };
+
+        const getOxyStyles = (valStr) => {
+            const val = parseInt(valStr) || 0;
+            const isEmpty = val === 0 || valStr.trim() === '-';
+            const width = isEmpty ? 0 : Math.min((val / 3000) * 100, 100);
+            let bg = isEmpty ? 'transparent' : (val <= 799 ? 'linear-gradient(90deg, #ff4b1f 0%, #ff9068 100%)' : (val <= 1999 ? 'linear-gradient(90deg, #f7b733 0%, #fc4a1a 100%)' : 'linear-gradient(90deg, #36D1DC 0%, #5B86E5 100%)'));
+            let color = isEmpty ? '#ff4d4d' : (val > 799 && val <= 1999 ? '#000000' : '#ffffff');
+            return { width, bg, color, isEmpty };
+        };
+
+        /* MODAL DE REGISTRO */
+        const modal = document.getElementById("registrationModal");
+
+        function openRegistrationModal(encodedData) {
+            let data = null;
+            if (encodedData) {
+                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error(e); }
+            }
+
+            if (data) {
+                document.getElementById('reg-input-paciente').value = data.paciente || '';
+                document.getElementById('reg-input-medico').value = data.medico || '';
+                document.getElementById('reg-input-procedimiento').value = data.procedimiento || '';
+                document.getElementById('reg-input-sala').value = data.sala || '';
+                document.getElementById('reg-input-h-ingreso').value = data.hora || '';
+                
+                const today = new Date();
+                const dd = String(today.getDate()).padStart(2, '0');
+                const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+                const yyyy = today.getFullYear();
+                document.getElementById('reg-input-fecha').value = `${dd}/${mm}/${yyyy}`;
+            } else {
+                document.querySelectorAll('.reg-form-control, .reg-sala-box input').forEach(input => input.value = '');
+            }
+            modal.style.display = "block";
+        }
+
+        function closeRegistrationModal() { modal.style.display = "none"; document.body.classList.remove('printing-modal'); }
+        window.onclick = function(event) { if (event.target == modal) closeRegistrationModal(); }
+
+        function calculateAge() {
+            const dobInput = document.getElementById('reg-calc-fecha-nac').value;
+            if (!dobInput) return;
+            const birthYear = parseInt(dobInput.split('-')[0], 10);
+            const age = new Date().getFullYear() - birthYear;
+            document.getElementById('reg-input-edad').value = age > 0 ? age + " Años" : "";
+        }
+
+        function copyAllPatientData() {
+            const fields = [
+                { l: 'SALA', v: document.getElementById('reg-input-sala').value },
+                { l: 'PACIENTE', v: document.getElementById('reg-input-paciente').value },
+                { l: 'H. INGRESO', v: document.getElementById('reg-input-h-ingreso').value },
+                { l: 'MÉDICO TRATANTE', v: document.getElementById('reg-input-medico').value },
+                { l: 'PROCEDIMIENTO', v: document.getElementById('reg-input-procedimiento').value }
+            ];
+            let txt = "--- REGISTRO ---\n" + fields.map(f => `${f.l}: ${f.v || '---'}`).join('\n');
+            navigator.clipboard.writeText(txt).then(() => showToast('📋 Formato copiado'));
+        }
+
+        function printRegistration() {
+            document.body.classList.add('printing-modal'); window.print();
+            setTimeout(() => { document.body.classList.remove('printing-modal'); }, 500);
+        }
+
+        /* RENDERIZADOR */
+        function renderDashboard(cirugias, oxigeno, textoWpp) {
+            const renderCirugias = (filtro = '') => {
+                const container = document.getElementById('cirugias-container');
+                const printTbody = document.getElementById('print-tbody');
+                container.innerHTML = ''; printTbody.innerHTML = '';
+
+                const searchLower = filtro.toLowerCase();
+                const filtered = cirugias.filter(c => 
+                    (c.paciente || '').toLowerCase().includes(searchLower) ||
+                    (c.medico || '').toLowerCase().includes(searchLower) ||
+                    (c.procedimiento || '').toLowerCase().includes(searchLower)
+                );
+
+                const salas = {};
+                filtered.forEach(c => { if (!salas[c.sala]) salas[c.sala] = []; salas[c.sala].push(c); });
+
+                for (const [salaName, list] of Object.entries(salas)) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'sala-group';
+                    groupDiv.innerHTML = `<div class="sala-title">${salaName.toUpperCase()}</div>`;
+                    
+                    const gridDiv = document.createElement('div');
+                    gridDiv.className = 'cards-grid';
+
+                    printTbody.innerHTML += `<tr class="sala-separator"><td colspan="5">${salaName.toUpperCase()}</td></tr>`;
+
+                    list.forEach(c => {
+                        const card = document.createElement('div');
+                        card.className = 'glass patient-card';
+                        
+                        const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
+                        const safeModalPayload = encodeURIComponent(JSON.stringify(c));
+
+                        card.innerHTML = `
+                            <div class="action-buttons-card">
+                                <button class="card-action-btn copy-card-btn" data-clipboard="${encodeURIComponent(copyDataStr)}">📋</button>
+                                <button class="card-action-btn" onclick="openRegistrationModal('${safeModalPayload}')">📝</button>
+                            </div>
+                            <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value">${c.paciente || '---'}</div></div>
+                            <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${c.hora || ''}</div></div>
+                            <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${c.sala || ''}</div></div>
+                            <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${c.medico || ''}</div></div>
+                            <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${c.procedimiento || ''}</div></div>
+                            <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${c.obs || ''}</div></div>
+                            <div class="card-row"><div class="card-label">H:</div><div class="card-value">${c.h || ''}</div></div>
+                        `;
+                        gridDiv.appendChild(card);
+                        printTbody.innerHTML += `<tr><td>${c.hora || ''}</td><td>${c.medico || ''}</td><td>${c.paciente || ''}</td><td>${c.procedimiento || ''}</td><td>${c.obs || ''}</td></tr>`;
+                    });
+
+                    groupDiv.appendChild(gridDiv);
+                    container.appendChild(groupDiv);
+                }
+
+                document.querySelectorAll('.copy-card-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        navigator.clipboard.writeText(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
+                            this.innerHTML = '✅'; setTimeout(() => { this.innerHTML = '📋'; }, 1500);
+                        });
+                    });
+                });
+            };
+
+            document.getElementById('searchInput').addEventListener('input', (e) => renderCirugias(e.target.value));
+            renderCirugias();
+
+            const renderOxyList = (list) => {
+                return list.map(item => {
+                    const style = getOxyStyles(item.val);
+                    const displayVal = style.isEmpty ? '<span class="progress-text">VACÍO</span>' : item.val;
+                    return `
+                        <div class="oxy-item">
+                            <div class="oxy-item-header"><span>${item.label}</span><span style="color: ${style.color === '#ffffff' ? 'inherit' : style.color}">${item.val}</span></div>
+                            <div class="progress-bg ${style.isEmpty ? 'progress-empty' : ''}">
+                                <div class="progress-bar" style="width: ${style.width}%; background: ${style.bg}; color: ${style.color}">${displayVal}</div>
+                            </div>
+                        </div>`;
+                }).join('');
+            };
+
+            const oxyContainer = document.getElementById('oxigeno-container');
+            let oxyHtml = `
+                <div class="glass oxy-category"><h3>🛠️ Salas de Operaciones</h3>${renderOxyList(oxigeno.operaciones)}</div>
+                <div class="glass oxy-category"><h3>🩺 UCI & Nebulización</h3>${renderOxyList(oxigeno.uci)}</div>
+                <div class="glass oxy-category recuperacion-full"><h3>🛏️ Recuperación</h3><div class="recuperacion-cols">${renderOxyList(oxigeno.recuperacion)}</div></div>
+                <div class="glass oxy-category"><h3>🏥 Hospitalización</h3>${renderOxyList(oxigeno.hospitalizacion)}</div>
+                <div class="glass oxy-category"><h3>📦 Reservas de Gases</h3><div class="reserva-grid">
+            `;
+
+            oxigeno.reservas.forEach(r => {
+                const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
+                oxyHtml += `<div class="glass reserva-widget">${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}<div class="reserva-title">${r.label}</div><div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}">${r.val}</div></div>`;
+            });
+            oxyContainer.innerHTML = oxyHtml + `</div></div>`;
+
+            document.getElementById('copyWppBtn').onclick = () => navigator.clipboard.writeText(textoWpp).then(() => showToast('Reporte WhatsApp copiado'));
+            document.getElementById('printBtn').onclick = () => window.print();
+        }
+
+        /* PARSERS */
+        function parseCirugiasText(text) {
+            const cirugias = []; let currentSala = ''; let currentCirugia = null;
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                if (line.startsWith('###')) { currentSala = line.replace('###', '').trim(); return; }
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim().toUpperCase();
+                    const val = line.substring(colonIndex + 1).trim();
+                    if (key === 'PACIENTE') {
+                        if (currentCirugia) cirugias.push(currentCirugia);
+                        currentCirugia = { sala: currentSala, paciente: val };
+                    } else if (currentCirugia) {
+                        if (key === 'HORA PROG.') currentCirugia.hora = val;
+                        else if (key === 'SALA') currentCirugia.sala = val;
+                        else if (key === 'MEDICO') currentCirugia.medico = val;
+                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
+                        else if (key === 'OBS') currentCirugia.obs = val;
+                        else if (key === 'H') currentCirugia.h = val;
+                    }
+                }
+            });
+            if (currentCirugia) cirugias.push(currentCirugia);
+            return cirugias;
+        }
+
+        function parseOxigenoText(text) {
+            const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+            let currentCategory = '';
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                const upper = line.toUpperCase();
+                if (upper.includes('SALAS DE OPERACIONES')) { currentCategory = 'operaciones'; return; }
+                if (upper.includes('RECUPERACIÓN')) { currentCategory = 'recuperacion'; return; }
+                if (upper.includes('UCI & NEBULIZACIÓN')) { currentCategory = 'uci'; return; }
+                if (upper.includes('HOSPITALIZACIÓN')) { currentCategory = 'hospitalizacion'; return; }
+                if (upper.includes('RESERVAS DE GASES')) { currentCategory = 'reservas'; return; }
+                if (!currentCategory) return;
+
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    let cleanLabel = parts[0].replace(/\*/g, '').replace(/^[^\s]+\.\s*/, '').replace(/^[^\w\s]+\s*/, '').trim();
+                    let cleanValue = parts.slice(1).join(':').replace(/\*/g, '').trim();
+                    if (currentCategory === 'hospitalizacion' && parts[0].toUpperCase().includes('HOSPITALIZACIÓN')) {
+                        if(cleanValue) ox.hospitalizacion.push({ label: 'General', val: cleanValue }); return;
+                    }
+                    if (cleanLabel && cleanValue) ox[currentCategory].push({ label: cleanLabel, val: cleanValue });
+                }
+            });
+            return ox;
+        }
+
+        /* INICIALIZACIÓN PRINCIPAL */
+        window.onload = () => {
+            try {
+                // Leemos los datos directo del HTML en lugar de variables de JavaScript
+                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
+                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
+
+                const cirugiasProcesadas = parseCirugiasText(textoCirugias);
+                const oxigenoProcesado = parseOxigenoText(textoOxigeno);
+                
+                renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoOxigeno.trim());
+            } catch (error) {
+                console.error("Error crítico al arrancar la app:", error);
+                document.getElementById('cirugias-container').innerHTML = '<p style="color:red; padding:20px;">Error al cargar los datos. Verifica la consola.</p>';
+            }
+        };
     </script>
 </body>
 </html>
