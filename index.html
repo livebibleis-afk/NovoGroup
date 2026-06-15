@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang=""es"">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
     <title>Novo Clinic - Dashboard Clínico</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href=""https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"" rel=""stylesheet"">
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -19,7 +19,7 @@
             --btn-hover: rgba(255, 255, 255, 0.2);
         }
 
-        [data-theme="dark"] {
+        [data-theme=""dark""] {
             --bg-color: #121820;
             --text-color: #e0e0e0;
             --glass-bg: rgba(20, 30, 45, 0.6);
@@ -213,7 +213,7 @@
             color: #777;
         }
         
-        [data-theme="dark"] .card-label {
+        [data-theme=""dark""] .card-label {
             color: #aaa;
         }
 
@@ -421,56 +421,56 @@
 </head>
 <body>
 
-    <div class="no-print">
+    <div class=""no-print"">
         <header>
-            <div class="header-title">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
-                <span id="main-title">Novo Clinic</span>
+            <div class=""header-title"">
+                <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z""/></svg>
+                <span id=""main-title"">Novo Clinic</span>
             </div>
-            <div class="header-controls">
-                <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar paciente, médico, procedimiento...">
+            <div class=""header-controls"">
+                <input type=""text"" id=""searchInput"" class=""search-bar"" placeholder=""🔍 Buscar paciente, médico, procedimiento..."">
                 
-                <button class="icon-btn" id="themeToggle" title="Modo Claro/Oscuro">
-                    <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z"/></svg>
+                <button class=""icon-btn"" id=""themeToggle"" title=""Modo Claro/Oscuro"">
+                    <svg viewBox=""0 0 24 24""><path d=""M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z""/></svg>
                 </button>
                 
-                <button class="icon-btn" id="copyWppBtn" title="Copiar Reporte WhatsApp">
-                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <button class=""icon-btn"" id=""copyWppBtn"" title=""Copiar Reporte WhatsApp"">
+                    <svg viewBox=""0 0 24 24""><path d=""M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z""/></svg>
                 </button>
                 
-                <button class="icon-btn" id="printBtn" title="Imprimir Programación">
-                    <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+                <button class=""icon-btn"" id=""printBtn"" title=""Imprimir Programación"">
+                    <svg viewBox=""0 0 24 24""><path d=""M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z""/></svg>
                 </button>
             </div>
         </header>
 
         <main>
-            <section id="cirugias-section">
-                <h2 class="section-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z"/></svg>
+            <section id=""cirugias-section"">
+                <h2 class=""section-title"">
+                    <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z""/></svg>
                     Programación Quirúrgica
                 </h2>
-                <div id="cirugias-container"></div>
+                <div id=""cirugias-container""></div>
             </section>
 
-            <section class="oxy-section" id="oxigeno-section">
-                <h2 class="section-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z"/></svg>
+            <section class=""oxy-section"" id=""oxigeno-section"">
+                <h2 class=""section-title"">
+                    <svg width=""24"" height=""24"" viewBox=""0 0 24 24"" fill=""currentColor""><path d=""M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z""/></svg>
                     Oxígeno Novo Clinic
                 </h2>
-                <div class="oxygen-grid" id="oxigeno-container"></div>
+                <div class=""oxygen-grid"" id=""oxigeno-container""></div>
             </section>
         </main>
     </div>
 
-    <div id="toast" class="toast">Copiado al portapapeles</div>
+    <div id=""toast"" class=""toast"">Copiado al portapapeles</div>
 
-    <div class="print-only">
-        <div class="print-header">
+    <div class=""print-only"">
+        <div class=""print-header"">
             <h2>Programación Quirúrgica - Novo Clinic</h2>
-            <p id="print-date"></p>
+            <p id=""print-date""></p>
         </div>
-        <table class="print-table" id="print-table">
+        <table class=""print-table"" id=""print-table"">
             <thead>
                 <tr>
                     <th>Hora</th>
@@ -480,7 +480,7 @@
                     <th>Observaciones</th>
                 </tr>
             </thead>
-            <tbody id="print-tbody"></tbody>
+            <tbody id=""print-tbody""></tbody>
         </table>
     </div>
 
@@ -557,14 +557,14 @@
                 for (const [salaName, list] of Object.entries(salas)) {
                     const groupDiv = document.createElement('div');
                     groupDiv.className = 'sala-group';
-                    groupDiv.innerHTML = `<div class="sala-title">${salaName.toUpperCase()}</div>`;
+                    groupDiv.innerHTML = `<div class=""sala-title"">${salaName.toUpperCase()}</div>`;
                     
                     const gridDiv = document.createElement('div');
                     gridDiv.className = 'cards-grid';
 
                     const sepTr = document.createElement('tr');
                     sepTr.className = 'sala-separator';
-                    sepTr.innerHTML = `<td colspan="5">${salaName.toUpperCase()}</td>`;
+                    sepTr.innerHTML = `<td colspan=""5"">${salaName.toUpperCase()}</td>`;
                     printTbody.appendChild(sepTr);
 
                     list.forEach(c => {
@@ -574,14 +574,14 @@
                         const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
                         
                         card.innerHTML = `
-                            <button class="copy-card-btn" title="Copiar fila para Excel" data-clipboard="${encodeURIComponent(copyDataStr)}">📋</button>
-                            <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value">${c.paciente || '---'}</div></div>
-                            <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value">${c.hora || ''}</div></div>
-                            <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${c.sala || ''}</div></div>
-                            <div class="card-row"><div class="card-label">MEDICO:</div><div class="card-value">${c.medico || ''}</div></div>
-                            <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value">${c.procedimiento || ''}</div></div>
-                            <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${c.obs || ''}</div></div>
-                            <div class="card-row"><div class="card-label">H:</div><div class="card-value">${c.h || ''}</div></div>
+                            <button class=""copy-card-btn"" title=""Copiar fila para Excel"" data-clipboard=""${encodeURIComponent(copyDataStr)}"">📋</button>
+                            <div class=""card-row""><div class=""card-label"">PACIENTE:</div><div class=""card-value"">${c.paciente || '---'}</div></div>
+                            <div class=""card-row""><div class=""card-label"">HORA PROG.:</div><div class=""card-value"">${c.hora || ''}</div></div>
+                            <div class=""card-row""><div class=""card-label"">SALA:</div><div class=""card-value"">${c.sala || ''}</div></div>
+                            <div class=""card-row""><div class=""card-label"">MEDICO:</div><div class=""card-value"">${c.medico || ''}</div></div>
+                            <div class=""card-row""><div class=""card-label"">PROCEDIMIENTO:</div><div class=""card-value"">${c.procedimiento || ''}</div></div>
+                            <div class=""card-row""><div class=""card-label"">OBS:</div><div class=""card-value"">${c.obs || ''}</div></div>
+                            <div class=""card-row""><div class=""card-label"">H:</div><div class=""card-value"">${c.h || ''}</div></div>
                         `;
                         gridDiv.appendChild(card);
 
@@ -620,15 +620,15 @@
                 return list.map(item => {
                     const style = getOxyStyles(item.val);
                     const emptyClass = style.isEmpty ? 'progress-empty' : '';
-                    const displayVal = style.isEmpty ? '<span class="progress-text">VACÍO</span>' : item.val;
+                    const displayVal = style.isEmpty ? '<span class=""progress-text"">VACÍO</span>' : item.val;
                     return `
-                        <div class="oxy-item">
-                            <div class="oxy-item-header">
+                        <div class=""oxy-item"">
+                            <div class=""oxy-item-header"">
                                 <span>${item.label}</span>
-                                <span style="color: ${style.color === '#ffffff' ? 'inherit' : style.color}">${item.val}</span>
+                                <span style=""color: ${style.color === '#ffffff' ? 'inherit' : style.color}"">${item.val}</span>
                             </div>
-                            <div class="progress-bg ${emptyClass}">
-                                <div class="progress-bar" style="width: ${style.width}%; background: ${style.bg}; color: ${style.color}">${displayVal}</div>
+                            <div class=""progress-bg ${emptyClass}"">
+                                <div class=""progress-bar"" style=""width: ${style.width}%; background: ${style.bg}; color: ${style.color}"">${displayVal}</div>
                             </div>
                         </div>
                     `;
@@ -637,36 +637,36 @@
 
             const oxyContainer = document.getElementById('oxigeno-container');
             let oxyHtml = `
-                <div class="glass oxy-category">
+                <div class=""glass oxy-category"">
                     <h3>🛠️ Salas de Operaciones</h3>
                     ${renderOxyList(oxigeno.operaciones)}
                 </div>
-                <div class="glass oxy-category">
+                <div class=""glass oxy-category"">
                     <h3>🩺 UCI & Nebulización</h3>
                     ${renderOxyList(oxigeno.uci)}
                 </div>
-                <div class="glass oxy-category recuperacion-full">
+                <div class=""glass oxy-category recuperacion-full"">
                     <h3>🛏️ Recuperación</h3>
-                    <div class="recuperacion-cols">
+                    <div class=""recuperacion-cols"">
                         ${renderOxyList(oxigeno.recuperacion)}
                     </div>
                 </div>
-                <div class="glass oxy-category">
+                <div class=""glass oxy-category"">
                     <h3>🏥 Hospitalización</h3>
                     ${renderOxyList(oxigeno.hospitalizacion)}
                 </div>
-                <div class="glass oxy-category">
+                <div class=""glass oxy-category"">
                     <h3>📦 Reservas de Gases</h3>
-                    <div class="reserva-grid">
+                    <div class=""reserva-grid"">
             `;
 
             oxigeno.reservas.forEach(r => {
                 const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
                 oxyHtml += `
-                    <div class="glass reserva-widget">
-                        ${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}
-                        <div class="reserva-title">${r.label}</div>
-                        <div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}">${r.val}</div>
+                    <div class=""glass reserva-widget"">
+                        ${needsBadge ? '<span class=""badge-alert"">¡ALERTA!</span>' : ''}
+                        <div class=""reserva-title"">${r.label}</div>
+                        <div class=""reserva-val"" style=""color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}"">${r.val}</div>
                     </div>
                 `;
             });
@@ -763,13 +763,17 @@
             }
             return ox;
         }
-
-        /*******************************************************
+"
+"/*******************************************************
          * PARTE 3: ZONA DE INGRESO DE DATOS                   *
          *******************************************************/
         
         // 1. PEGA AQUÍ TU TEXTO BRUTO DE CIRUGÍAS (Entre las comillas invertidas ` `)
-        const textoBrutoCirugias = `### SALA 1		
+        const textoBrutoCirugias =
+"
+"[PEGAR AQUÍ LOS DATOS DE LA PROGRAMACIÓN QUIRÚRGICA]
+"
+"### SALA 1		
 PACIENTE:	ROMULO NUÑEZ	
 HORA PROG.:	10:00	
 SALA:	S1	
@@ -906,10 +910,11 @@ SALA:	S3
 MEDICO:		
 PROCEDIMIENTO:	BIOPSIA DE PARED	
 OBS:	CON ANESTESIA LOCAL	
-H:`;
-
-        // 2. PEGA AQUÍ TU TEXTO BRUTO DE OXÍGENO (Entre las comillas invertidas ` `)
-        const textoBrutoOxigeno = `📋 *REPORTE DE ESTADO DE OXÍGENO*
+H:		"
+"/ 2. PEGA AQUÍ TU TEXTO BRUTO DE OXÍGENO (Entre las comillas invertidas ` `)
+        const textoBrutoOxigeno = `
+"
+"""📋 *REPORTE DE ESTADO DE OXÍGENO*
 🏥 *Novo Clinic*
 
 🛠️ *SALAS DE OPERACIONES*
@@ -919,7 +924,7 @@ S3. *Sala 3:* 1600
 
 🛏️ *RECUPERACIÓN*
 Rb. *Pto. B:* 500
-Re. *Pto. E:* 900
+Re. *Pto. E:*  900
 Re. *Pto. G:* 900
 
  *UCI & NEBULIZACIÓN*
@@ -931,9 +936,8 @@ Neb. *Nebulizar:* 600
 HB 202: 2000
 📦 *RESERVAS DE GASES*
 ▫️ *Reserva O2:* *03UND*
-▫️ *RESERVA CO2:* *02 UND*`;
-
-        // Procesamiento e inicio automático
+▫️ *RESERVA CO2:* *02 UND*"""
+" // Procesamiento e inicio automático
         const cirugiasProcesadas = parseCirugiasText(textoBrutoCirugias);
         const oxigenoProcesado = parseOxigenoText(textoBrutoOxigeno);
         renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoBrutoOxigeno);
