@@ -840,7 +840,16 @@ HB 202: 2000
                         const card = document.createElement('div');
                         card.className = 'glass patient-card';
                         
-                        const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
+                        // Formato de copiado individual optimizado con emojis y negritas para WhatsApp
+                        const copyDataStr = `🏥 *NOVO CLINIC - DETALLE DE CIRUGÍA* 🏥\n\n` +
+                                            `👤 *Paciente:* ${c.paciente || '---'}\n` +
+                                            `⏰ *Hora Prog.:* ${c.hora || '---'}\n` +
+                                            `🚪 *Sala:* ${c.sala || '---'}\n` +
+                                            `👨‍⚕️ *Médico:* ${c.medico || '---'}\n` +
+                                            `✂️ *Procedimiento:* ${c.procedimiento || '---'}\n` +
+                                            `📝 *Obs:* ${c.obs || '---'}\n` +
+                                            `⏳ *Duración:* ${c.h || '---'}`;
+                        
                         const safeModalPayload = encodeURIComponent(JSON.stringify(c));
 
                         card.innerHTML = `
