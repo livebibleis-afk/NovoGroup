@@ -110,6 +110,39 @@
             transform: translateY(-5px);
         }
 
+        /* Sección de Galería (NUEVA) */
+        .project-gallery {
+            text-align: center;
+            margin-top: 70px;
+            padding: 40px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+
+        .project-gallery h3 {
+            margin-top: 0;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .gallery-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .gallery-caption {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
         /* Sección de Contacto */
         .contact-section {
             text-align: center;
@@ -146,6 +179,9 @@
                 flex-direction: column;
                 align-items: center;
             }
+            .gallery-image {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -178,6 +214,12 @@
                 <h3>Servicios Generales y Operación</h3>
                 <p>Operación de maquinaria pesada para preparación y nivelación de terrenos, construcción de bases sólidas y mantenimiento integral de instalaciones, asegurando la máxima durabilidad de tu inversión turística.</p>
             </div>
+        </div>
+
+        <div class="project-gallery">
+            <h3>Nuestro Trabajo en Acción</h3>
+            <img src="image_1.png" alt="Obra de construcción con estructuras de hormigón y trabajadores de M&M Mesones" class="gallery-image">
+            <p class="gallery-caption">Construcción de bases técnicas y estructuras sólidas para proyectos integrales de recreación.</p>
         </div>
     </section>
 
