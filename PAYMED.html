@@ -17,6 +17,8 @@
             margin: 0;
             padding: 20px;
             display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
         }
@@ -25,19 +27,21 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         .dashboard {
-            flex: 1;
+            flex: 1 1 300px;
             max-width: 400px;
             display: flex;
             flex-direction: column;
         }
         .preview-container {
-            flex: 2;
+            flex: 2 1 500px;
             max-width: 800px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow-x: auto; /* Permite scroll horizontal en móviles si el recibo es muy ancho */
         }
         h2 { color: var(--primary-blue); margin-top: 0; }
         .form-group {
@@ -85,6 +89,7 @@
             padding: 40px;
             position: relative;
             background: white;
+            min-width: 500px; /* Asegura que el recibo no se aplaste demasiado */
         }
         .header {
             display: flex;
@@ -157,11 +162,38 @@
             border-top: 1px dashed #ccc;
         }
 
+        /* Diseño Responsivo (Móviles y Tablets) */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                flex-direction: column;
+                align-items: center;
+            }
+            .dashboard, .preview-container {
+                max-width: 100%;
+                width: 100%;
+                padding: 20px;
+            }
+            .recibo {
+                padding: 20px;
+                min-width: 400px;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .contact-info {
+                text-align: center;
+            }
+        }
+
         /* Reglas de Impresión */
         @media print {
             body * { visibility: hidden; }
             .preview-container, .preview-container * { visibility: visible; }
-            .preview-container { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 0; }
+            .preview-container { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 0; overflow: visible; }
+            .recibo { border: none; padding: 0; min-width: auto; width: 100%; }
             .print-btn, .digitador-logo, .dashboard { display: none !important; }
         }
     </style>
@@ -181,23 +213,23 @@
         </div>
         <div class="form-group">
             <label>Procedimiento / Pago:</label>
-            <input type="text" id="inputPago" value="TIMPANOPLASTIA">
+            <input type="text" id="inputPago" value="CONSULTA MÉDICA GENERAL">
         </div>
         <div class="form-group">
             <label>Paciente:</label>
-            <input type="text" id="inputPaciente" value="MALLUQUI CARLA">
+            <input type="text" id="inputPaciente" value="ANA MARÍA ROJAS">
         </div>
         <div class="form-group">
             <label>DNI del Paciente:</label>
-            <input type="text" id="inputDni" placeholder="Ingrese DNI">
+            <input type="text" id="inputDni" placeholder="Ej: 70123456">
         </div>
         <div class="form-group">
             <label>Doctor:</label>
-            <input type="text" id="inputDoctor" value="LUIS GUILLERMO PERALTA VALVERRAMA">
+            <input type="text" id="inputDoctor" value="DR. CARLOS MENDOZA ALVARADO">
         </div>
         <div class="form-group">
             <label>Monto Base (S/.):</label>
-            <input type="number" step="0.01" id="inputMonto" value="3150.60">
+            <input type="number" step="0.01" id="inputMonto" value="150.00">
         </div>
         
         <div class="form-group">
@@ -230,20 +262,20 @@
             <div class="recibo-title">RECIBO DE PAGO</div>
             
             <div class="data-row">
-                <strong>PAGO:</strong> <span id="outPago">TIMPANOPLASTIA</span>
+                <strong>PAGO:</strong> <span id="outPago">CONSULTA MÉDICA GENERAL</span>
             </div>
             <div class="data-row">
-                <strong>PACIENTE:</strong> <span id="outPaciente">MALLUQUI CARLA</span>
+                <strong>PACIENTE:</strong> <span id="outPaciente">ANA MARÍA ROJAS</span>
             </div>
             <div class="data-row">
                 <strong>DNI:</strong> <span id="outDni"></span>
             </div>
             <div class="data-row">
-                <strong>DR:</strong> <span id="outDoctor">LUIS GUILLERMO PERALTA VALVERRAMA</span>
+                <strong>DR:</strong> <span id="outDoctor">DR. CARLOS MENDOZA ALVARADO</span>
             </div>
             
             <div class="amount-box">
-                MONTO DE S/. <span id="outMonto">3 150.60</span> SOLES
+                MONTO DE S/. <span id="outMonto">150.00</span> SOLES
             </div>
             
             <div class="signature-line">
