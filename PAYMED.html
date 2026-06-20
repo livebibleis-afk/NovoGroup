@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Facturador - Clínica</title>
+    <style>
+        :root {
+            --primary-blue: #1b365d;
+            --secondary-blue: #2c5ba1;
+            --light-blue: #a3c9ea;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .dashboard, .preview-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .dashboard {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .preview-container {
+            flex: 2;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        h2 { color: var(--primary-blue); margin-top: 0; }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .readonly-input {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+            cursor: not-allowed;
+            margin-top: 8px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        .checkbox-group input {
+            cursor: pointer;
+            width: auto;
+        }
+        
+        /* Estilos del Recibo */
+        .recibo {
+            border: 1px solid #ddd;
+            padding: 40px;
+            position: relative;
+            background: white;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--secondary-blue);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+        .logo span { color: var(--secondary-blue); }
+        .contact-info {
+            font-size: 14px;
+            color: var(--primary-blue);
+            font-weight: bold;
+            text-align: right;
+        }
+        .recibo-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-decoration: underline;
+        }
+        .data-row {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .data-row strong {
+            display: inline-block;
+            width: 120px;
+        }
+        .amount-box {
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .signature-line {
+            margin-top: 60px;
+            border-top: 1px solid black;
+            width: 300px;
+            padding-top: 10px;
+        }
+        .print-btn {
+            background-color: var(--secondary-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .print-btn:hover { background-color: var(--primary-blue); }
+        
+        /* Estilo del Logo del Digitador */
+        .digitador-logo {
+            margin-top: auto;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+
+        /* Reglas de Impresión */
+        @media print {
+            body * { visibility: hidden; }
+            .preview-container, .preview-container * { visibility: visible; }
+            .preview-container { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; padding: 0; }
+            .print-btn, .digitador-logo, .dashboard { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <h2>Generador de Recibos</h2>
+        
+        <div class="form-group">
+            <label>Nombre de la Clínica:</label>
+            <input type="text" id="inputClinica" value="NovoClinic">
+        </div>
+        <div class="form-group">
+            <label>Fecha:</label>
+            <input type="date" id="inputFecha">
+        </div>
+        <div class="form-group">
+            <label>Procedimiento / Pago:</label>
+            <input type="text" id="inputPago" value="TIMPANOPLASTIA">
+        </div>
+        <div class="form-group">
+            <label>Paciente:</label>
+            <input type="text" id="inputPaciente" value="MALLUQUI CARLA">
+        </div>
+        <div class="form-group">
+            <label>DNI del Paciente:</label>
+            <input type="text" id="inputDni" placeholder="Ingrese DNI">
+        </div>
+        <div class="form-group">
+            <label>Doctor:</label>
+            <input type="text" id="inputDoctor" value="LUIS GUILLERMO PERALTA VALVERRAMA">
+        </div>
+        <div class="form-group">
+            <label>Monto Base (S/.):</label>
+            <input type="number" step="0.01" id="inputMonto" value="3150.60">
+        </div>
+        
+        <div class="form-group">
+            <label>Comisión Digitador:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="checkComision">
+                <label for="checkComision">Aplicar e incrementar 5%</label>
+            </div>
+            <input type="text" id="inputComision" class="readonly-input" placeholder="S/. 0.00" readonly>
+        </div>
+        
+        <button class="print-btn" onclick="window.print()">Imprimir Recibo</button>
+
+        <div class="digitador-logo">
+            BvankOs Power By Jeshua Él Mesías
+        </div>
+    </div>
+
+    <div class="preview-container">
+        <div class="recibo">
+            <div class="header">
+                <div class="logo" id="outClinica">Novo<span>Clinic</span></div>
+                <div class="contact-info">Av. Salaverry 2671, San Isidro / 961205510</div>
+            </div>
+            
+            <div style="text-align: right; font-weight: bold; margin-bottom: 20px;">
+                FECHA: <span id="outFecha"></span>
+            </div>
+            
+            <div class="recibo-title">RECIBO DE PAGO</div>
+            
+            <div class="data-row">
+                <strong>PAGO:</strong> <span id="outPago">TIMPANOPLASTIA</span>
+            </div>
+            <div class="data-row">
+                <strong>PACIENTE:</strong> <span id="outPaciente">MALLUQUI CARLA</span>
+            </div>
+            <div class="data-row">
+                <strong>DNI:</strong> <span id="outDni"></span>
+            </div>
+            <div class="data-row">
+                <strong>DR:</strong> <span id="outDoctor">LUIS GUILLERMO PERALTA VALVERRAMA</span>
+            </div>
+            
+            <div class="amount-box">
+                MONTO DE S/. <span id="outMonto">3 150.60</span> SOLES
+            </div>
+            
+            <div class="signature-line">
+                NOMBRE:<br><br>
+                DNI:
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configurar la fecha de hoy automáticamente
+        const fechaInput = document.getElementById('inputFecha');
+        const hoy = new Date();
+        const year = hoy.getFullYear();
+        const month = String(hoy.getMonth() + 1).padStart(2, '0');
+        const day = String(hoy.getDate()).padStart(2, '0');
+        
+        fechaInput.value = `${year}-${month}-${day}`;
+        document.getElementById('outFecha').innerText = `${day}/${month}/${year}`;
+
+        // Función principal de cálculo financiero
+        function actualizarMontos() {
+            const aplicarComision = document.getElementById('checkComision').checked;
+            const montoBase = parseFloat(document.getElementById('inputMonto').value) || 0;
+            
+            let comisionVal = 0;
+            let montoFinal = montoBase;
+
+            if (aplicarComision) {
+                comisionVal = montoBase * 0.05;
+                montoFinal = montoBase + comisionVal;
+                document.getElementById('inputComision').value = "S/. " + comisionVal.toFixed(2);
+            } else {
+                document.getElementById('inputComision').value = ""; 
+            }
+
+            document.getElementById('outMonto').innerText = montoFinal.toFixed(2);
+        }
+
+        // Eventos para controlar la comisión y el monto base
+        document.getElementById('checkComision').addEventListener('change', actualizarMontos);
+        document.getElementById('inputMonto').addEventListener('input', actualizarMontos);
+
+        // Actualización del nombre de la clínica (Logo)
+        document.getElementById('inputClinica').addEventListener('input', function(e) {
+            document.getElementById('outClinica').innerText = e.target.value;
+        });
+
+        // Actualización en tiempo real para textos generales
+        const camposTexto = ['Fecha', 'Pago', 'Paciente', 'Dni', 'Doctor'];
+        
+        camposTexto.forEach(id => {
+            document.getElementById(`input${id}`).addEventListener('input', function(e) {
+                let val = e.target.value;
+                
+                if (id === 'Fecha') {
+                    const partes = val.split('-');
+                    if(partes.length === 3) val = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+
+                document.getElementById(`out${id}`).innerText = val.toUpperCase();
+            });
+        });
+
+        // Configuración inicial al cargar la página
+        actualizarMontos();
+    </script>
+</body>
+</html>
