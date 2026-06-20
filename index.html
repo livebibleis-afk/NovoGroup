@@ -573,8 +573,9 @@ Neb. *Nebulizar:* 600
             try { localStorage.setItem('theme', newTheme); } catch(e){}
         });
 
+        /* FECHA ESTÁTICA ACTUALIZADA */
         const setDateHeaders = () => {
-            const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const dateStr = "SÁBADO 20-06-2026";
             document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
             document.getElementById('print-date').innerText = `Fecha: ${dateStr}`;
         };
