@@ -233,70 +233,16 @@
 
     <script type="text/plain" id="datos-cirugias">
 ### SALA 1
-PACIENTE:	HUAMAN DANNY
-HORA PROG.:	6:00
-SALA:	S1
-MEDICO:	DR: PEDRO MANUEL VILLAGRA VALENCIA
-PROCEDIMIENTO:	SIMPATECTOMIA
-OBS:	PREOP: DR, TRAE ANESTESIOLOGO
-H:	
-
-PACIENTE:	LUISA CASTAÑEDA ARROYAVE
-HORA PROG.:	10:00
-SALA:	S1
-MEDICO:	DR: CESAR EUGENIO RODRIGUEZ ALEGRIA
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	PREOP: DR, HBT: PRIVADA
-H:	
-
-PACIENTE:	ROXANA MEDINA
-HORA PROG.:	13:00
-SALA:	S1
-MEDICO:	DR: JESUS AMERICO TORRES VASQUEZ
-PROCEDIMIENTO:	BIOPSIA DE MAMA
-OBS:	PREOP: DR
-H:	
 
 ### SALA 2
-PACIENTE:	AYRTHON HUAMAN CHENGUAYEN
-HORA PROG.:	5:00
-SALA:	S2
-MEDICO:	DR. SOTELO
-PROCEDIMIENTO:	APENDILAP
-OBS:	
-H:	
 
-PACIENTE:	THALIA SILUPU
-HORA PROG.:	7:00
-SALA:	S2
-MEDICO:	DR: HOSHE LEE JOO FERNANDEZ
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	PREOP: DR
-H:	
-
-PACIENTE:	CANDELARIA MOSCOSO
-HORA PROG.:	9:00
-SALA:	S2
-MEDICO:	DR: HOSHE LEE JOO FERNANDEZ
-PROCEDIMIENTO:	BYPASS
-OBS:	PREOP: DR, HBT: PRIVADA
-H:	
-
-PACIENTE:	SHEYLA SAYO
-HORA PROG.:	14:00
-SALA:	S2
-MEDICO:	DR: EDUARDO ENRIQUE REYES CERDA
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	PREOP: DR
-H:	
-
-PACIENTE:	RENATO BALAZAR
+PACIENTE:	MANUEL PRADO
 HORA PROG.:	16:00
 SALA:	S2
-MEDICO:	DR: EDUARDO ENRIQUE REYES CERDA
-PROCEDIMIENTO:	MANGA GASTRICA
+MEDICO:	DR. YURI RAY SIFUENTES HORNA
+PROCEDIMIENTO:	HERNIA INGUINAL DERECHA
 OBS:	PREOP: DR
-H:	
+H:	2 H
     </script>
 
     <script type="text/plain" id="datos-oxigeno">
@@ -304,18 +250,20 @@ H:
 🏥 *Novo Clinic*
 
 🛠️ *SALAS DE OPERACIONES*
-S1. *Sala 1:* 2200
-S2. *Sala 2:* 2400
+S1. *Sala 1:* 2000
+S2. *Sala 2:* 1500
 S3. *Sala 3:* 1600
 
 🛏️ *RECUPERACIÓN*
-Rb. *Pto. B:* 1600
-Re. *Pto. C:* 1400
+Rb. *Pto. B:* 800
+Re. *Pto. C:* 1300
 Re. *Pto. e:* 1400
-Re. *Pto. e:* *UCI & NEBULIZACIÓN*
+
+
+ *UCI & NEBULIZACIÓN*
 Ca1. *Cama A1:* 1600
 Cb1. *Cama b1:* -
-Neb. *Nebulizar:* 600
+Neb. *Nebulizar:* 500
 
 🏥 *HOSPITALIZACIÓN*: 2000
 📦 *RESERVAS DE GASES*
@@ -580,9 +528,8 @@ Neb. *Nebulizar:* 600
             try { localStorage.setItem('theme', newTheme); } catch(e){}
         });
 
-        /* FECHA ESTÁTICA ACTUALIZADA */
         const setDateHeaders = () => {
-            const dateStr = "SÁBADO 20-06-2026";
+            const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
             document.getElementById('print-date').innerText = `Fecha: ${dateStr}`;
         };
