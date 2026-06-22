@@ -41,7 +41,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow-x: auto; /* Permite scroll horizontal en móviles si el recibo es muy ancho */
+            overflow-x: auto;
         }
         h2 { color: var(--primary-blue); margin-top: 0; }
         .form-group {
@@ -53,12 +53,17 @@
             margin-bottom: 5px;
             color: #333;
         }
-        input[type="text"], input[type="date"], input[type="number"] {
+        input[type="text"], input[type="date"], input[type="number"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        select {
+            background-color: #fff;
+            cursor: pointer;
         }
         .readonly-input {
             background-color: #e9ecef;
@@ -89,7 +94,7 @@
             padding: 40px;
             position: relative;
             background: white;
-            min-width: 500px; /* Asegura que el recibo no se aplaste demasiado */
+            min-width: 500px;
         }
         .header {
             display: flex;
@@ -110,6 +115,7 @@
             color: var(--primary-blue);
             font-weight: bold;
             text-align: right;
+            line-height: 1.4;
         }
         .recibo-title {
             text-align: center;
@@ -204,8 +210,27 @@
         <h2>Generador de Recibos</h2>
         
         <div class="form-group">
+            <label>Seleccionar Sede (Predeterminados):</label>
+            <select id="selectSede">
+                <option value="novoclinic">NovoClinic (San Isidro)</option>
+                <option value="novoq">Novo Q</option>
+                <option value="novointegral">Novo Integral</option>
+                <option value="novocentral">Novo Central</option>
+                <option value="personalizado">-- Personalizado / Otro --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label>Nombre de la Clínica:</label>
             <input type="text" id="inputClinica" value="NovoClinic">
+        </div>
+        <div class="form-group">
+            <label>Dirección:</label>
+            <input type="text" id="inputDireccion" value="Av. Salaverry 2671, San Isidro">
+        </div>
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="text" id="inputTelefono" value="961205510">
         </div>
         <div class="form-group">
             <label>Fecha:</label>
@@ -251,8 +276,10 @@
     <div class="preview-container">
         <div class="recibo">
             <div class="header">
-                <div class="logo" id="outClinica">Novo<span>Clinic</span></div>
-                <div class="contact-info">Av. Salaverry 2671, San Isidro / 961205510</div>
+                <div class="logo" id="outClinica">NovoClinic</div>
+                <div class="contact-info">
+                    <span id="outDireccion">Av. Salaverry 2671, San Isidro</span> / <span id="outTelefono">961205510</span>
+                </div>
             </div>
             
             <div style="text-align: right; font-weight: bold; margin-bottom: 20px;">
@@ -286,6 +313,30 @@
     </div>
 
     <script>
+        // Base de datos interna de las Sedes
+        const datosSedes = {
+            novoclinic: {
+                nombre: "NovoClinic",
+                direccion: "Av. Salaverry 2671, San Isidro",
+                telefono: "961205510"
+            },
+            novoq: {
+                nombre: "Novo Q",
+                direccion: "Av. de las Artes Sur 193, Lima 15036",
+                telefono: "+51 932 262 486"
+            },
+            novointegral: {
+                nombre: "Novo Integral",
+                direccion: "Av. Brasil 2862, Pueblo Libre 15084",
+                telefono: "992 169 343"
+            },
+            novocentral: {
+                nombre: "Novo Central",
+                direccion: "Av. Arequipa 1800, Lince 15046",
+                telefono: "993 685 298"
+            }
+        };
+
         // Configurar la fecha de hoy automáticamente
         const fechaInput = document.getElementById('inputFecha');
         const hoy = new Date();
@@ -295,6 +346,21 @@
         
         fechaInput.value = `${year}-${month}-${day}`;
         document.getElementById('outFecha').innerText = `${day}/${month}/${year}`;
+
+        // Lógica del selector de Sedes
+        document.getElementById('selectSede').addEventListener('change', function(e) {
+            const sedeSeleccionada = datosSedes[e.target.value];
+            if (sedeSeleccionada) {
+                document.getElementById('inputClinica').value = sedeSeleccionada.nombre;
+                document.getElementById('inputDireccion').value = sedeSeleccionada.direccion;
+                document.getElementById('inputTelefono').value = sedeSeleccionada.telefono;
+                
+                // Actualizar la vista del recibo de inmediato
+                document.getElementById('outClinica').innerText = sedeSeleccionada.nombre.toUpperCase();
+                document.getElementById('outDireccion').innerText = sedeSeleccionada.direccion;
+                document.getElementById('outTelefono').innerText = sedeSeleccionada.telefono;
+            }
+        });
 
         // Función principal de cálculo financiero
         function actualizarMontos() {
@@ -319,12 +385,23 @@
         document.getElementById('checkComision').addEventListener('change', actualizarMontos);
         document.getElementById('inputMonto').addEventListener('input', actualizarMontos);
 
-        // Actualización del nombre de la clínica (Logo)
+        // Eventos para actualización en tiempo real cuando se escribe a mano
         document.getElementById('inputClinica').addEventListener('input', function(e) {
-            document.getElementById('outClinica').innerText = e.target.value;
+            document.getElementById('outClinica').innerText = e.target.value.toUpperCase();
+            document.getElementById('selectSede').value = "personalizado"; // Cambia a personalizado si el usuario edita
         });
 
-        // Actualización en tiempo real para textos generales
+        document.getElementById('inputDireccion').addEventListener('input', function(e) {
+            document.getElementById('outDireccion').innerText = e.target.value;
+            document.getElementById('selectSede').value = "personalizado";
+        });
+
+        document.getElementById('inputTelefono').addEventListener('input', function(e) {
+            document.getElementById('outTelefono').innerText = e.target.value;
+            document.getElementById('selectSede').value = "personalizado";
+        });
+
+        // Actualización en tiempo real para textos generales del paciente/procedimiento
         const camposTexto = ['Fecha', 'Pago', 'Paciente', 'Dni', 'Doctor'];
         
         camposTexto.forEach(id => {
@@ -340,8 +417,9 @@
             });
         });
 
-        // Configuración inicial al cargar la página
+        // Inicialización al cargar la página por primera vez
         actualizarMontos();
+        document.getElementById('outClinica').innerText = document.getElementById('inputClinica').value.toUpperCase();
     </script>
 </body>
 </html>
