@@ -232,127 +232,11 @@
 <body>
 
     <script type="text/plain" id="datos-cirugias">
-### SALA 1
-
-PACIENTE:	MEGAN PARREÑO (03#)
-HORA PROG.:	5:00
-SALA:	S1
-MEDICO:	DRA. ANA GEORGINA SANDOVAL VALDIVIEZO
-PROCEDIMIENTO:	ADENOIDECTOMIA
-OBS:	2H, PREOP: PX, D, R
-H:	
-
-PACIENTE:	KAYLA VEGA (07#)
-HORA PROG.:	7:00
-SALA:	S1
-MEDICO:	DRA. DINORAH LISBETH RIVAS DURAN
-PROCEDIMIENTO:	ADENOIDECTOMIA + CORNETES
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	LLANOS JAMEZ
-HORA PROG.:	14:00
-SALA:	S1
-MEDICO:	DR. MAURICIO HERRERA NOBOA
-PROCEDIMIENTO:	CENS
-OBS:	2H, PREOP: PX, D, R
-H:	
-
-
-### SALA 2
-
-PACIENTE:	HAYDE ZEBALLOS
-HORA PROG.:	5:30
-SALA:	S2
-MEDICO:	DR. ANTONIO LAHOUD VELAOCHAGA
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	DANIEL HUARAYCAMA
-HORA PROG.:	7:00
-SALA:	S2
-MEDICO:	DR. HOSHE LEE JOO FERNANDEZ
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	NICKOL RENGIFO
-HORA PROG.:	9:00
-SALA:	S2
-MEDICO:	DR. HOSHE LEE JOO FERNANDEZ
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	JULIA ORELLANA
-HORA PROG.:	11:00
-SALA:	S2
-MEDICO:	DR. HOSHE LEE JOO FERNANDEZ
-PROCEDIMIENTO:	MANGA GASTRICA
-OBS:	2H, HBT: PRIVADA, PREOP: DR, D, R
-H:	
-
-PACIENTE:	
-HORA PROG.:	14:00
-SALA:	S2
-MEDICO:	DR. LUIS SAMUEL VELASCO WILSON
-PROCEDIMIENTO:	RTU DE PROSTATA
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	EVELYN PRINCIPE
-HORA PROG.:	16:00
-SALA:	S2
-MEDICO:	DR. ERICK YOSSET ZAPATA OJEDA
-PROCEDIMIENTO:	AMPLIACION DE MÁRGENES LESIÓN GLUTEO
-OBS:	2H, PREOP: DR, D, R
-H:	
-
-PACIENTE:	KRISEL DELGADO
-HORA PROG.:	20:00
-SALA:	S2
-MEDICO:	DR. JOSE LUIS CARRASCO PEREZ
-PROCEDIMIENTO:	QUISTECTOMIA LAPAROSCOPICA
-OBS:	2H, HBT: PRIVADA, PREOP: DR, D, R
-H:	
-
-
-### SALA 3
-
-PACIENTE:	MAYLIN RODRIGUEZ LOPEZ (43#)
-HORA PROG.:	6:00
-SALA:	S3
-MEDICO:	DR. DIEGO ARON DIAZ BRAVO
-PROCEDIMIENTO:	HISTERECTOMIA (CONVENCIONAL)
-OBS:	2H, PREOP: DR, DR
-H:	
     </script>
 
     <script type="text/plain" id="datos-oxigeno">
-📋 *REPORTE DE ESTADO DE OXÍGENO*
-🏥 *Novo Clinic*
-
-🛠️ *SALAS DE OPERACIONES*
-S1. *Sala 1:* 2600
-S2. *Sala 2:* 1800
-S3. *Sala 3:* 2500
-
-🛏️ *RECUPERACIÓN*
-Rb. *Pto. B:* 700
-Re. *Pto. C:* 1400
-Re. *Pto. e:* 1400
-
- *UCI & NEBULIZACIÓN*
-Ca1. *Cama A1:* 1600
-Cb1. *Cama b1:* -
-Neb. *Nebulizar:* 600
-
-🏥 *HOSPITALIZACIÓN*: 2000
-📦 *RESERVAS DE GASES*
-▫️ *Reserva O2:* *09UND*
-▫️ *RESERVA CO2:* *02 UND*
     </script>
+    
     <div class="no-print" id="main-interface">
         <header>
             <div class="header-title">
@@ -599,6 +483,12 @@ Neb. *Nebulizar:* 600
     </div>
 
     <script>
+        /* ===================================================================== */
+        /* 🔗 CONFIGURACIÓN DE GOOGLE SHEETS                                     */
+        /* ===================================================================== */
+        // ID integrado directamente
+        const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
+        
         /* INICIO SISTEMA Y THEME */
         const initTheme = () => {
             try {
@@ -606,7 +496,6 @@ Neb. *Nebulizar:* 600
                 document.documentElement.setAttribute('data-theme', savedTheme);
             } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
         };
-        initTheme();
 
         document.getElementById('themeToggle').addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -620,13 +509,12 @@ Neb. *Nebulizar:* 600
             document.getElementById('main-title').innerText = `Novo Clinic - ${dateStr}`;
             document.getElementById('print-date').innerText = `Fecha: ${dateStr}`;
         };
-        setDateHeaders();
 
         const showToast = (message) => {
             const toast = document.getElementById('toast');
             toast.innerText = message;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            setTimeout(() => toast.classList.remove('show'), 2500);
         };
 
         /* FUNCIONES DE REGISTRO (MODAL AVANZADO) */
@@ -635,15 +523,11 @@ Neb. *Nebulizar:* 600
         function openRegistrationModal(encodedData) {
             let data = null;
             if (encodedData) {
-                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error("Error leyendo datos del paciente", e); }
+                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error("Error", e); }
             }
-
-            // 1. Limpieza Profunda (Deep Clean)
             document.querySelectorAll('.reg-form-control, .reg-sala-box input, .reg-inline-input').forEach(input => input.value = '');
             document.querySelectorAll('.modal input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('reg-calc-fecha-nac').value = '';
-            
-            // Vaciar imágenes de DNI de pacientes anteriores
             document.getElementById('preview-anverso').style.display = 'none';
             document.getElementById('preview-reverso').style.display = 'none';
             document.getElementById('label-anverso').style.display = 'block';
@@ -652,44 +536,32 @@ Neb. *Nebulizar:* 600
             document.getElementById('card-reverso').classList.remove('has-image');
             document.querySelectorAll('.reg-dni-card input[type="file"]').forEach(fileInput => fileInput.value = '');
 
-            // 2. Autocompletado Básico
             if (data) {
                 document.getElementById('reg-input-paciente').value = data.paciente || '';
                 document.getElementById('reg-input-medico').value = data.medico || '';
                 document.getElementById('reg-input-procedimiento').value = data.procedimiento || '';
                 document.getElementById('reg-input-sala').value = data.sala || '';
-                
                 const today = new Date();
                 const dd = String(today.getDate()).padStart(2, '0');
                 const mm = String(today.getMonth() + 1).padStart(2, '0'); 
                 const yyyy = today.getFullYear();
                 document.getElementById('reg-input-fecha').value = `${dd}/${mm}/${yyyy}`;
-                
                 let cleanTime = data.hora ? data.hora.replace(/[^0-9:]/g, '') : '';
                 document.getElementById('reg-input-h-ingreso').value = cleanTime;
 
-                // 3. Auto-Check Inteligente (Lee la columna OBS)
                 const obsTexto = (data.obs || '').toUpperCase();
                 const checkBoxesWrappers = Array.from(document.querySelectorAll('.reg-checkbox-wrapper'));
-                
                 const checkByText = (text) => {
                     const label = checkBoxesWrappers.find(l => l.textContent.toUpperCase().includes(text.toUpperCase()));
                     if (label) label.querySelector('input[type="checkbox"]').checked = true;
                 };
 
-                // Asume Exámenes
                 if (obsTexto.includes('DR') || obsTexto.includes('MEDICO') || obsTexto.includes('MÉDICO')) checkByText('Médico Tratante');
                 if (obsTexto.includes('PX') || obsTexto.includes('PACIENTE')) checkByText('Paciente');
-
-                // Tipos de Exámenes
                 if (obsTexto.includes('PREOP')) checkByText('Pre Operatorio');
                 if (obsTexto.includes('EKG') || obsTexto.includes('CARDIO')) checkByText('Riesgo Cardiológico (EKG)');
 
-                // 4. Auto-Focus (Salta directo al campo de fecha de nacimiento)
-                setTimeout(() => {
-                    const dobInput = document.getElementById('reg-calc-fecha-nac');
-                    if(dobInput) dobInput.focus();
-                }, 200);
+                setTimeout(() => { const dobInput = document.getElementById('reg-calc-fecha-nac'); if(dobInput) dobInput.focus(); }, 200);
             }
             modal.style.display = "block";
         }
@@ -718,11 +590,9 @@ Neb. *Nebulizar:* 600
             const birthYear = parseInt(parts[0], 10);
             const birthMonth = parseInt(parts[1], 10) - 1;
             const birthDay = parseInt(parts[2], 10);
-            
             const today = new Date();
             let age = today.getFullYear() - birthYear;
             const monthDiff = today.getMonth() - birthMonth;
-            
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDay)) age--;
             if (age >= 0) document.getElementById('reg-input-edad').value = age + " Años";
         }
@@ -744,19 +614,15 @@ Neb. *Nebulizar:* 600
             const element = document.getElementById(inputId);
             const value = element ? element.value.trim() : "";
             if (!value) { showToast("⚠️ El campo está vacío"); return; }
-            copyTextUniversal(value).then(() => showToast("📋 Copiado")).catch(err => alert('Error al copiar: ' + err));
+            copyTextUniversal(value).then(() => showToast("📋 Copiado")).catch(err => alert('Error: ' + err));
         }
 
         function copyAllPatientDataReg() {
             const fields = [
-                { l: 'SALA', id: 'reg-input-sala' },
-                { l: 'PACIENTE', id: 'reg-input-paciente' },
-                { l: 'H. INGRESO', id: 'reg-input-h-ingreso' },
-                { l: 'EDAD', id: 'reg-input-edad' },
-                { l: 'TELÉFONO PACIENTE', id: 'reg-input-tel-paciente' },
-                { l: 'TELÉFONO FAMILIAR', id: 'reg-input-tel-familiar' },
-                { l: 'MÉDICO TRATANTE', id: 'reg-input-medico' },
-                { l: 'FECHA DE CIRUGÍA', id: 'reg-input-fecha' },
+                { l: 'SALA', id: 'reg-input-sala' }, { l: 'PACIENTE', id: 'reg-input-paciente' },
+                { l: 'H. INGRESO', id: 'reg-input-h-ingreso' }, { l: 'EDAD', id: 'reg-input-edad' },
+                { l: 'TELÉFONO PACIENTE', id: 'reg-input-tel-paciente' }, { l: 'TELÉFONO FAMILIAR', id: 'reg-input-tel-familiar' },
+                { l: 'MÉDICO TRATANTE', id: 'reg-input-medico' }, { l: 'FECHA DE CIRUGÍA', id: 'reg-input-fecha' },
                 { l: 'PROCEDIMIENTO', id: 'reg-input-procedimiento' }
             ];
             let compiledText = "--- REGISTRO DE ADMISIÓN QUIRÚRGICA ---\n";
@@ -765,10 +631,9 @@ Neb. *Nebulizar:* 600
                 const value = element ? element.value.trim() : "";
                 compiledText += field.l + ": " + (value || '(No registrado)') + "\n";
             });
-            copyTextUniversal(compiledText).then(() => showToast('📋 Todo el formato copiado')).catch(err => alert('Error al copiar: ' + err));
+            copyTextUniversal(compiledText).then(() => showToast('📋 Formato copiado')).catch(err => alert('Error: ' + err));
         }
 
-        // Función de impresión forzada A4
         function printRegistration() {
             document.body.classList.add('printing-modal');
             setTimeout(() => {
@@ -801,7 +666,6 @@ Neb. *Nebulizar:* 600
                     
                     const gridDiv = document.createElement('div');
                     gridDiv.className = 'cards-grid';
-
                     printTbody.innerHTML += `<tr class="sala-separator"><td colspan="5">${salaName.toUpperCase()}</td></tr>`;
 
                     list.forEach(c => {
@@ -886,7 +750,107 @@ Neb. *Nebulizar:* 600
             document.getElementById('printBtn').onclick = () => window.print();
         }
 
-        /* PARSERS AUTOMÁTICOS */
+        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA */
+        async function cargarDatosDesdeSheets() {
+            if (SHEET_ID === 'TU_ID_DE_SHEETS_AQUI' || SHEET_ID === '') {
+                // FALLBACK MODO OFFLINE (Datos de prueba o locales)
+                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
+                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
+                renderDashboard(parseCirugiasText(textoCirugias), parseOxigenoText(textoOxigeno), textoOxigeno.trim());
+                showToast("Modo Offline. Conecta tu ID de Google Sheets para automatizar.");
+                return;
+            }
+
+            const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Cirugias`;
+            const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Oxigeno`;
+
+            try {
+                const resC = await fetch(URL_CIRUGIAS);
+                const txtC = await resC.text();
+                const jsonC = JSON.parse(txtC.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
+
+                const resO = await fetch(URL_OXIGENO);
+                const txtO = await resO.text();
+                const jsonO = JSON.parse(txtO.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
+
+                // Função segura para ler valores das células
+                const getVal = (col) => {
+                    if (!col) return '';
+                    if (col.f) return col.f.toString().trim();
+                    if (col.v !== null && col.v !== undefined) return col.v.toString().trim();
+                    return '';
+                };
+
+                // --- 1. PROCESAR CIRUGÍAS ---
+                const cirugias = [];
+                let startIdx = 0; // Saltar encabezados si existen
+                if(jsonC.table.rows.length > 0 && getVal(jsonC.table.rows[0].c[0]).toUpperCase() === 'SALA') startIdx = 1;
+
+                for(let i = startIdx; i < jsonC.table.rows.length; i++) {
+                    const row = jsonC.table.rows[i];
+                    if(!row || !row.c) continue;
+                    const paciente = getVal(row.c[2]);
+                    const medico = getVal(row.c[3]);
+                    if(!paciente && !medico) continue; // Si la fila está vacía, saltarla
+
+                    cirugias.push({
+                        sala: getVal(row.c[0]) || 'S1',
+                        hora: getVal(row.c[1]),
+                        paciente: paciente,
+                        medico: medico,
+                        procedimiento: getVal(row.c[4]),
+                        obs: getVal(row.c[5]),
+                        h: getVal(row.c[6])
+                    });
+                }
+
+                // --- 2. PROCESAR OXÍGENO ---
+                const oxigeno = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+                let textoOxigenoWpp = "📋 *REPORTE DE ESTADO DE OXÍGENO*\n🏥 *Novo Clinic*\n";
+                let lastCat = '';
+
+                let startIdxOx = 0;
+                if(jsonO.table.rows.length > 0 && getVal(jsonO.table.rows[0].c[0]).toUpperCase() === 'CATEGORIA') startIdxOx = 1;
+
+                for(let i = startIdxOx; i < jsonO.table.rows.length; i++) {
+                    const row = jsonO.table.rows[i];
+                    if(!row || !row.c) continue;
+                    
+                    const catStr = getVal(row.c[0]);
+                    const catLower = catStr.toLowerCase();
+                    const label = getVal(row.c[1]);
+                    const val = getVal(row.c[2]);
+
+                    if(!label) continue;
+
+                    let target = '';
+                    if(catLower.includes('operacion') || catLower.includes('salas')) target = 'operaciones';
+                    else if(catLower.includes('uci') || catLower.includes('nebulizaci')) target = 'uci';
+                    else if(catLower.includes('recuperacion')) target = 'recuperacion';
+                    else if(catLower.includes('hospitalizacion')) target = 'hospitalizacion';
+                    else if(catLower.includes('reserva') || catLower.includes('gas')) target = 'reservas';
+
+                    if(target) {
+                        oxigeno[target].push({ label, val });
+                        
+                        // Autogenerar texto para el botón de copiar WhatsApp
+                        if(catStr.toUpperCase() !== lastCat) {
+                            textoOxigenoWpp += `\n*${catStr.toUpperCase()}*\n`;
+                            lastCat = catStr.toUpperCase();
+                        }
+                        textoOxigenoWpp += `${label}: ${val}\n`;
+                    }
+                }
+
+                renderDashboard(cirugias, oxigeno, textoOxigenoWpp);
+
+            } catch (error) {
+                console.error("Error sincronizando Sheets:", error);
+                showToast("⚠️ Error al sincronizar. Verificando red...");
+            }
+        }
+
+        /* PARSERS ANTIGUOS (SE MANTIENEN COMO RESPALDO OFFLINE) */
         function parseCirugiasText(text) {
             const cirugias = []; let currentSala = ''; let currentCirugia = null;
             text.split('\n').forEach(line => {
@@ -941,16 +905,18 @@ Neb. *Nebulizar:* 600
 
         /* INICIALIZACIÓN PRINCIPAL */
         window.onload = () => {
-            try {
-                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
-                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
-                const cirugiasProcesadas = parseCirugiasText(textoCirugias);
-                const oxigenoProcesado = parseOxigenoText(textoOxigeno);
-                renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoOxigeno.trim());
-            } catch (error) {
-                console.error("Error crítico al arrancar la app:", error);
-                document.getElementById('cirugias-container').innerHTML = '<p style="color:red; padding:20px;">Error al cargar los datos. Verifica la consola.</p>';
-            }
+            initTheme();
+            setDateHeaders();
+            
+            // Cargar datos por primera vez
+            cargarDatosDesdeSheets();
+
+            // Configurar atualização automática em segundo plano a cada 60 segundos
+            setInterval(() => {
+                if(SHEET_ID !== 'TU_ID_DE_SHEETS_AQUI' && SHEET_ID !== '') {
+                    cargarDatosDesdeSheets();
+                }
+            }, 60000); 
         };
     </script>
 </body>
