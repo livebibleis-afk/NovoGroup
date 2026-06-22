@@ -234,25 +234,25 @@
 🏥 *Novo Clinic*
 
 🛠️ *SALAS DE OPERACIONES*
-S1. *Sala 1:* 2600
-S2. *Sala 2:* 2400
+S1. *Sala 1:* 1800
+S2. *Sala 2:* 1900
 S3. *Sala 3:* 1600
 
 🛏️ *RECUPERACIÓN*
-Rb. *Pto. B:* 500
-Re. *Pto. E:* 900
-Re. *Pto. G:* 900
+Rb. *Pto. B:* 700
+Re. *Pto. C:* 1900
+Re. *Pto. e:* 1400
 
 🏥 *UCI & NEBULIZACIÓN*
 Ca1. *Cama A1:* 1600
 Cb1. *Cama b1:* -
-Neb. *Nebulizar:* 600
+Neb. *Nebulizar:* 500
 
 🏥 *HOSPITALIZACIÓN*
-HB 202: 2000
+General: 1300
 
 📦 *RESERVAS DE GASES*
-▫️ *Reserva O2:* *03 UND*
+▫️ *Reserva O2:* *07UND*
 ▫️ *RESERVA CO2:* *02 UND*</textarea>
 
     <div id="toast" class="toast">✅ ¡Copiado al portapapeles!</div>
@@ -264,25 +264,25 @@ HB 202: 2000
         const MAX = 3000;
         const data = {
             salas: [
-                { tag: "S1. Sala 1", val: 2600 },
-                { tag: "S2. Sala 2", val: 2400 },
+                { tag: "S1. Sala 1", val: 1800 },
+                { tag: "S2. Sala 2", val: 1900 },
                 { tag: "S3. Sala 3", val: 1600 }
             ],
             uci: [
                 { tag: "Ca1. Cama A1", val: 1600 },
                 { tag: "Cb1. Cama b1", val: 0, isNull: true }, 
-                { tag: "Neb. Nebulizar", val: 600 }
+                { tag: "Neb. Nebulizar", val: 500 }
             ],
             recuperacion: [
-                { tag: "Rb. Pto. B", val: 500 },
-                { tag: "Re. Pto. E", val: 900 },
-                { tag: "Re. Pto. G", val: 900 }
+                { tag: "Rb. Pto. B", val: 700 },
+                { tag: "Re. Pto. C", val: 1900 },
+                { tag: "Re. Pto. e", val: 1400 }
             ],
             hospitalizacion: [
-                { tag: "HB 202", val: 2000 }
+                { tag: "General", val: 1300 }
             ],
             reservas: [
-                { gas: "Reserva O2", qty: "03 UND" },
+                { gas: "Reserva O2", qty: "07 UND" },
                 { gas: "RESERVA CO2", qty: "02 UND" }
             ]
         };
