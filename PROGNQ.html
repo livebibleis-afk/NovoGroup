@@ -186,7 +186,6 @@
             body { background: white !important; color: black !important; margin: 0; padding: 0; overflow: hidden; }
             .no-print, header, .search-bar, .oxy-section, .toast { display: none !important; }
             
-            /* Impresión Normal del Dashboard */
             .print-only { display: block; }
             .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
             .print-table { width: 100%; border-collapse: collapse; font-size: 10pt; }
@@ -194,7 +193,6 @@
             .print-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
             .sala-separator td { background-color: #ddd !important; -webkit-print-color-adjust: exact; text-align: center; font-weight: bold; }
 
-            /* Impresión del Modal de Admisión (Forzar 1 sola página A4) */
             body.printing-modal { width: 210mm; height: 297mm; overflow: hidden !important; display: block; }
             body.printing-modal > * { display: none !important; }
             body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: #2c3e50 !important; background-color: white !important; }
@@ -208,14 +206,12 @@
             }
             body.printing-modal .reg-actions-container, body.printing-modal .close-btn, body.printing-modal .reg-form-copy-cell, body.printing-modal .reg-btn-copy-mini, body.printing-modal .no-print { display: none !important; }
             
-            /* Ajustes finos para comprimir el formulario y que encaje en el A4 */
             body.printing-modal .reg-header-table { margin-bottom: 15px; padding-bottom: 8px; }
             body.printing-modal .reg-form-table { border-spacing: 0 8px !important; }
             body.printing-modal .reg-section-heading { margin-top: 15px; margin-bottom: 10px; }
             body.printing-modal .reg-dni-card { aspect-ratio: 2 / 1; min-height: 50px; }
             body.printing-modal .reg-footer-branding { margin-top: 15px; padding-top: 8px; position: absolute; bottom: 12mm; left: 0; right: 0; width: 100%; }
 
-            /* Ajustes estéticos impresión */
             body.printing-modal .reg-header-cell-main h1 { color: #028090 !important; -webkit-print-color-adjust: exact; }
             body.printing-modal .reg-sala-box { border: 2px solid #028090 !important; background-color: #f0f9f9 !important; -webkit-print-color-adjust: exact; }
             body.printing-modal .reg-form-input-cell { width: 78% !important; }
@@ -230,43 +226,6 @@
     </style>
 </head>
 <body>
-
-    <script type="text/plain" id="datos-cirugias">
-PROGRAMACIÓN NOVO Q 21JUN26			
-
-### SALA 3
-
-PACIENTE:	BARBARA HUALLAP
-HORA PROG.:	5:00
-SALA:	S3
-MEDICO:	DR. MARIANO ARREDONDO
-PROCEDIMIENTO:	HERNIOLAP
-OBS:	PREOP ASUME DR, TRAE ANESTESIOLOGO
-H:	
-    </script>
-
-    <script type="text/plain" id="datos-oxigeno">
-*Reporte de Estado de Oxígeno - Novo Q* 📊
-
-🏥 *BLOQUE A*
-* Sala 1A: 2900 | 3000
-* Sala 2A: 3000 | 2000
-* Recuperación: 3000
-
-🏥 *BLOQUE B*
-* Sala 1B: 2900 | 700
-* Sala 2B: 1500 | 2700
-* Recuperación: 3000
-
-⚠️ *INVENTARIO DE BOMBONAS*
-*Llenas (Crítico)* 🔴
-* Oxígeno: 00
-* CO2: 00
-
-*Vacías* ⚪
-* Oxígeno: 03
-* CO2: 01
-    </script>
     <div class="no-print" id="main-interface">
         <header>
             <div class="header-title">
@@ -408,62 +367,20 @@ H:
             
             <div class="reg-checkbox-grid">
                 <div class="reg-checkbox-row">
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Pre Operatorio
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Pre Operatorio Pediátrico
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Pre Operatorio<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Pre Operatorio Pediátrico<input type="checkbox"><span class="reg-checkmark"></span></label></div>
                 </div>
                 <div class="reg-checkbox-row">
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Prueba COVID
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Riesgo Cardiológico (EKG)
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Prueba COVID<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Riesgo Cardiológico (EKG)<input type="checkbox"><span class="reg-checkmark"></span></label></div>
                 </div>
                 <div class="reg-checkbox-row">
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Hemograma Completo
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Riesgo Neurológico
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Hemograma Completo<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Riesgo Neurológico<input type="checkbox"><span class="reg-checkmark"></span></label></div>
                 </div>
                 <div class="reg-checkbox-row">
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Coagulación y Sangría
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Otros:
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                            <input type="text" id="reg-input-otros" class="reg-inline-input" placeholder="Especifique otros exámenes">
-                            <button class="reg-btn-copy-mini no-print" onclick="copySingleValueReg('reg-input-otros')" title="Copiar dato">📋</button>
-                        </label>
-                    </div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Coagulación y Sangría<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Otros:<input type="checkbox"><span class="reg-checkmark"></span><input type="text" id="reg-input-otros" class="reg-inline-input" placeholder="Especifique otros exámenes"><button class="reg-btn-copy-mini no-print" onclick="copySingleValueReg('reg-input-otros')" title="Copiar dato">📋</button></label></div>
                 </div>
             </div>
 
@@ -471,25 +388,12 @@ H:
             
             <div class="reg-checkbox-grid">
                 <div class="reg-checkbox-row">
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Médico Tratante
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="reg-checkbox-cell">
-                        <label class="reg-checkbox-wrapper">Paciente
-                            <input type="checkbox">
-                            <span class="reg-checkmark"></span>
-                        </label>
-                    </div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Médico Tratante<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">Paciente<input type="checkbox"><span class="reg-checkmark"></span></label></div>
                 </div>
             </div>
 
-            <div class="reg-footer-branding">
-                BvankOs Power By jeshua Él Mesías
-            </div>
-
+            <div class="reg-footer-branding">BvankOs Power By jeshua Él Mesías</div>
         </div>
     </div>
 
@@ -781,7 +685,10 @@ H:
 
             if (oxigeno.reservas && oxigeno.reservas.length > 0) {
                 oxigeno.reservas.forEach(r => {
-                    const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
+                    const valNum = parseInt(r.val) || 0;
+                    const isVacia = r.label.toLowerCase().includes('vacía') || r.label.toLowerCase().includes('vacia');
+                    // Alerta si hay más de 0 vacías
+                    const needsBadge = isVacia && valNum > 0;
                     oxyHtml += `<div class="glass reserva-widget">${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}<div class="reserva-title">${r.label}</div><div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}">${r.val}</div></div>`;
                 });
             } else {
@@ -793,90 +700,165 @@ H:
             document.getElementById('printBtn').onclick = () => window.print();
         }
 
-        /* PARSERS AUTOMÁTICOS (AHORA LEEN EL FORMATO DE WHATSAPP DIRECTAMENTE) */
-        function parseCirugiasText(text) {
-            const cirugias = []; let currentSala = ''; let currentCirugia = null;
-            text.split('\n').forEach(line => {
-                line = line.trim(); if (!line) return;
-                if (line.startsWith('###')) { currentSala = line.replace('###', '').trim(); return; }
-                const colonIndex = line.indexOf(':');
-                if (colonIndex > -1) {
-                    const key = line.substring(0, colonIndex).trim().toUpperCase();
-                    const val = line.substring(colonIndex + 1).trim();
-                    if (key === 'PACIENTE') {
-                        if (currentCirugia) cirugias.push(currentCirugia);
-                        currentCirugia = { sala: currentSala, paciente: val };
-                    } else if (currentCirugia) {
-                        if (key === 'HORA PROG.') currentCirugia.hora = val;
-                        else if (key === 'SALA') currentCirugia.sala = val;
-                        else if (key === 'MEDICO') currentCirugia.medico = val;
-                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
-                        else if (key === 'OBS') currentCirugia.obs = val;
-                        else if (key === 'H') currentCirugia.h = val;
+        /* INTEGRACIÓN CON GOOGLE SHEETS API (GVIZ) */
+        const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
+        const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=NQ%20CIRUGIAS`;
+        const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=NQ%20OXIGENO`;
+
+        async function fetchSheetData(url) {
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonString = text.substring(47).slice(0, -2); // Limpia la respuesta de Google
+                return JSON.parse(jsonString).table;
+            } catch (error) {
+                console.error("Error al obtener datos de Sheets:", error);
+                return null;
+            }
+        }
+
+        function parseSheetsCirugias(table) {
+            if(!table) return [];
+            const cirugias = [];
+            const colMap = {};
+            
+            if (table.cols) {
+                table.cols.forEach((col, i) => {
+                    if (col && col.label) colMap[col.label.toUpperCase().trim()] = i;
+                });
+            }
+            
+            const idxSala = colMap['SALA'] ?? 0;
+            const idxPaciente = colMap['PACIENTE'] ?? 1;
+            const idxHora = colMap['HORA'] ?? colMap['HORA PROG.'] ?? 2;
+            const idxMedico = colMap['MEDICO'] ?? 3;
+            const idxProcedimiento = colMap['PROCEDIMIENTO'] ?? 4;
+            const idxObs = colMap['OBS'] ?? 5;
+            const idxH = colMap['H'] ?? 6;
+
+            if(table.rows) {
+                table.rows.forEach(row => {
+                    if(!row || !row.c) return;
+                    const getVal = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v) : '';
+                    const paciente = getVal(idxPaciente);
+                    
+                    if (paciente) {
+                        cirugias.push({
+                            sala: getVal(idxSala) || 'S/N',
+                            paciente: paciente,
+                            hora: getVal(idxHora),
+                            medico: getVal(idxMedico),
+                            procedimiento: getVal(idxProcedimiento),
+                            obs: getVal(idxObs),
+                            h: getVal(idxH)
+                        });
                     }
-                }
-            });
-            if (currentCirugia) cirugias.push(currentCirugia);
+                });
+            }
             return cirugias;
         }
 
-        function parseOxigenoText(text) {
+        function parseSheetsOxigeno(table) {
             const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
-            let currentBlock = '';
-            let statusBombonas = '';
+            if(!table) return ox;
 
-            text.split('\n').forEach(line => {
-                line = line.trim(); if (!line) return;
-                const upper = line.toUpperCase();
+            const colMap = {};
+            if (table.cols) {
+                table.cols.forEach((col, i) => {
+                    if (col && col.label) colMap[col.label.toUpperCase().trim()] = i;
+                });
+            }
 
-                // Detectar los bloques del formato WhatsApp
-                if (upper.includes('BLOQUE A')) { currentBlock = 'A'; return; }
-                if (upper.includes('BLOQUE B')) { currentBlock = 'B'; return; }
-                if (upper.includes('INVENTARIO DE BOMBONAS')) { currentBlock = 'BOMBONAS'; return; }
-                if (upper.includes('LLENAS')) { statusBombonas = 'Llenas'; return; }
-                if (upper.includes('VACÍAS') || upper.includes('VACIAS')) { statusBombonas = 'Vacías'; return; }
+            const idxCat = colMap['CATEGORIA'] ?? colMap['CATEGORÍA'] ?? 0;
+            const idxEtiqueta = colMap['ETIQUETA'] ?? colMap['SALA'] ?? 1;
+            const idxValor = colMap['VALOR'] ?? 2;
 
-                // Procesar la data dependiendo del bloque actual
-                if (currentBlock === 'A' || currentBlock === 'B') {
-                    // Limpiar viñetas
-                    let cleanLine = line.replace(/^[*\-\s]+/, '').trim();
-                    let parts = cleanLine.split(':');
-                    
-                    if (parts.length >= 2) {
-                        let label = parts[0].trim();
-                        let valRaw = parts.slice(1).join(':').trim(); // ej "2900 | 3000" o "3000"
+            if(table.rows) {
+                table.rows.forEach(row => {
+                    if(!row || !row.c) return;
+                    const getVal = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v) : '';
+                    const cat = getVal(idxCat).toLowerCase().trim();
+                    const label = getVal(idxEtiqueta);
+                    const val = getVal(idxValor);
 
-                        if (upper.includes('SALA')) {
-                            // Separar por el palito |
-                            let vals = valRaw.split('|').map(v => v.trim());
-                            if (vals[0]) ox.operaciones.push({ label: label + ' (S1)', val: vals[0] });
-                            if (vals[1]) ox.operaciones.push({ label: label + ' (S2)', val: vals[1] });
-                        } else if (upper.includes('RECUPERACIÓN') || upper.includes('RECUPERACION')) {
-                            ox.recuperacion.push({ label: 'Rec. Bloque ' + currentBlock, val: valRaw });
-                        }
+                    if (label) {
+                        if (cat.includes('operacion') || cat.includes('operaciones') || cat.includes('bloque')) ox.operaciones.push({ label, val });
+                        else if (cat.includes('uci') || cat.includes('nebulizacion')) ox.uci.push({ label, val });
+                        else if (cat.includes('recuperacion') || cat.includes('recuperación')) ox.recuperacion.push({ label, val });
+                        else if (cat.includes('hospitalizacion') || cat.includes('hospitalización')) ox.hospitalizacion.push({ label, val });
+                        else if (cat.includes('reserva') || cat.includes('bombona') || cat.includes('llena') || cat.includes('vacia')) ox.reservas.push({ label, val });
+                        else ox.operaciones.push({ label, val }); 
                     }
-                } else if (currentBlock === 'BOMBONAS') {
-                    let cleanLine = line.replace(/^[*\-\s]+/, '').trim();
-                    let parts = cleanLine.split(':');
-                    if (parts.length >= 2) {
-                        ox.reservas.push({ label: parts[0].trim() + ' ' + statusBombonas, val: parts[1].trim() });
-                    }
-                }
-            });
+                });
+            }
             return ox;
         }
 
-        /* INICIALIZACIÓN PRINCIPAL */
-        window.onload = () => {
+        function generateWppText(cirugias, ox) {
+            let text = "*PROGRAMACIÓN NOVO Q*\n\n";
+            const salas = {};
+            cirugias.forEach(c => {
+                if (!salas[c.sala]) salas[c.sala] = [];
+                salas[c.sala].push(c);
+            });
+
+            for (const [sala, list] of Object.entries(salas)) {
+                text += `### ${sala.toUpperCase()}\n\n`;
+                list.forEach(c => {
+                    text += `PACIENTE: ${c.paciente}\nHORA PROG.: ${c.hora}\nSALA: ${c.sala}\nMEDICO: ${c.medico}\nPROCEDIMIENTO: ${c.procedimiento}\nOBS: ${c.obs}\nH: ${c.h}\n\n`;
+                });
+            }
+
+            text += "*Reporte de Estado de Oxígeno - Novo Q* 📊\n\n";
+            const appendOxy = (title, arr) => {
+                if(arr && arr.length > 0) {
+                    text += `${title}\n`;
+                    arr.forEach(item => text += `* ${item.label}: ${item.val}\n`);
+                    text += '\n';
+                }
+            };
+
+            appendOxy("🛠️ Salas de Operaciones", ox.operaciones);
+            appendOxy("🩺 UCI & Nebulización", ox.uci);
+            appendOxy("🛏️ Recuperación", ox.recuperacion);
+            appendOxy("🏥 Hospitalización", ox.hospitalizacion);
+            appendOxy("⚠️ Inventario de Bombonas", ox.reservas);
+
+            return text;
+        }
+
+        /* INICIO DE APLICACIÓN CON DATOS DINÁMICOS */
+        window.onload = async () => {
             try {
-                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
-                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
-                const cirugiasProcesadas = parseCirugiasText(textoCirugias);
-                const oxigenoProcesado = parseOxigenoText(textoOxigeno);
-                renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoOxigeno.trim());
+                document.getElementById('cirugias-container').innerHTML = `
+                    <div style="text-align:center; padding: 40px; color: #4a90e2;">
+                        <svg style="animation: spin 1s linear infinite;" width="40" height="40" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2v4c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8H2c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2z"/></svg>
+                        <p style="margin-top: 15px; font-weight:bold;">Sincronizando con Base de Datos Google Sheets...</p>
+                        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                    </div>`;
+                
+                const [tableCirugias, tableOxigeno] = await Promise.all([
+                    fetchSheetData(URL_CIRUGIAS),
+                    fetchSheetData(URL_OXIGENO)
+                ]);
+
+                if (!tableCirugias && !tableOxigeno) throw new Error("No se pudo acceder al documento");
+
+                const cirugiasProcesadas = parseSheetsCirugias(tableCirugias);
+                const oxigenoProcesado = parseSheetsOxigeno(tableOxigeno);
+                const textoWpp = generateWppText(cirugiasProcesadas, oxigenoProcesado);
+                
+                renderDashboard(cirugiasProcesadas, oxigenoProcesado, textoWpp);
+
             } catch (error) {
                 console.error("Error crítico al arrancar la app:", error);
-                document.getElementById('cirugias-container').innerHTML = '<p style="color:red; padding:20px;">Error al cargar los datos. Verifica la consola.</p>';
+                document.getElementById('cirugias-container').innerHTML = `
+                    <div style="background: #ffebee; color: #c62828; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #ef9a9a;">
+                        <h3 style="margin-bottom:10px;">⚠️ Error de Conexión</h3>
+                        <p>No se pudo conectar con el documento de Google Sheets.</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Asegúrate de que el documento en Google Sheets tenga el permiso <b>"Cualquier usuario que tenga el vínculo puede leer"</b>.</p>
+                    </div>`;
+                document.getElementById('oxigeno-container').innerHTML = '';
             }
         };
     </script>
