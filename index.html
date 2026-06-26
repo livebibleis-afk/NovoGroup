@@ -11,13 +11,14 @@
         /* ===================================================================== */
         :root {
             --bg-color: #f4f6f9;
+            --bg-overlay: rgba(244, 246, 249, 0.65); /* Capa clara para el fondo */
             --text-color: #333333;
-            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.7);
             --glass-border: rgba(255, 255, 255, 0.4);
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             --header-bg: rgba(30, 58, 95, 0.95);
             --header-text: #ffffff;
-            --card-hover: rgba(255, 255, 255, 0.9);
+            --card-hover: rgba(255, 255, 255, 0.95);
             --input-bg: rgba(255, 255, 255, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.2);
             --admision-bg: #ffffff;
@@ -27,12 +28,13 @@
 
         [data-theme="dark"] {
             --bg-color: #121820;
+            --bg-overlay: rgba(18, 24, 32, 0.85); /* Capa oscura para el fondo */
             --text-color: #e0e0e0;
-            --glass-bg: rgba(20, 30, 45, 0.6);
+            --glass-bg: rgba(20, 30, 45, 0.75);
             --glass-border: rgba(255, 255, 255, 0.05);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             --header-bg: rgba(15, 30, 50, 0.95);
-            --card-hover: rgba(30, 45, 65, 0.8);
+            --card-hover: rgba(30, 45, 65, 0.9);
             --input-bg: rgba(20, 30, 45, 0.9);
             --btn-hover: rgba(255, 255, 255, 0.1);
             --admision-bg: #1a252f;
@@ -41,7 +43,18 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
-        body { background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s, color 0.3s; min-height: 100vh; overflow-x: hidden; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            /* Imagen de jardín como fondo fijo con capa de contraste */
+            background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), url('jardin.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color); 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
 
         .glass { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 12px; }
 
@@ -184,7 +197,7 @@
         @media print {
             @page { size: A4 portrait; margin: 0; } 
             body { background: white !important; color: black !important; margin: 0; padding: 0; overflow: hidden; }
-            .no-print, header, .search-bar, .oxy-section, .toast, .img-banner { display: none !important; }
+            .no-print, header, .search-bar, .oxy-section, .toast { display: none !important; }
             
             /* Impresión Normal del Dashboard */
             .print-only { display: block; }
@@ -231,8 +244,11 @@
 </head>
 <body>
 
-    <script type="text/plain" id="datos-cirugias"></script>
-    <script type="text/plain" id="datos-oxigeno"></script>
+    <script type="text/plain" id="datos-cirugias">
+    </script>
+
+    <script type="text/plain" id="datos-oxigeno">
+    </script>
     
     <div class="no-print" id="main-interface">
         <header>
@@ -255,10 +271,6 @@
         </header>
 
         <main>
-            <div style="text-align: center; margin-bottom: 10px;" class="no-print img-banner">
-                <img src="jardin.png" alt="Jardín Novo Clinic" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);">
-            </div>
-
             <section id="cirugias-section">
                 <div class="section-title">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z"/></svg>
@@ -483,6 +495,7 @@
         /* ===================================================================== */
         /* 🔗 CONFIGURACIÓN DE GOOGLE SHEETS                                     */
         /* ===================================================================== */
+        // ID integrado directamente
         const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
         
         /* INICIO SISTEMA Y THEME */
@@ -737,10 +750,7 @@
             `;
 
             oxigeno.reservas.forEach(r => {
-                // Modificado para detectar el número exacto y lanzar alerta si es menor o igual a 3
-                const valNum = parseInt(r.val.replace(/\D/g, '')) || 0;
-                const needsBadge = valNum <= 3 && valNum > 0 && r.val.trim() !== '-' && r.val.trim() !== '';
-                
+                const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
                 oxyHtml += `<div class="glass reserva-widget">${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}<div class="reserva-title">${r.label}</div><div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}">${r.val}</div></div>`;
             });
             oxyContainer.innerHTML = oxyHtml + `</div></div>`;
@@ -752,12 +762,17 @@
         /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA */
         async function cargarDatosDesdeSheets() {
             if (SHEET_ID === 'TU_ID_DE_SHEETS_AQUI' || SHEET_ID === '') {
+                // FALLBACK MODO OFFLINE (Datos de prueba o locales)
+                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
+                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
+                renderDashboard(parseCirugiasText(textoCirugias), parseOxigenoText(textoOxigeno), textoOxigeno.trim());
                 showToast("Modo Offline. Conecta tu ID de Google Sheets para automatizar.");
                 return;
             }
 
-            const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Cirugias`;
-            const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Oxigeno`;
+            // Agregamos &headers=0 para forzar a Google a tratar todo como filas de datos
+            const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Cirugias&headers=0`;
+            const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Oxigeno&headers=0`;
 
             try {
                 const resC = await fetch(URL_CIRUGIAS);
@@ -768,6 +783,7 @@
                 const txtO = await resO.text();
                 const jsonO = JSON.parse(txtO.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
 
+                // Función segura para leer valores de celdas
                 const getVal = (col) => {
                     if (!col) return '';
                     if (col.f) return col.f.toString().trim();
@@ -777,19 +793,36 @@
 
                 // --- 1. PROCESAR CIRUGÍAS ---
                 const cirugias = [];
-                let startIdx = 0; 
-                if(jsonC.table.rows.length > 0 && getVal(jsonC.table.rows[0].c[0]).toUpperCase() === 'SALA') startIdx = 1;
 
-                for(let i = startIdx; i < jsonC.table.rows.length; i++) {
+                for(let i = 0; i < jsonC.table.rows.length; i++) {
                     const row = jsonC.table.rows[i];
                     if(!row || !row.c) continue;
+                    
+                    const col0 = getVal(row.c[0]);
+                    const col1 = getVal(row.c[1]);
+
+                    // Detección estricta de la FECHA
+                    if(col0.toUpperCase().includes('FECHA')) {
+                        let dateVal = col1 || col0.toUpperCase().replace('FECHA', '').replace(/:/g, '').trim();
+                        if(dateVal) {
+                            document.getElementById('main-title').innerText = `Novo Clinic - ${dateVal}`;
+                            document.getElementById('print-date').innerText = `Fecha: ${dateVal}`;
+                        }
+                        continue; // Omitir esta fila para que no sea paciente
+                    }
+
+                    // Detección estricta para IGNORAR LA FILA DE ENCABEZADOS (SALA | HORA | PACIENTE)
+                    if(col0.toUpperCase() === 'SALA' || (row.c[2] && getVal(row.c[2]).toUpperCase() === 'PACIENTE')) {
+                        continue; // Omitir esta fila para que no cree la tarjeta falsa "SALA"
+                    }
+
                     const paciente = getVal(row.c[2]);
                     const medico = getVal(row.c[3]);
                     if(!paciente && !medico) continue; 
 
                     cirugias.push({
-                        sala: getVal(row.c[0]) || 'S1',
-                        hora: getVal(row.c[1]),
+                        sala: col0 || 'S1',
+                        hora: col1,
                         paciente: paciente,
                         medico: medico,
                         procedimiento: getVal(row.c[4]),
@@ -803,27 +836,36 @@
                 let textoOxigenoWpp = "📋 *REPORTE DE ESTADO DE OXÍGENO*\n🏥 *Novo Clinic*\n";
                 let lastCat = '';
 
-                let startIdxOx = 0;
-                if(jsonO.table.rows.length > 0 && getVal(jsonO.table.rows[0].c[0]).toUpperCase() === 'CATEGORIA') startIdxOx = 1;
-
-                for(let i = startIdxOx; i < jsonO.table.rows.length; i++) {
+                for(let i = 0; i < jsonO.table.rows.length; i++) {
                     const row = jsonO.table.rows[i];
                     if(!row || !row.c) continue;
                     
                     let catStr = getVal(row.c[0]);
+                    const catLower = catStr.toLowerCase();
                     const label = getVal(row.c[1]);
                     let val = getVal(row.c[2]);
 
+                    // Ignorar la fila de encabezados si existe
+                    if (catStr.toUpperCase() === 'CATEGORIA' || catStr.toUpperCase() === 'CATEGORÍA' || label.toUpperCase() === 'ITEM') {
+                        continue;
+                    }
+
                     if(!label) continue;
 
-                    // NUEVO: Heredar categoría si está en blanco (Ej: Cama A2 hereda UCI)
+                    if (label.toUpperCase().includes('FECHA') || catStr.toUpperCase().includes('FECHA')) {
+                        let dateVal = val || label.toUpperCase().replace('FECHA', '').replace(/:/g, '').trim();
+                        if(dateVal) {
+                            document.getElementById('main-title').innerText = `Novo Clinic - ${dateVal}`;
+                            document.getElementById('print-date').innerText = `Fecha: ${dateVal}`;
+                        }
+                        continue;
+                    }
+
                     if (catStr === '' && lastCat !== '') {
                         catStr = lastCat;
                     }
 
-                    const catLower = catStr.toLowerCase();
                     let target = '';
-
                     if(catLower.includes('operacion') || catLower.includes('salas')) target = 'operaciones';
                     else if(catLower.includes('uci') || catLower.includes('nebulizaci')) target = 'uci';
                     else if(catLower.includes('recuperacion')) target = 'recuperacion';
@@ -831,7 +873,6 @@
                     else if(catLower.includes('reserva') || catLower.includes('gas')) target = 'reservas';
 
                     if(target) {
-                        // NUEVO: Si es reserva y es solo número, agregar ' UND' automáticamente
                         if (target === 'reservas' && val && !val.toUpperCase().includes('UND')) {
                             val += ' UND';
                         }
@@ -852,6 +893,59 @@
                 console.error("Error sincronizando Sheets:", error);
                 showToast("⚠️ Error al sincronizar. Verificando red...");
             }
+        }
+
+        /* PARSERS ANTIGUOS (SE MANTIENEN COMO RESPALDO OFFLINE) */
+        function parseCirugiasText(text) {
+            const cirugias = []; let currentSala = ''; let currentCirugia = null;
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                if (line.startsWith('###')) { currentSala = line.replace('###', '').trim(); return; }
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim().toUpperCase();
+                    const val = line.substring(colonIndex + 1).trim();
+                    if (key === 'PACIENTE') {
+                        if (currentCirugia) cirugias.push(currentCirugia);
+                        currentCirugia = { sala: currentSala, paciente: val };
+                    } else if (currentCirugia) {
+                        if (key === 'HORA PROG.') currentCirugia.hora = val;
+                        else if (key === 'SALA') currentCirugia.sala = val;
+                        else if (key === 'MEDICO') currentCirugia.medico = val;
+                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
+                        else if (key === 'OBS') currentCirugia.obs = val;
+                        else if (key === 'H') currentCirugia.h = val;
+                    }
+                }
+            });
+            if (currentCirugia) cirugias.push(currentCirugia);
+            return cirugias;
+        }
+
+        function parseOxigenoText(text) {
+            const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+            let currentCategory = '';
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                const upper = line.toUpperCase();
+                if (upper.includes('SALAS DE OPERACIONES')) { currentCategory = 'operaciones'; return; }
+                if (upper.includes('RECUPERACIÓN')) { currentCategory = 'recuperacion'; return; }
+                if (upper.includes('UCI & NEBULIZACIÓN')) { currentCategory = 'uci'; return; }
+                if (upper.includes('HOSPITALIZACIÓN')) { currentCategory = 'hospitalizacion'; return; }
+                if (upper.includes('RESERVAS DE GASES')) { currentCategory = 'reservas'; return; }
+                if (!currentCategory) return;
+
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    let cleanLabel = parts[0].replace(/\*/g, '').replace(/^[^\s]+\.\s*/, '').replace(/^[^\w\s]+\s*/, '').trim();
+                    let cleanValue = parts.slice(1).join(':').replace(/\*/g, '').trim();
+                    if (currentCategory === 'hospitalizacion' && parts[0].toUpperCase().includes('HOSPITALIZACIÓN')) {
+                        if(cleanValue) ox.hospitalizacion.push({ label: 'General', val: cleanValue }); return;
+                    }
+                    if (cleanLabel && cleanValue) ox[currentCategory].push({ label: cleanLabel, val: cleanValue });
+                }
+            });
+            return ox;
         }
 
         /* INICIALIZACIÓN PRINCIPAL */
