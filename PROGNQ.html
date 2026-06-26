@@ -687,7 +687,6 @@
                 oxigeno.reservas.forEach(r => {
                     const valNum = parseInt(r.val) || 0;
                     const isVacia = r.label.toLowerCase().includes('vacía') || r.label.toLowerCase().includes('vacia');
-                    // Alerta si hay más de 0 vacías
                     const needsBadge = isVacia && valNum > 0;
                     oxyHtml += `<div class="glass reserva-widget">${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}<div class="reserva-title">${r.label}</div><div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : '#4a90e2'}">${r.val}</div></div>`;
                 });
@@ -709,13 +708,37 @@
             try {
                 const response = await fetch(url);
                 const text = await response.text();
-                const jsonString = text.substring(47).slice(0, -2); // Limpia la respuesta de Google
+                const jsonString = text.substring(47).slice(0, -2);
                 return JSON.parse(jsonString).table;
             } catch (error) {
                 console.error("Error al obtener datos de Sheets:", error);
                 return null;
             }
         }
+
+        // --- FILTRO INTELIGENTE PARA EXTRAER VALORES Y FECHAS CORREGIDAS ---
+        const formatSheetValue = (cell) => {
+            if (!cell) return '';
+            // Si Google nos da el texto ya formateado bonito (ej. "14:00"), lo usamos
+            if (cell.f !== undefined && cell.f !== null) return String(cell.f);
+            
+            let valStr = cell.v !== null ? String(cell.v) : '';
+            
+            // Si Google nos da el código crudo de fecha Date(1899,11,30,14,0,0)
+            if (valStr.startsWith('Date(')) {
+                // Extraer hora y minutos
+                const matchTime = valStr.match(/Date\(\d+,\d+,\d+,(\d+),(\d+),\d+\)/);
+                if (matchTime) {
+                    return `${matchTime[1].padStart(2, '0')}:${matchTime[2].padStart(2, '0')}`;
+                }
+                // Si es solo una fecha sin hora
+                const matchDate = valStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+                if (matchDate) {
+                    return `${matchDate[3].padStart(2,'0')}/${(parseInt(matchDate[2])+1).toString().padStart(2,'0')}/${matchDate[1]}`;
+                }
+            }
+            return valStr;
+        };
 
         function parseSheetsCirugias(table) {
             if(!table) return [];
@@ -739,7 +762,7 @@
             if(table.rows) {
                 table.rows.forEach(row => {
                     if(!row || !row.c) return;
-                    const getVal = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v) : '';
+                    const getVal = (idx) => formatSheetValue(row.c[idx]);
                     const paciente = getVal(idxPaciente);
                     
                     if (paciente) {
@@ -776,7 +799,8 @@
             if(table.rows) {
                 table.rows.forEach(row => {
                     if(!row || !row.c) return;
-                    const getVal = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v) : '';
+                    const getVal = (idx) => formatSheetValue(row.c[idx]);
+                    
                     const cat = getVal(idxCat).toLowerCase().trim();
                     const label = getVal(idxEtiqueta);
                     const val = getVal(idxValor);
