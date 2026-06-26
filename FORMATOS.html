@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consentimiento Informado - Manga Gástrica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-top: 30px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+        .header-info {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        td {
+            padding: 10px;
+            vertical-align: top;
+        }
+        p {
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+        .signature-block {
+            width: 45%;
+            margin-bottom: 30px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+        }
+        
+        /* Estilos para los campos rellenables */
+        .fillable {
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            background: transparent;
+            padding: 0 5px;
+            color: #000;
+        }
+        .fillable-long { width: 350px; }
+        .fillable-med { width: 200px; }
+        .fillable-short { width: 100px; }
+        .fillable-full { width: 95%; box-sizing: border-box; margin-top: 5px; }
+
+        /* Estilos del botón de imprimir */
+        .btn-imprimir {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        .btn-imprimir:hover {
+            background-color: #003d82;
+        }
+        
+        .page-break {
+            margin: 40px 0;
+            border-top: 2px dashed #ccc;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Configuraciones específicas para cuando se mande a imprimir */
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+                border: none;
+                color: transparent;
+                margin: 0;
+            }
+            .fillable {
+                border-bottom: 1px solid #000; /* Mantiene la línea en la impresión */
+            }
+            /* Ocultar placeholders al imprimir si están vacíos */
+            input::-webkit-input-placeholder { color: transparent; }
+            input:-moz-placeholder { color: transparent; }
+            input::-moz-placeholder { color: transparent; }
+            input:-ms-input-placeholder { color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-imprimir no-print" onclick="window.print()">🖨️ Imprimir Documento</button>
+
+    <div class="header-info">
+        <p>Dr. HOSHE JOO<br>
+        Cirugía de Obesidad y Laparoscópica</p>
+    </div>
+
+    <h1>CONSENTIMIENTO INFORMADO PARA LA CIRUGÍA LAPAROSCÓPICA DE MANGA GÁSTRICA</h1>
+
+    <table>
+        <tr>
+            <td colspan="2">NOMBRES Y APELLIDOS DEL PACIENTE:<br>
+                <input type="text" class="fillable fillable-full" placeholder="Ingrese nombres completos">
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">Edad: <input type="text" class="fillable fillable-short"></td>
+            <td width="50%">
+                Fecha: <input type="date" class="fillable" style="width: 130px;"> &nbsp;&nbsp;&nbsp; 
+                Hora: <input type="time" class="fillable" style="width: 100px;">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">DNI/CE: <input type="text" class="fillable fillable-med"></td>
+        </tr>
+    </table>
+
+    <p>Yo <input type="text" class="fillable fillable-long" placeholder="Nombre del paciente"> Identificado/a con DNI (carné de extranjería o pasaporte para extranjeros) N°. <input type="text" class="fillable fillable-short"> he sido informado (a) por el Dr. <input type="text" class="fillable fillable-med"> CMP <input type="text" class="fillable fillable-short"> en relación con la Cirugía de Manga gástrica Laparoscópica, como parte de los estudios y tratamiento que mi enfermedad requiere.</p>
+
+    <p>En este documento usted encontrará información sobre la intervención que le ha propuesto su médico tratante, lo que le ayudará a entender mejor la información entregada por él en la consulta. Léala atentamente, si requiere más información o que le sea aclarado algún punto, no dude en solicitarlo a su médico, quién estará dispuesto a satisfacer sus requerimientos.</p>
+
+    <h2>CARACTERÍSTICAS</h2>
+    <p>La Manga Gástrica, consiste en darle al estómago la forma de una manga o tubo y al mismo tiempo disminuir su tamaño en aproximadamente un 80 a 70% o poco más de dos tercios (según el tamaño del estómago de cada paciente).</p>
+    <p>La cirugía se realiza por vía laparoscópica, esto consiste en cinco pequeñas incisiones (aprox de 1cm) distribuidas en el abdomen del paciente. Por esas pequeñas incisiones se introduce equipo especial para trabajar dentro del abdomen y una cámara de fibra óptica para poder observar el procedimiento en una pantalla.</p>
+    <p>La anestesia que se utiliza es la general, por ser la más segura para el paciente y permitir que la cirugía se lleve a cabo por vía laparoscópica.</p>
+
+    <h2>BENEFICIOS</h2>
+    <p>La Manga Gástrica es una técnica utilizada para el manejo y control de la obesidad. Es un procedimiento seguro y efectivo para tratar la obesidad, asi como las enfermedades relacionadas a ella, tales como la diabetes mellitus y la hipertensión por nombrar solamente algunas.</p>
+    <p>El cirujano/a me ha informado que, mediante este procedimiento, se pretende conseguir la pérdida del exceso de peso que no se ha podido tratar por otros métodos y que me producen complicaciones hemodinámicas, vasculares, pulmonares, endocrinas u osteoarticulares. Al operarse por laparoscopía se pretende evitar una incisión mayor. Al realizarse incisiones más pequeñas se disminuye el riesgo de hernias postoperatorias. El dolor postoperatorio generalmente es más leve, la recuperación del tránsito intestinal suele ser más rápida, y el periodo de convalecencia postoperatorio suele ser más corto y confortable.</p>
+
+    <h2>RIESGOS Y COMPLICACIONES</h2>
+    <p>Lo informado verbalmente o a través de este documento, responde a lo que se espera que suceda en la generalidad de los casos, en condiciones normales. Debe tener presente que cada paciente es un ser único y distinto, de manera que puede suceder que no siempre se produzcan los resultados esperados y/o deseados.</p>
+
+    <div class="page-break no-print">--- FIN PÁGINA 1 ---</div>
+
+    <p>Pueden existir condiciones propias del paciente o de la intervención que signifiquen mayores riesgos, o bien influir una serie de factores imposibles de prever que modifiquen los resultados esperados, en condiciones normales. Dentro de las complicaciones de la cirugía para la obesidad se incluyen las siguientes:</p>
+    
+    <ul>
+        <li><strong>Inmediatas:</strong> lesiones de vísceras y/o vasos sanguíneos al introducir los trocares, embolia aérea por el gas intraabdominal, perforación esofágica, lesión del bazo que puede implicar su extracción, hemorragias, hemo transfusión eventual si se necesitaría.</li>
+        <li><strong>Mediano Plazo:</strong> infecciones (el post operatorio de la herida, del pulmón, urinario e intra abdominal), trombosis venosa, embolia pulmonar, filtración de suturas del tubo digestivo, dilatación gástrica, obstrucción intestinal, formación de fístulas, náuseas y vómitos, Estenosis, dehiscencia de herida operatorio, hipertrofia de la cicatriz.</li>
+        <li><strong>Largo Plazo:</strong> hernia incisional, las anemias por deficiencia de hierro, vitamina B12, ácido fólico, la desmineralización ósea, caida de pelo, empeoramiento de enfermedades reumáticas, úlcera péptica, además de deficiencias minerales, proteicas y vitamínicas.</li>
+    </ul>
+
+    <p>Eventualmente puede existir el riesgo de las siguientes complicaciones:</p>
+    <ul>
+        <li>Reacciones alérgicas, Complicaciones anestésicas, Hemorragias.</li>
+        <li>Formación de coágulos de sangre (en piernas, pulmón y vasos intra abdominales).</li>
+        <li>Infecciones (heridas operatorias, intra abdominales).</li>
+        <li>Filtraciones o fístulas (comunicación anormal entre dos partes del cuerpo) gástricas o intestinales (según el procedimiento que se realice), que pueden ser de presentación temprana o tardía, las cuales de presentarse requieren tratamiento usualmente prolongado y tienen un distinto grado de severidad.</li>
+        <li>Lesiones del bazo como sangrado o absceso esplénico por su estrecha relación anatómica en la zona operatoria.</li>
+        <li>Lesiones del páncreas por su estrecha relación anatómica en la zona operatoria, especialmente si hubiera antecedentes de pancreatitis previa o existieran síndrome adherencial.</li>
+        <li>Estrechamiento e estenosis a nivel del estómago o intestinal.</li>
+        <li>Síndrome de dumping (los síntomas incluyen dolor abdominal, problemas cardiovasculares, desvanecimiento, sudoración, náuseas, diarrea y vértigos. Es una complicación poco frecuente y no compromete la vida del paciente).</li>
+        <li>Obstrucción del intestino, Conversión y/o suspensión: corresponde a la posibilidad de transformar la operación con técnica laparoscópica a la modalidad abierta o suspender el procedimiento, por eventos y/o hallazgos imprevistos durante la cirugía.</li>
+        <li>Cambio de técnica quirúrgica: corresponde a la posibilidad de transformar la operación de una técnica a otra (realizar una manga gástrica en lugar de un bypass gástrico o viceversa), por hallazgos imprevistos durante la cirugía.</li>
+        <li>Hernias: cortes dentro de la pared abdominal pueden conducir a hernias después de la cirugía.</li>
+        <li>Perdida de cabellos: algunos pacientes sufren caída parcial de cabello después de la operación lo cual suele ser temporal.</li>
+        <li>Deficiencia de algunas vitaminas: según el procedimiento debe tomar vitaminas de por vida.</li>
+    </ul>
+
+    <div class="page-break no-print">--- FIN PÁGINA 2 ---</div>
+
+    <ul>
+        <li>Complicaciones del embarazo: ningún embarazo debe ocurrir durante el primer año después de la operación y los pacientes deben estar seguros de que no les falte vitaminas si deciden embarazarse.</li>
+        <li>Depresión: la depresión es una enfermedad médica común y se ha encontrado como particularmente común en las primeras semanas después de la operación.</li>
+    </ul>
+
+    <p>Pueden presentarse además flebitis, alteraciones digestivas transitorias, retención aguda de orina, derrame pleural, dolor prolongado en la zona de la operación. Además, podrían presentarse en algunos casos alteraciones digestivas como diarrea crónica, déficit nutricional, perdida excesiva de peso.</p>
+    
+    <p>Un 10% pueden desarrollar litiasis vesicular. El 35% pueden presentar aumento del reflujo gastroesofágico o presentarse de novo. Así como presentar esofagitis. Existe riegos bajo de muerte. El doctor me explicó que no debo embarazarme antes del año post cirugía.</p>
+
+    <p>Riesgos potenciales: Embolias y tromboembolismo pulmonar. Fístulas intestinales por alteración en la cicatrización de las suturas. Estrechez de las anastomosis. Sangrado o infección intraabdominal. Obstrucción intestinal. Alteraciones digestivas definitivas como diarreas o vómitos. Déficits nutricionales. Excesiva pérdida de peso o, por el contrario, fallo del procedimiento con escasa pérdida de peso. Por la cirugía laparoscópica puede haber lesiones vasculares, lesiones de órganos vecinos, embolia gaseosa y neumotórax. Estas complicaciones habitualmente se resuelven con tratamiento médico (medicamentos, sueros, etc.), pero pueden llegar a requerir una o más reintervenciones, generalmente de urgencia y excepcionalmente puede producirse la muerte.</p>
+
+    <h2>CONSECUENCIAS DE LA CIRUGÍA</h2>
+    <p>Como consecuencia del éxito de la intervención y de la pérdida de peso, pueden aparecer pliegues o colgajos cutáneos que en algunas ocasiones desaparecen con el tiempo, pero que en la mayoría de los casos requieren intervenciones para su resolución como una abdominoplastía.</p>
+    <p>Se que la técnica elegida conlleva a cambios, a veces definitivos, en mi estilo de vida, como:</p>
+    <ul>
+        <li>Modificaciones permanentes en mis hábitos alimentarios, como, por ejemplo, comer en pocas cantidades, hidratarse continuamente, o no beber líquidos hipercalóricos entre otras.</li>
+        <li>Control periódico de mi situación nutricional por parte del nutricionista bariatra, recibiendo los aportes de proteinas, vitamínicos o minerales que se me prescriban, así como la medicación que necesite.</li>
+        <li>Acudir a las consultas de seguimiento periódico que se me indiquen.</li>
+        <li>En el caso de ser mujer en edad fértil, es aconsejable no quedarse embarazada antes del año de la intervención, debido a que la situación de malnutrición que se produce podría ser perjudicial para el desarrollo del feto o la madre.</li>
+    </ul>
+
+    <p>Estoy consciente, que este tipo de procedimiento puede imponer limitaciones a la ingestión de algunos alimentos, puede causar reducción del apetito y además podría interferir en la absorción de ciertos nutrientes. También estoy informado, que la pérdida de peso, así como la prevención de alguna de las complicaciones nutricionales, depende de mi participación efectiva en el sentido de seguir las dietas indicadas, de practicar las actividades fisicas regularmente y de hacer uso continuo de vitaminas y complementos que me sean indicados, además de los controles periódicos posteriores a la cirugía con mi médico tratante. Entiendo y acepto también, que ante las eventuales complicaciones y dependiendo de su naturaleza, una o más Re operaciones pueden ser necesarias.</p>
+
+    <div class="page-break no-print">--- FIN PÁGINA 3 ---</div>
+
+    <p>Dependiendo de las decisiones del intraoperatorio, puede haber necesidad de realizar una gastrostomía o el colocar drenajes en la cavidad peritoneal, sonda nasoyeyunal, etc. Así como de convertir la cirugía video laparoscópica cuando sea el caso, en una cirugía convencional abierta. Por otro lado, entiendo que, como cualquier otro tipo de cirugía para la obesidad, puedo no llegar a los resultados deseados por mi, existiendo además la posibilidad de que la pérdida de peso no sea satisfactoria, o incluso pueda ocurrir la recuperación del peso perdido después de un resultado inicial adecuado.</p>
+    <p>También me ha indicado la necesidad de advertir de mis posibles alergias medicamentosas, alteraciones de la coagulación, enfermedades cardiopulmonares, existencia de prótesis, marcapasos, medicaciones actuales o cualquier otra circunstancia. Por mi situación de salud actual (diabetes, obesidad, hipertensión, anemia, edad avanzada) puede aumentar la frecuencia o la gravedad de riesgos o complicaciones. Es posible que durante o después de la intervención sea necesaria la utilización de sangre y/o hemoderivados. Eventualmente podría ser necesario trasladarlo a una unidad de tratamiento intensivo o intermedio dentro de la clínica o a otro centro hospitalarios. La realización del procedimiento puede ser filmada con fines científicos o didácticos. Los gastos posteriores derivados del tratamiento de las complicaciones comunes o de las menos usuales serán asumidas por el paciente, ya que son parte del riesgo inherente de estos procedimientos y se ven con cierta regularidad, independientemente de la adecuada realización del procedimiento quirúrgico, en todos los centros a nivel mundial.</p>
+    <p>He comprendido las explicaciones que se me han facilitado en un lenguaje claro y sencillo, y el facultativo que me ha atendido me ha permitido realizar todas las observaciones y me ha aclarado todas las dudas que le he planteado. También comprendo que, en cualquier momento y sin necesidad de dar ninguna explicación, puedo revocar el consentimiento que ahora presto. Por ello, manifiesto que estoy satisfecho con la información recibida y que comprendo el alcance y los riesgos del tratamiento. La intervención mencionada me ha sido totalmente explicada por el cirujano habiendo entendido la naturaleza y consecuencias de dicha intervención. Se me ha explicado que pueden existir complicaciones imprevistas ajenas a la intervención del cirujano y de su equipo quirúrgico, propias de las respuestas de mi organismo durante la operación y durante todo el proceso post operatorio.</p>
+    <p>Reconozco durante el curso de la operación se pueden presentar condiciones imprevistas que pueden necesitar intervenciones extras o diferentes de las acordadas anteriormente, por lo tanto autorizo y requiero que el cirujano antes nombrado, realice las intervenciones que sean necesarias y deseables a su juicio profesional incluyendo procedimientos como revisiones quirúrgicas post-operatorias, drenajes percutaneos, estudios de imágenes, estudios laboratoriales, alimentacion mediante sonda nasoyeyunal, etc. La autorización concedida se extenderá para remediar las complicaciones mencionadas en este documento, para lo cual me comprometo a seguir las indicaciones del cirujano, caso contrario las complicaciones será mi exclusiva responsabilidad.</p>
+    <p>Soy consciente que la práctica de la Medicina y la Cirugía, no es una ciencia exacta y reconozco que a pesar que el cirujano me ha informado adecuadamente del resultado deseado de la operación, acepto que escapa a las posibilidades del cirujano, garantizar dichos resultados y estar libres de alguna complicación. Autorizo a que el cirujano o quien él designe realice las curaciones y controles necesarios en el periodo post-operatorio. Doy fe de no haber omitido o alterado datos al exponer los antecedentes clínicos y quirúrgicos así como alguna enfermedad física o mental, toma cotidiana de algún medicamento dicha omisión o alteración de información al cirujano o su equipo quirúrgico seré el único responsable del resultado en caso que atente contra mi salud.</p>
+    <p>También me comprometo a no divulgar comentarios, opiniones, relatos de experiencias negativas respecto a los resultados obtenidos o respecto a la buena reputación del cirujano y su equipo quirurgico, en ningún medio de comunicación social como prensa, radio, televisión, internet (Foros, Facebook, Correos electrónicos, whatsapp, instagram, twitter, snapchat, YouTube, tick tock) u otro mecanismo que tenga alcance de expansión social a nivel nacional e internacional; que tenga por finalidad perjudicar el honor y la buena</p>
+
+    <div class="page-break no-print">--- FIN PÁGINA 4 ---</div>
+
+    <p>reputación del cirujano y su buena imagen como equipo quirurguco bajo apercibimiento de iniciar las acciones civiles y/o penales pertinentes.</p>
+    <p>Por el presente dejo constancia de haber leído y comprendido el contenido de este consentimiento. En tales condiciones CONSIENTO que se me efectúe la cirugía laparoscópica de MANGA GASTRICA dejando sin responsabilidad medico legal, penal y adminiatrativa al Dr. Hoshe Lee Joo Fernandez, su equipo equirúrgico y a Dr. Hoshe Joo EIRL de los riesgos y complicaciones mencionadas.</p>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-line">
+                Firma Paciente y/o representante<br>(padre, madre, familiar)<br><br>
+                Nombre: <input type="text" class="fillable fillable-full"><br><br>
+                DNI/CE: <input type="text" class="fillable fillable-med">
+            </div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-line">
+                Firma y nombre del médico tratante<br><br>
+                <input type="text" class="fillable fillable-full" style="visibility: hidden;"><br><br>
+                DNI/CE: <input type="text" class="fillable fillable-med">
+            </div>
+        </div>
+    </div>
+
+    <h2>REVOCATORIA DEL CONSENTIMIENTO</h2>
+    <p>Yo Don (Doña) <input type="text" class="fillable fillable-long"> identificado con DNI N°. <input type="text" class="fillable fillable-short"> en mi calidad de paciente() o como representante legal del paciente () en pleno uso de mis facultades mentales y con pleno conocimiento de los riesgos y peligros. Declaro mi revocatoria a mi consentimiento para la realización de la cirugía laparoscópica de Manga Gástricoa eximiendo de responsabilidades de las consecuencias de dicha decisión, a la Clínica y personal de la Clínica de acuerdo a lo establecido en el Art. 4to de la Ley 26842 General de Salud.</p>
+    
+    <p>Fecha: <input type="date" class="fillable"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hora: <input type="time" class="fillable"></p>
+
+    <div class="signatures" style="justify-content: flex-start;">
+        <div class="signature-block">
+            <div class="signature-line">
+                Firma del paciente o representante legal<br><br>
+                Nombre: <input type="text" class="fillable fillable-full"><br><br>
+                DNI/CE: <input type="text" class="fillable fillable-med">
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break no-print">--- FIN PÁGINA 5 ---</div>
+
+    <h2>AUTORIZACIÓN DE USO DE IMÁGENES</h2>
+    <p>Autorizo que me tomen fotografías y videos antes, durante y después de la operación, las cuales forman parte del expediente médico. El cirujano y su equiopo quirurgico pueden utilizar mis imágenes y videos con fines educativos académicos y/o publicitarios, renunciando a algún pago por ello.</p>
+
+    <div class="signatures" style="justify-content: flex-start;">
+        <div class="signature-block">
+            <div class="signature-line">
+                Firma Paciente y/o representante (padre, madre, familiar)<br><br>
+                Nombre: <input type="text" class="fillable fillable-full"><br><br>
+                DNI / CE: <input type="text" class="fillable fillable-med">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
