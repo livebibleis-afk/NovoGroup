@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Control de Inventario Quirúrgico</title>
+    <title>Sistema de Control y Reporte Quirúrgico</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            --primary: #00843D; /* Verde clínico B. Braun */
+            --primary: #00843D; 
             --bg-color: #f4f6f8;
             --text-dark: #2c3e50;
             --border-radius: 8px;
@@ -26,15 +26,14 @@
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
-        h1 { 
-            font-size: 1.5rem; 
-            margin-top: 0;
+        h1, h2 { 
             color: var(--primary);
             border-bottom: 2px solid var(--primary);
             padding-bottom: 10px;
+            margin-top: 0;
         }
-        /* Buscador */
         .search-box {
             width: 100%;
             padding: 12px 15px;
@@ -44,16 +43,12 @@
             font-size: 1rem;
             box-sizing: border-box;
             outline: none;
-            transition: border 0.3s;
         }
-        .search-box:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 5px rgba(0, 132, 61, 0.3);
-        }
-        /* Contenedor responsivo para celulares */
+        .search-box:focus { border-color: var(--primary); }
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            max-height: 400px;
         }
         table { 
             width: 100%; 
@@ -61,10 +56,10 @@
             white-space: nowrap;
         }
         th, td { 
-            padding: 12px 15px; 
+            padding: 10px 15px; 
             border-bottom: 1px solid #eee; 
             text-align: left; 
-            font-size: 0.95rem;
+            font-size: 0.90rem;
         }
         th { 
             background-color: var(--primary); 
@@ -74,33 +69,109 @@
             top: 0;
         }
         tr:hover { background-color: #f8fdfa; }
-        .empty-state { text-align: center; padding: 30px; color: #7f8c8d; }
+        
+        /* Estilos del Carrito y Botones */
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-add:hover { background-color: #218838; }
+        .btn-remove {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .cart-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        select, .btn-report {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .btn-report {
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+        .btn-report:hover { background-color: #00662e; }
+        #cart-list {
+            list-style: none;
+            padding: 0;
+        }
+        #cart-list li {
+            background: #f8fdfa;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-qty {
+            width: 60px;
+            padding: 4px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>📦 Control de Insumos y Fluidoterapia</h1>
+        <h1>📦 Control de Fármacos e Insumos</h1>
+        <input type="text" id="searchInput" class="search-box" placeholder="Filtrar por lote, producto..." onkeyup="filtrarTabla()">
         
-        <input type="text" id="searchInput" class="search-box" placeholder="Filtrar por lote, área (S1, S2, S3), producto..." onkeyup="filtrarTabla()">
-
         <div class="table-responsive">
             <table id="inventoryTable">
                 <thead>
                     <tr id="table-head"></tr>
                 </thead>
                 <tbody id="table-body">
-                    <tr><td colspan="8" class="empty-state">Sincronizando con la base de datos...</td></tr>
+                    <tr><td colspan="10" style="text-align: center;">Sincronizando con la base de datos...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <script>
-        // Enlace de exportación directa de tu Google Sheet en formato CSV
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/1LU1JLO8M6QSYs3llsgRYC7Rw4_iWhKHPxu50fq4p8nM/export?format=csv';
+    <div class="container">
+        <h2>📋 Carrito de Reporte</h2>
+        
+        <div class="cart-controls">
+            <select id="salaSelect">
+                <option value="Sala S1">Quirófano S1</option>
+                <option value="Sala S2">Quirófano S2</option>
+                <option value="Sala S3">Quirófano S3</option>
+                <option value="Almacén Central">Almacén Central</option>
+            </select>
+            <button class="btn-report" onclick="copiarReporte()">📋 Copiar Reporte</button>
+            <button class="btn-remove" onclick="limpiarCarrito()">🗑️ Vaciar</button>
+        </div>
 
-        // Descarga y procesamiento de los datos
+        <ul id="cart-list">
+            <li style="color: #7f8c8d; justify-content: center;">El carrito está vacío. Agrega insumos desde la tabla superior.</li>
+        </ul>
+    </div>
+
+    <script>
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/1LU1JLO8M6QSYs3llsgRYC7Rw4_iWhKHPxu50fq4p8nM/export?format=csv';
+        let carrito = [];
+
         Papa.parse(csvUrl, {
             download: true,
             header: true,
@@ -112,34 +183,34 @@
                 headStr.innerHTML = '';
                 bodyStr.innerHTML = '';
 
-                // Descartar filas completamente vacías del Excel
                 const validData = data.filter(row => Object.values(row).some(val => val.trim() !== ''));
 
                 if(validData.length > 0) {
-                    // Generar nombres de columnas de forma dinámica
+                    // Generar cabeceras + columna extra para la acción
                     Object.keys(validData[0]).forEach(key => {
                         headStr.innerHTML += `<th>${key}</th>`;
                     });
+                    headStr.innerHTML += `<th>Acción</th>`;
 
-                    // Insertar filas con los datos de las cajas
+                    // Generar filas
                     validData.forEach(row => {
                         let rowHtml = '<tr>';
                         Object.values(row).forEach(val => {
                             rowHtml += `<td>${val}</td>`;
                         });
+                        
+                        // Escapar comillas para evitar errores en el onclick
+                        let desc = (row['Descripción'] || 'Insumo').replace(/'/g, "\\'");
+                        let lote = (row['Lote'] || 'S/L').replace(/'/g, "\\'");
+                        
+                        rowHtml += `<td><button class="btn-add" onclick="agregarAlCarrito('${desc}', '${lote}')">+ Añadir</button></td>`;
                         rowHtml += '</tr>';
                         bodyStr.innerHTML += rowHtml;
                     });
-                } else {
-                    bodyStr.innerHTML = '<tr><td colspan="10" class="empty-state">No hay registros en la base de datos.</td></tr>';
                 }
-            },
-            error: function(err) {
-                document.getElementById('table-body').innerHTML = '<tr><td colspan="10" class="empty-state" style="color:red;">Error de conexión. Asegúrate de que el archivo de Sheets tenga el acceso general como "Cualquier persona con el enlace puede ver".</td></tr>';
             }
         });
 
-        // Filtrado en tiempo real desde celulares o PC
         function filtrarTabla() {
             let input = document.getElementById("searchInput");
             let filter = input.value.toUpperCase();
@@ -160,6 +231,84 @@
                 }
                 tr[i].style.display = showRow ? "" : "none";
             }
+        }
+
+        // --- FUNCIONES DEL CARRITO ---
+
+        function agregarAlCarrito(descripcion, lote) {
+            // Verifica si ya existe en el carrito
+            let existe = carrito.find(item => item.lote === lote && item.descripcion === descripcion);
+            if (existe) {
+                existe.cantidad += 1;
+            } else {
+                carrito.push({ descripcion: descripcion, lote: lote, cantidad: 1 });
+            }
+            actualizarInterfazCarrito();
+        }
+
+        function removerDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarCantidad(index, nuevaCantidad) {
+            if (nuevaCantidad > 0) {
+                carrito[index].cantidad = parseInt(nuevaCantidad);
+            }
+        }
+
+        function limpiarCarrito() {
+            carrito = [];
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarInterfazCarrito() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+
+            if (carrito.length === 0) {
+                cartList.innerHTML = '<li style="color: #7f8c8d; justify-content: center;">El carrito está vacío. Agrega insumos desde la tabla superior.</li>';
+                return;
+            }
+
+            carrito.forEach((item, index) => {
+                let li = document.createElement('li');
+                li.innerHTML = `
+                    <span><strong>${item.descripcion}</strong> (Lote: ${item.lote})</span>
+                    <div>
+                        <input type="number" class="cart-qty" value="${item.cantidad}" min="1" onchange="actualizarCantidad(${index}, this.value)">
+                        <button class="btn-remove" onclick="removerDelCarrito(${index})">X</button>
+                    </div>
+                `;
+                cartList.appendChild(li);
+            });
+        }
+
+        function copiarReporte() {
+            if (carrito.length === 0) {
+                alert("El carrito está vacío. Agrega insumos primero.");
+                return;
+            }
+
+            let sala = document.getElementById('salaSelect').value;
+            let fecha = new Date().toLocaleDateString('es-PE');
+            
+            let textoReporte = `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+            textoReporte += `*Destino:* ${sala}\n`;
+            textoReporte += `*Fecha:* ${fecha}\n`;
+            textoReporte += `----------------------------\n`;
+            
+            carrito.forEach(item => {
+                textoReporte += `- ${item.cantidad}x ${item.descripcion} (Lote: ${item.lote})\n`;
+            });
+            
+            textoReporte += `----------------------------\n`;
+
+            navigator.clipboard.writeText(textoReporte).then(() => {
+                alert("✅ Reporte copiado al portapapeles. Ya puedes pegarlo en WhatsApp o en tus registros.");
+            }).catch(err => {
+                alert("❌ Error al copiar el reporte.");
+            });
         }
     </script>
 </body>
