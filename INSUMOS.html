@@ -216,17 +216,16 @@
         <button class="btn-theme" id="themeToggle" onclick="toggleTheme()">🌙 Modo Oscuro</button>
     </div>
 
-    <!-- Contenedor Principal con Pestañas -->
     <div class="container">
         
         <div class="tabs">
-            <button class="tab-btn active" onclick="openTab(event, 'tab-google')">📦 Fármacos (Google Sheets)</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-local')">🫁 Oxígeno e Insumos Fijos (HTML)</button>
+            <button class="tab-btn active" onclick="openTab(event, 'tab-google')">📦 Fármacos</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-local')">🫁 Oxígeno e Insumos</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-limpieza')">🧹 Productos de Limpieza</button>
         </div>
 
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Filtrar por lote, producto o presentación..." onkeyup="filtrarTablas()">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Filtrar por código, producto o presentación..." onkeyup="filtrarTablas()">
 
-        <!-- Pestaña 1: Google Sheets -->
         <div id="tab-google" class="tab-content active">
             <div class="table-responsive">
                 <table id="inventoryTable">
@@ -240,7 +239,6 @@
             </div>
         </div>
 
-        <!-- Pestaña 2: Base de Datos Local en HTML -->
         <div id="tab-local" class="tab-content">
             <div class="table-responsive">
                 <table id="localTable">
@@ -258,7 +256,6 @@
                         </tr>
                     </thead>
                     <tbody id="local-table-body">
-                        <!-- DATA ESTÁTICA INTEGRADA EN HTML -->
                         <tr>
                             <td>OX-10M3</td>
                             <td>Balón de Oxígeno Medicinal 10m3</td>
@@ -325,7 +322,53 @@
                             <td>Almacén Central</td>
                             <td><button class="btn-add" onclick="agregarAlCarrito('Cánula Binasal de Oxígeno', 'S/L')">+ Añadir</button></td>
                         </tr>
-                        <!-- Puedes agregar más filas copiando y pegando el bloque <tr>...</tr> anterior -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-limpieza" class="tab-content">
+            <div class="table-responsive">
+                <table id="limpiezaTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>U.M</th>
+                            <th>Existencia Inicial (Unid)</th>
+                            <th>Entradas</th>
+                            <th>Salidas</th>
+                            <th>Stock</th>
+                            <th>Ubicación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="limpieza-table-body">
+                        <tr><td>ALCOHOL</td><td>ALCOHOL ISOPROPILICO X 3.565LT X GLN</td><td>GALON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ALCOHOL ISOPROPILICO X 3.565LT X GLN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>SPRAY</td><td>AMBIENTADOR EN SPRAY X 360CC X FCO</td><td>FRASCO</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('AMBIENTADOR EN SPRAY X 360CC X FCO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>BN220</td><td>BOLSA 220 LTS NEGRO COMERCIAL</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('BOLSA 220 LTS NEGRO COMERCIAL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>BN20</td><td>BOLSAS NEGRAS 20LT TERMICA 20 X 30</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('BOLSAS NEGRAS 20LT TERMICA 20 X 30', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DESI</td><td>DESINFECTANTE LIMPIA TODO X 1 BDN</td><td>BIDON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DESINFECTANTE LIMPIA TODO X 1 BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DETE</td><td>DETERGENTE INDUSTRIAL X 15 KLS- ARIEL X SACO</td><td>SACO</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DETERGENTE INDUSTRIAL X 15 KLS- ARIEL X SACO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DESEN</td><td>DESENGRASANTE</td><td>GLN</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DESENGRASANTE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>ESCOBA</td><td>ESCOBON HUDE X UND</td><td>UNID</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ESCOBON HUDE X UND', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>ESPONJA</td><td>ESPONJA FIBRA VERDE SCOTCH BRITE X UND</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ESPONJA FIBRA VERDE SCOTCH BRITE X UND', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT8</td><td>GUANTES IND CLB 25 T-8</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES IND CLB 25 T-8', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT9</td><td>GUANTES IND CLB 25 T-9</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES IND CLB 25 T-9', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT10</td><td>GUANTES AMARILLOS C25 T9</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES AMARILLOS C25 T9', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JABON</td><td>JABON GEL PARA MANOS 3.565LT X BDN</td><td>GLN</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON GEL PARA MANOS 3.565LT X BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JAB02</td><td>JABON LIQUIDO MANOS 18 LT X BIDON</td><td>BIDON</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON LIQUIDO MANOS 18 LT X BIDON', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JBOLI</td><td>JABON BOLIVAR</td><td>UNID</td><td>4</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON BOLIVAR', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LAVA</td><td>LAVA VAJILLAS</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LAVA VAJILLAS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LEJIA</td><td>LEJIA CONCENTRADA AL 6% X BDN</td><td>BIDON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LEJIA CONCENTRADA AL 6% X BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LVIDRIO</td><td>LIMPIA VIDRIOS ESPECIAL X LITRO</td><td>LT</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LIMPIA VIDRIOS ESPECIAL X LITRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PJUMBO</td><td>PAPEL HIG. JUMBO ECONOMICO X 6 ROLL 150MT</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PAPEL HIG. JUMBO ECONOMICO X 6 ROLL 150MT', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PAÑO</td><td>PAÑO ABSORBENTE CELULOSA</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PAÑO ABSORBENTE CELULOSA', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PERFU</td><td>PERFUMADOR AMBIENTAL LAVANDA X GLN</td><td>GLN</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PERFUMADOR AMBIENTAL LAVANDA X GLN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PERFU2</td><td>PERFUMADOR AMBIENTAL LAVANDA X DBN</td><td>BIDEON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PERFUMADOR AMBIENTAL LAVANDA X DBN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PULVE</td><td>PULVERIZADOR COMPLETO 1LT PVC GAT. ECON. X UNID</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PULVERIZADOR COMPLETO 1LT PVC GAT. ECON. X UNID', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>RECOGE</td><td>RECOGEDOR PLASTICO C/FILO DE JEBE</td><td>UNID</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('RECOGEDOR PLASTICO C/FILO DE JEBE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>TRAP</td><td>TRAPEADOR RPTO DE MICROFIBRA 45 X 70 CON OJAL X UNID</td><td>UNID</td><td>3</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('TRAPEADOR RPTO DE MICROFIBRA 45 X 70 CON OJAL X UNID', 'S/L')">+ Añadir</button></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -333,7 +376,6 @@
 
     </div>
 
-    <!-- Sección del Carrito de Reporte -->
     <div class="container">
         <h2>📋 Panel de Reportes Combinado</h2>
         
@@ -347,8 +389,7 @@
                 <option value="Sala S1">Quirófano S1</option>
                 <option value="Sala S2">Quirófano S2</option>
                 <option value="Sala S3">Quirófano S3</option>
-                <option value="Almacén Central">Almacén Central</option>
-            </select>
+                <option value="Destino Pendiente">Destino Pendiente</option> </select>
 
             <input type="text" id="recibeInput" class="input-field" placeholder="¿Quién recibe? (ej. Verónica)" style="display: none;">
 
@@ -431,6 +472,7 @@
                         let desc = (row['Descripción'] || 'Insumo').replace(/'/g, "\'");
                         let lote = (row['Lote'] || 'S/L').replace(/'/g, "\'");
                         
+                        // Solo se pasa Descripción y Lote. El ID de Producto o el Almacén nunca entran al carrito.
                         rowHtml += `<td><button class="btn-add" onclick="agregarAlCarrito('${desc}', '${lote}')">+ Añadir</button></td>`;
                         rowHtml += '</tr>';
                         bodyStr.innerHTML += rowHtml;
@@ -444,10 +486,10 @@
             let input = document.getElementById("searchInput");
             let filter = input.value.toUpperCase();
             
-            // Filtra la tabla de Google Sheets
+            // Filtra todas las tablas existentes
             filtrarTablaEspecifica("inventoryTable", filter);
-            // Filtra la tabla HTML Local
             filtrarTablaEspecifica("localTable", filter);
+            filtrarTablaEspecifica("limpiezaTable", filter);
         }
 
         function filtrarTablaEspecifica(tableId, filter) {
@@ -546,35 +588,26 @@
 
             if (tipoReporte === 'gestion') {
                 let sala = document.getElementById('salaSelect').value;
-                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*
-`;
-                textoReporte += `*Destino:* ${sala}
-`;
-                textoReporte += `*Fecha:* ${fecha}
-`;
+                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+                textoReporte += `*Destino:* ${sala}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
             } else {
                 let recibe = document.getElementById('recibeInput').value || "[Nombre]";
                 let hora = new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false });
-                textoReporte += `*REPORTE DE INGRESO insumos*
-`;
-                textoReporte += `*Destino:* Farmacia
-`;
-                textoReporte += `*Recibe:* ${recibe}
-`;
-                textoReporte += `*Fecha:* ${fecha}
-`;
-                textoReporte += `*Hora:* ${hora}
-`;
+                textoReporte += `*REPORTE DE INGRESO insumos*\n`;
+                textoReporte += `*Destino:* Farmacia\n`;
+                textoReporte += `*Recibe:* ${recibe}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
+                textoReporte += `*Hora:* ${hora}\n`;
             }
             
-            textoReporte += `----------------------------
-`;
+            textoReporte += `----------------------------\n`;
+            
+            // Aquí se estructuran los ítems omitiendo totalmente el ID y el almacén
             carrito.forEach(item => {
-                textoReporte += `- ${item.cantidad}x ${item.descripcion} (Lote: ${item.lote})
-`;
+                textoReporte += `- ${item.cantidad}x ${item.descripcion} (Lote: ${item.lote})\n`;
             });
-            textoReporte += `----------------------------
-`;
+            textoReporte += `----------------------------\n`;
 
             navigator.clipboard.writeText(textoReporte).then(() => {
                 alert("✅ Reporte copiado con éxito.");
