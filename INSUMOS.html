@@ -371,15 +371,16 @@
         
         <div class="cart-controls">
             <select id="tipoReporteSelect" onchange="alternarCamposReporte()">
-                <option value="gestion">📋 Gestión Quirúrgica</option>
+                <option value="salida">📋 Sale con dirección</option>
                 <option value="ingreso">📥 Ingreso a Farmacia</option>
             </select>
 
             <select id="salaSelect">
-                <option value="Sala S1">Quirófano S1</option>
-                <option value="Sala S2">Quirófano S2</option>
-                <option value="Sala S3">Quirófano S3</option>
-                <option value="Destino Pendiente">Destino Pendiente</option>
+                <option value="MANSIÓN">MANSIÓN</option>
+                <option value="Novo Clinic">Novo Clinic</option>
+                <option value="NOVO INTEGRAL">NOVO INTEGRAL</option>
+                <option value="NOVO Q">NOVO Q</option>
+                <option value="PLANTA">PLANTA</option>
             </select>
 
             <input type="text" id="recibeInput" class="input-field" placeholder="¿Quién recibe? (ej. Verónica)" style="display: none;">
@@ -578,9 +579,9 @@
             let fecha = new Date().toLocaleDateString('es-PE');
             let textoReporte = "";
 
-            if (tipoReporte === 'gestion') {
+            if (tipoReporte === 'salida') {
                 let sala = document.getElementById('salaSelect').value;
-                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+                textoReporte += `*SALE CON DIRECCIÓN*\n`;
                 textoReporte += `*Destino:* ${sala}\n`;
                 textoReporte += `*Fecha:* ${fecha}\n`;
             } else {
