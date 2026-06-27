@@ -96,11 +96,12 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        select, .btn-report {
+        select, input[type="text"].input-field, .btn-report {
             padding: 10px;
             font-size: 1rem;
             border-radius: 4px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
         .btn-report {
             background-color: var(--primary);
@@ -153,12 +154,20 @@
         <h2>📋 Carrito de Reporte</h2>
         
         <div class="cart-controls">
+            <select id="tipoReporteSelect" onchange="alternarCamposReporte()">
+                <option value="gestion">📋 Reporte de Gestión Quirúrgica</option>
+                <option value="ingreso">📥 Reporte de Ingreso Insumos</option>
+            </select>
+
             <select id="salaSelect">
                 <option value="Sala S1">Quirófano S1</option>
                 <option value="Sala S2">Quirófano S2</option>
                 <option value="Sala S3">Quirófano S3</option>
                 <option value="Almacén Central">Almacén Central</option>
             </select>
+
+            <input type="text" id="recibeInput" class="input-field" placeholder="¿Quién recibe? (ej. Verónica)" style="display: none;">
+
             <button class="btn-report" onclick="copiarReporte()">📋 Copiar Reporte</button>
             <button class="btn-remove" onclick="limpiarCarrito()">🗑️ Vaciar</button>
         </div>
@@ -186,20 +195,17 @@
                 const validData = data.filter(row => Object.values(row).some(val => val.trim() !== ''));
 
                 if(validData.length > 0) {
-                    // Generar cabeceras + columna extra para la acción
                     Object.keys(validData[0]).forEach(key => {
                         headStr.innerHTML += `<th>${key}</th>`;
                     });
                     headStr.innerHTML += `<th>Acción</th>`;
 
-                    // Generar filas
                     validData.forEach(row => {
                         let rowHtml = '<tr>';
                         Object.values(row).forEach(val => {
                             rowHtml += `<td>${val}</td>`;
                         });
                         
-                        // Escapar comillas para evitar errores en el onclick
                         let desc = (row['Descripción'] || 'Insumo').replace(/'/g, "\\'");
                         let lote = (row['Lote'] || 'S/L').replace(/'/g, "\\'");
                         
@@ -233,10 +239,23 @@
             }
         }
 
+        function alternarCamposReporte() {
+            let tipo = document.getElementById('tipoReporteSelect').value;
+            let salaSelect = document.getElementById('salaSelect');
+            let recibeInput = document.getElementById('recibeInput');
+
+            if (tipo === 'ingreso') {
+                salaSelect.style.display = 'none';
+                recibeInput.style.display = 'inline-block';
+            } else {
+                salaSelect.style.display = 'inline-block';
+                recibeInput.style.display = 'none';
+            }
+        }
+
         // --- FUNCIONES DEL CARRITO ---
 
         function agregarAlCarrito(descripcion, lote) {
-            // Verifica si ya existe en el carrito
             let existe = carrito.find(item => item.lote === lote && item.descripcion === descripcion);
             if (existe) {
                 existe.cantidad += 1;
@@ -290,22 +309,33 @@
                 return;
             }
 
-            let sala = document.getElementById('salaSelect').value;
+            let tipoReporte = document.getElementById('tipoReporteSelect').value;
             let fecha = new Date().toLocaleDateString('es-PE');
+            let textoReporte = "";
+
+            if (tipoReporte === 'gestion') {
+                let sala = document.getElementById('salaSelect').value;
+                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+                textoReporte += `*Destino:* ${sala}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
+            } else {
+                let recibe = document.getElementById('recibeInput').value || "[Nombre]";
+                let hora = new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false });
+                textoReporte += `*REPORTE DE INGRESO insumos*\n`;
+                textoReporte += `*Destino:* Farmacia\n`;
+                textoReporte += `*Recibe:* ${recibe}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
+                textoReporte += `*Hora:* ${hora}\n`;
+            }
             
-            let textoReporte = `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
-            textoReporte += `*Destino:* ${sala}\n`;
-            textoReporte += `*Fecha:* ${fecha}\n`;
             textoReporte += `----------------------------\n`;
-            
             carrito.forEach(item => {
                 textoReporte += `- ${item.cantidad}x ${item.descripcion} (Lote: ${item.lote})\n`;
             });
-            
             textoReporte += `----------------------------\n`;
 
             navigator.clipboard.writeText(textoReporte).then(() => {
-                alert("✅ Reporte copiado al portapapeles. Ya puedes pegarlo en WhatsApp o en tus registros.");
+                alert("✅ Reporte copiado al portapapeles con éxito.");
             }).catch(err => {
                 alert("❌ Error al copiar el reporte.");
             });
