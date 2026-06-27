@@ -227,14 +227,11 @@
 </head>
 <body>
 
-    <script type="text/plain" id="datos-cirugias"></script>
-    <script type="text/plain" id="datos-oxigeno"></script>
-    
     <div class="no-print" id="main-interface">
         <header>
             <div class="header-title">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
-                <span id="main-title">Novo Clinic - Cargando...</span>
+                <span id="main-title">Novo Clinic - Conectando...</span>
             </div>
             <div class="header-controls">
                 <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar paciente...">
@@ -421,7 +418,7 @@
         /* 🔗 CONFIGURACIÓN DE GOOGLE SHEETS                                     */
         /* ===================================================================== */
         const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
-        let currentOxygenWppReport = ""; // Guarda el reporte original cargado
+        let currentOxygenWppReport = ""; 
 
         /* SISTEMA THEME */
         const initTheme = () => {
@@ -706,7 +703,7 @@
             document.getElementById('printBtn').onclick = () => window.print();
         }
 
-        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA */
+        /* LECTURA BLINDADA DESDE GOOGLE SHEETS */
         async function cargarDatosDesdeSheets() {
             const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Cirugias&headers=0`;
             const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Oxigeno&headers=0`;
@@ -727,10 +724,13 @@
                     return '';
                 };
 
-                // FIJACIÓN DE LA FECHA MAESTRA
+                let filasCirugias = (jsonC.table && jsonC.table.rows) ? jsonC.table.rows : [];
+                let filasOxigeno = (jsonO.table && jsonO.table.rows) ? jsonO.table.rows : [];
+
+                // 1. FIJACIÓN DE LA FECHA MAESTRA
                 let fechaMaestra = "";
-                for(let i = 0; i < jsonC.table.rows.length; i++) {
-                    const row = jsonC.table.rows[i];
+                for(let i = 0; i < filasCirugias.length; i++) {
+                    const row = filasCirugias[i];
                     if(!row || !row.c) continue;
                     const col0 = getVal(row.c[0]).toUpperCase();
                     if(col0.includes('FECHA')) {
@@ -746,10 +746,10 @@
                     setDateHeaders();
                 }
 
-                // PROCESAR PACIENTES
+                // 2. PROCESAR PACIENTES
                 const cirugias = [];
-                for(let i = 0; i < jsonC.table.rows.length; i++) {
-                    const row = jsonC.table.rows[i];
+                for(let i = 0; i < filasCirugias.length; i++) {
+                    const row = filasCirugias[i];
                     if(!row || !row.c) continue;
                     const col0 = getVal(row.c[0]);
                     const col0Upper = col0.toUpperCase();
@@ -773,13 +773,13 @@
                     });
                 }
 
-                // PROCESAR REPORTE DE OXÍGENO OPTIMIZADO CON EMOJIS WHATSAPP
+                // 3. PROCESAR REPORTE DE OXÍGENO
                 const oxigeno = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
                 let textoOxigenoWpp = `📋 *REPORTE DE ESTADO DE OXÍGENO*\n🏥 *Novo Clinic*\n📅 *Fecha:* ${fechaMaestra || 'Hoy'}\n`;
                 let lastCat = '';
 
-                for(let i = 0; i < jsonO.table.rows.length; i++) {
-                    const row = jsonO.table.rows[i];
+                for(let i = 0; i < filasOxigeno.length; i++) {
+                    const row = filasOxigeno[i];
                     if(!row || !row.c) continue;
                     
                     let catStr = getVal(row.c[0]);
@@ -820,18 +820,20 @@
                     }
                 }
 
-                currentOxygenWppReport = textoOxigenoWpp; // Guardamos reporte formateado en memoria
+                currentOxygenWppReport = textoOxigenoWpp; // Guardar reporte para el Bloc de Notas
                 renderDashboard(cirugias, oxigeno, textoOxigenoWpp);
 
             } catch (error) {
                 console.error("Error en sincronización:", error);
-                showToast("⚠️ Error al sincronizar con Google Sheets.");
+                document.getElementById('main-title').innerText = "Novo Clinic - Error de Conexión";
+                showToast("⚠️ Revisa que las pestañas se llamen 'Cirugias' y 'Oxigeno'");
             }
         }
 
         /* INICIALIZACIÓN */
         window.onload = () => {
             initTheme();
+            setDateHeaders();
             cargarDatosDesdeSheets();
             setInterval(cargarDatosDesdeSheets, 60000); 
         };
