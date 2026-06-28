@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistema de Control y Reporte Quirúrgico</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        /* Variables de Color (Tema Claro) */
+        :root {
+            --primary: #00843D; 
+            --primary-hover: #00662e;
+            --secondary: #005A8C;
+            --bg-color: #f0f4f8; 
+            --container-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #6c7a89;
+            --border-color: #dce1e6;
+            --input-bg: #ffffff;
+            --row-hover: #f8fdfa;
+            --btn-remove: #dc3545;
+            --btn-add: #28a745;
+            --tab-bg: #e2e8f0;
+            --tab-active: #ffffff;
+        }
+
+        /* Variables de Color (Tema Oscuro) */
+        body.dark-mode {
+            --primary: #00a84e; 
+            --primary-hover: #00ce60;
+            --secondary: #4299e1;
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            --input-bg: #2c2c2c;
+            --row-hover: #2a2a2a;
+            --btn-remove: #e4606d;
+            --btn-add: #34ce57;
+            --tab-bg: #2a2a2a;
+            --tab-active: #1e1e1e;
+        }
+
+        /* Estilos Base y Optimizaciones Móviles */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            padding: 15px; 
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-theme {
+            background-color: var(--container-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        h1, h2 { 
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+        
+        /* Pestañas (Tabs) */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background-color: var(--tab-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background-color: var(--tab-active);
+            color: var(--primary);
+            border-top: 3px solid var(--primary);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Inputs y Selects */
+        .search-box, select, input[type="text"].input-field, .cart-qty {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            transition: border 0.3s;
+        }
+        .search-box:focus, select:focus, input[type="text"].input-field:focus { 
+            border-color: var(--primary); 
+        }
+
+        /* Tablas Responsivas */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: 50vh;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            white-space: nowrap;
+        }
+        th, td { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid var(--border-color); 
+            text-align: left; 
+            font-size: 0.95rem;
+        }
+        th { 
+            background-color: var(--primary); 
+            color: #ffffff; 
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        tr:hover td { background-color: var(--row-hover); }
+        
+        /* Botones */
+        .btn-add { background-color: var(--btn-add); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-remove { background-color: var(--btn-remove); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-report { background-color: var(--primary); color: white; cursor: pointer; font-weight: bold; border: none; padding: 12px 20px; border-radius: 8px; flex-grow: 1; text-align: center; }
+        .btn-report:hover { background-color: var(--primary-hover); }
+        
+        /* Controles del Carrito */
+        .cart-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-direction: column;
+        }
+        @media (min-width: 600px) {
+            .cart-controls { flex-direction: row; align-items: center; }
+            .search-box, select, input[type="text"].input-field { margin-bottom: 0; width: auto; flex-grow: 1; }
+            .btn-report, .btn-remove { width: auto; flex-grow: 0; }
+        }
+
+        /* Lista del Carrito */
+        #cart-list { list-style: none; padding: 0; margin: 0; }
+        #cart-list li {
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-actions { display: flex; align-items: center; gap: 10px; }
+        .cart-qty { width: 70px; margin-bottom: 0; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="header-top container" style="margin-bottom: 15px; padding: 10px 20px;">
+        <span style="font-weight: bold; color: var(--text-muted);">🏥 Suministros Clínicos Inteligentes</span>
+        <button class="btn-theme" id="themeToggle" onclick="toggleTheme()">🌙 Modo Oscuro</button>
+    </div>
+
+    <div class="container">
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-google')">📦 Fármacos</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-local')">🫁 Oxígeno e Insumos</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-limpieza')">🧹 Productos de Limpieza</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-utiles')">📎 Productos Útiles</button>
+        </div>
+
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Filtrar por código, producto o presentación..." onkeyup="filtrarTablas()">
+
+        <div id="tab-google" class="tab-content active">
+            <div class="table-responsive">
+                <table id="inventoryTable">
+                    <thead>
+                        <tr id="table-head"></tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr><td colspan="10" style="text-align: center; padding: 30px; color: var(--text-muted);">Sincronizando con Google Sheets...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-local" class="tab-content">
+            <div class="table-responsive">
+                <table id="localTable">
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Descripción</th>
+                            <th>Marca</th>
+                            <th>Presentación</th>
+                            <th>Lote</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Stock</th>
+                            <th>Ubicación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="local-table-body">
+                        <tr><td>OX-10M3</td><td>Balón de Oxígeno Medicinal 10m3</td><td>Genérico</td><td>Cilindro de Alta Presión</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Balón de Oxígeno Medicinal 10m3', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>OX-06M3</td><td>Balón de Oxígeno Medicinal 6m3</td><td>Genérico</td><td>Cilindro de Alta Presión</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Balón de Oxígeno Medicinal 6m3', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>OX-CONC</td><td>Concentrador de Oxígeno Portátil (5L/min)</td><td>Genérico</td><td>Equipo Eléctrico</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Concentrador de Oxígeno Portátil (5L/min)', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>OX-MANO</td><td>Manómetro Regulador con Humedecedor y Flujómetro</td><td>Genérico</td><td>Caja x1 Unidad</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Manómetro Regulador con Humedecedor', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>OX-MASC</td><td>Máscara con Bolsa de Reservorio Adulto</td><td>Genérico</td><td>Bolsa x1 Unidad</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Máscara con Bolsa de Reservorio Adulto', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>OX-CANU</td><td>Cánula Binasal de Oxígeno</td><td>Genérico</td><td>Bolsa x1 Unidad</td><td>S/L</td><td>S/V</td><td>1</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('Cánula Binasal de Oxígeno', 'S/L')">+ Añadir</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-limpieza" class="tab-content">
+            <div class="table-responsive">
+                <table id="limpiezaTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>U.M</th>
+                            <th>Existencia Inicial (Unid)</th>
+                            <th>Entradas</th>
+                            <th>Salidas</th>
+                            <th>Stock</th>
+                            <th>Ubicación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="limpieza-table-body">
+                        <tr><td>ALCOHOL</td><td>ALCOHOL ISOPROPILICO X 3.565LT X GLN</td><td>GALON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ALCOHOL ISOPROPILICO X 3.565LT X GLN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>SPRAY</td><td>AMBIENTADOR EN SPRAY X 360CC X FCO</td><td>FRASCO</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('AMBIENTADOR EN SPRAY X 360CC X FCO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>BN220</td><td>BOLSA 220 LTS NEGRO COMERCIAL</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('BOLSA 220 LTS NEGRO COMERCIAL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>BN20</td><td>BOLSAS NEGRAS 20LT TERMICA 20 X 30</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('BOLSAS NEGRAS 20LT TERMICA 20 X 30', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DESI</td><td>DESINFECTANTE LIMPIA TODO X 1 BDN</td><td>BIDON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DESINFECTANTE LIMPIA TODO X 1 BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DETE</td><td>DETERGENTE INDUSTRIAL X 15 KLS- ARIEL X SACO</td><td>SACO</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DETERGENTE INDUSTRIAL X 15 KLS- ARIEL X SACO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>DESEN</td><td>DESENGRASANTE</td><td>GLN</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('DESENGRASANTE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>ESCOBA</td><td>ESCOBON HUDE X UND</td><td>UNID</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ESCOBON HUDE X UND', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>ESPONJA</td><td>ESPONJA FIBRA VERDE SCOTCH BRITE X UND</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('ESPONJA FIBRA VERDE SCOTCH BRITE X UND', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT8</td><td>GUANTES IND CLB 25 T-8</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES IND CLB 25 T-8', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT9</td><td>GUANTES IND CLB 25 T-9</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES IND CLB 25 T-9', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GT10</td><td>GUANTES AMARILLOS C25 T9</td><td>PARES</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('GUANTES AMARILLOS C25 T9', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JABON</td><td>JABON GEL PARA MANOS 3.565LT X BDN</td><td>GLN</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON GEL PARA MANOS 3.565LT X BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JAB02</td><td>JABON LIQUIDO MANOS 18 LT X BIDON</td><td>BIDON</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON LIQUIDO MANOS 18 LT X BIDON', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>JBOLI</td><td>JABON BOLIVAR</td><td>UNID</td><td>4</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('JABON BOLIVAR', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LAVA</td><td>LAVA VAJILLAS</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LAVA VAJILLAS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LEJIA</td><td>LEJIA CONCENTRADA AL 6% X BDN</td><td>BIDON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LEJIA CONCENTRADA AL 6% X BDN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LVIDRIO</td><td>LIMPIA VIDRIOS ESPECIAL X LITRO</td><td>LT</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('LIMPIA VIDRIOS ESPECIAL X LITRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PJUMBO</td><td>PAPEL HIG. JUMBO ECONOMICO X 6 ROLL 150MT</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PAPEL HIG. JUMBO ECONOMICO X 6 ROLL 150MT', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PAÑO</td><td>PAÑO ABSORBENTE CELULOSA</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PAÑO ABSORBENTE CELULOSA', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PERFU</td><td>PERFUMADOR AMBIENTAL LAVANDA X GLN</td><td>GLN</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PERFUMADOR AMBIENTAL LAVANDA X GLN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PERFU2</td><td>PERFUMADOR AMBIENTAL LAVANDA X DBN</td><td>BIDEON</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PERFUMADOR AMBIENTAL LAVANDA X DBN', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PULVE</td><td>PULVERIZADOR COMPLETO 1LT PVC GAT. ECON. X UNID</td><td>UNID</td><td>0</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('PULVERIZADOR COMPLETO 1LT PVC GAT. ECON. X UNID', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>RECOGE</td><td>RECOGEDOR PLASTICO C/FILO DE JEBE</td><td>UNID</td><td>1</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('RECOGEDOR PLASTICO C/FILO DE JEBE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>TRAP</td><td>TRAPEADOR RPTO DE MICROFIBRA 45 X 70 CON OJAL X UNID</td><td>UNID</td><td>3</td><td>-</td><td>-</td><td>-</td><td>Almacén Central</td><td><button class="btn-add" onclick="agregarAlCarrito('TRAPEADOR RPTO DE MICROFIBRA 45 X 70 CON OJAL X UNID', 'S/L')">+ Añadir</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-utiles" class="tab-content">
+            <div class="table-responsive">
+                <table id="utilesTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>U.M</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="utiles-table-body">
+                        <tr><td>ARCH</td><td>📁 ARCHIVADORES</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('📁 ARCHIVADORES', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GOMA</td><td>BARRA DE GOMAS</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('BARRA DE GOMAS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>CINTA</td><td>CINTA DE EMBALAJE</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('CINTA DE EMBALAJE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>MASKI</td><td>CINTA MASKIN SG 24MM X 36(1&quot;X40)</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('CINTA MASKIN SG 24MM X 36(1&quot;X40)', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>SCOTH</td><td>CINTA SCOTH 3/4&quot; x 36YD</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('CINTA SCOTH 3/4&quot; x 36YD', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>CL</td><td>CLIPS</td><td>CAJA</td><td><button class="btn-add" onclick="agregarAlCarrito('CLIPS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>CA4</td><td>CUADERNO A4 CUADRICULADO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('CUADERNO A4 CUADRICULADO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>ENGRA</td><td>ENGRAPADORA 22H M-515 - AZUL ARTESCO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('ENGRAPADORA 22H M-515 - AZUL ARTESCO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>FAST</td><td>FASTER ECO IMPORTADO</td><td>CAJA</td><td><button class="btn-add" onclick="agregarAlCarrito('FASTER ECO IMPORTADO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>FOLDER</td><td>FOLDER MANILA A4</td><td>PAQ.X25</td><td><button class="btn-add" onclick="agregarAlCarrito('FOLDER MANILA A4', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>GRAPA</td><td>📁 GRAPAS</td><td>CAJAS</td><td><button class="btn-add" onclick="agregarAlCarrito('📁 GRAPAS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LAZUL</td><td>LAPICERO AZUL</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('LAPICERO AZUL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LNEGRO</td><td>LAPICERO NEGRO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('LAPICERO NEGRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LAPIZ</td><td>LAPIZ 2B</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('LAPIZ 2B', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LIGA</td><td>LIGUITAS ALLEANZA X 1 LIBRA</td><td>CAJAX255</td><td><button class="btn-add" onclick="agregarAlCarrito('LIGUITAS ALLEANZA X 1 LIBRA', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>LIQUI</td><td>LIQUIPAPER (CORRECTOR)</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('LIQUIPAPER (CORRECTOR)', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>MICA</td><td>MICAS A4</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('MICAS A4', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>BOND</td><td>PAPEL BOND</td><td>PAQ.X500</td><td><button class="btn-add" onclick="agregarAlCarrito('PAPEL BOND', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PERF</td><td>PERFORADOR ESCOLAR 10 HOJAS OVE</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PERFORADOR ESCOLAR 10 HOJAS OVE', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PAZUL</td><td>PLUMON DE PIZARRA AZUL</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON DE PIZARRA AZUL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PNEGRO</td><td>PLUMON DE PIZARRA NEGRO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON DE PIZARRA NEGRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>IDAZUL</td><td>PLUMON INDELEBLE DELGADO AZUL</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON INDELEBLE DELGADO AZUL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>IDNEGRO</td><td>PLUMON INDELEBLE DELGADO NEGRO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON INDELEBLE DELGADO NEGRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>IGAZUL</td><td>PLUMON INDELEBLE GRUESO AZUL</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON INDELEBLE GRUESO AZUL', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>IGNEGRO</td><td>PLUMON INDELEBLE GRUESO NEGRO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('PLUMON INDELEBLE GRUESO NEGRO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>POSI</td><td>POSIT DE COLORES</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('POSIT DE COLORES', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>RAMAR</td><td>RESALTADOR AMARILLO</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('RESALTADOR AMARILLO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>SACA</td><td>SACAGRAPAS METALICAS</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('SACAGRAPAS METALICAS', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>SEPA</td><td>SEPARADOR A-4 X 6 COLORES</td><td>PAQ.X6</td><td><button class="btn-add" onclick="agregarAlCarrito('SEPARADOR A-4 X 6 COLORES', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>MANI</td><td>SOBRES MANILA A4</td><td>PAQ.X50</td><td><button class="btn-add" onclick="agregarAlCarrito('SOBRES MANILA A4', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>PAGO</td><td>SOBRES PARA DINERO</td><td>PAQ.X100</td><td><button class="btn-add" onclick="agregarAlCarrito('SOBRES PARA DINERO', 'S/L')">+ Añadir</button></td></tr>
+                        <tr><td>TIJE</td><td>TIJERAS OFICINA SIMETICA 6.5 PULGADAS</td><td>UNID</td><td><button class="btn-add" onclick="agregarAlCarrito('TIJERAS OFICINA SIMETICA 6.5 PULGADAS', 'S/L')">+ Añadir</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <h2>📋 Panel de Reportes Combinado</h2>
+        
+        <div class="cart-controls">
+            <select id="tipoReporteSelect" onchange="alternarCamposReporte()">
+                <option value="gestion">📋 Gestión Quirúrgica</option>
+                <option value="ingreso">📥 Ingreso a Farmacia</option>
+            </select>
+
+            <select id="salaSelect">
+                <option value="Sala S1">Quirófano S1</option>
+                <option value="Sala S2">Quirófano S2</option>
+                <option value="Sala S3">Quirófano S3</option>
+                <option value="Destino Pendiente">Destino Pendiente</option>
+            </select>
+
+            <input type="text" id="recibeInput" class="input-field" placeholder="¿Quién recibe? (ej. Verónica)" style="display: none;">
+
+            <button class="btn-report" onclick="copiarReporte()">📋 Generar y Copiar</button>
+            <button class="btn-remove" onclick="limpiarCarrito()">🗑️ Vaciar</button>
+        </div>
+
+        <ul id="cart-list">
+            <li style="color: var(--text-muted); justify-content: center; border: none; background: transparent;">El carrito está vacío. Añade insumos desde cualquiera de las pestañas.</li>
+        </ul>
+    </div>
+
+    <script>
+        // --- GESTIÓN DEL TEMA (MODO OSCURO) ---
+        const themeBtn = document.getElementById('themeToggle');
+        
+        if(localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeBtn.innerText = '☀️ Modo Claro';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeBtn.innerText = '☀️ Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeBtn.innerText = '🌙 Modo Oscuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // --- GESTIÓN DE PESTAÑAS ---
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            // Limpia el buscador al cambiar de pestaña
+            document.getElementById("searchInput").value = "";
+            filtrarTablas();
+        }
+
+        // --- CONEXIÓN CON GOOGLE SHEETS ---
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/1LU1JLO8M6QSYs3llsgRYC7Rw4_iWhKHPxu50fq4p8nM/export?format=csv';
+        let carrito = [];
+
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const data = results.data;
+                const headStr = document.getElementById('table-head');
+                const bodyStr = document.getElementById('table-body');
+                
+                headStr.innerHTML = '';
+                bodyStr.innerHTML = '';
+
+                const validData = data.filter(row => Object.values(row).some(val => val.trim() !== ''));
+
+                if(validData.length > 0) {
+                    Object.keys(validData[0]).forEach(key => {
+                        headStr.innerHTML += `<th>${key}</th>`;
+                    });
+                    headStr.innerHTML += `<th>Acción</th>`;
+
+                    validData.forEach(row => {
+                        let rowHtml = '<tr>';
+                        Object.values(row).forEach(val => {
+                            rowHtml += `<td>${val}</td>`;
+                        });
+                        
+                        let desc = (row['Descripción'] || 'Insumo').replace(/'/g, "\'");
+                        let lote = (row['Lote'] || 'S/L').replace(/'/g, "\'");
+                        
+                        // Solo se pasa Descripción y Lote.
+                        rowHtml += `<td><button class="btn-add" onclick="agregarAlCarrito('${desc}', '${lote}')">+ Añadir</button></td>`;
+                        rowHtml += '</tr>';
+                        bodyStr.innerHTML += rowHtml;
+                    });
+                }
+            }
+        });
+
+        // --- FUNCIONES DE BÚSQUEDA COMBINADA ---
+        function filtrarTablas() {
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toUpperCase();
+            
+            // Filtra todas las tablas existentes
+            filtrarTablaEspecifica("inventoryTable", filter);
+            filtrarTablaEspecifica("localTable", filter);
+            filtrarTablaEspecifica("limpiezaTable", filter);
+            filtrarTablaEspecifica("utilesTable", filter);
+        }
+
+        function filtrarTablaEspecifica(tableId, filter) {
+            let table = document.getElementById(tableId);
+            if (!table) return;
+            let tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let showRow = false;
+                let tds = tr[i].getElementsByTagName("td");
+                for (let j = 0; j < tds.length; j++) {
+                    if (tds[j]) {
+                        let txtValue = tds[j].textContent || tds[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            showRow = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = showRow ? "" : "none";
+            }
+        }
+
+        // --- FUNCIONES DEL CARRITO ---
+        function alternarCamposReporte() {
+            let tipo = document.getElementById('tipoReporteSelect').value;
+            let salaSelect = document.getElementById('salaSelect');
+            let recibeInput = document.getElementById('recibeInput');
+
+            if (tipo === 'ingreso') {
+                salaSelect.style.display = 'none';
+                recibeInput.style.display = 'block';
+            } else {
+                salaSelect.style.display = 'block';
+                recibeInput.style.display = 'none';
+            }
+        }
+
+        function agregarAlCarrito(descripcion, lote) {
+            let existe = carrito.find(item => item.lote === lote && item.descripcion === descripcion);
+            if (existe) {
+                existe.cantidad += 1;
+            } else {
+                carrito.push({ descripcion: descripcion, lote: lote, cantidad: 1 });
+            }
+            actualizarInterfazCarrito();
+        }
+
+        function removerDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarCantidad(index, nuevaCantidad) {
+            if (nuevaCantidad > 0) {
+                carrito[index].cantidad = parseInt(nuevaCantidad);
+            }
+        }
+
+        function limpiarCarrito() {
+            carrito = [];
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarInterfazCarrito() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+
+            if (carrito.length === 0) {
+                cartList.innerHTML = '<li style="color: var(--text-muted); justify-content: center; border: none; background: transparent;">El carrito está vacío. Añade insumos desde cualquiera de las pestañas.</li>';
+                return;
+            }
+
+            carrito.forEach((item, index) => {
+                let li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="cart-item-info"><strong>${item.descripcion}</strong> <br><small>Lote: ${item.lote}</small></div>
+                    <div class="cart-item-actions">
+                        <input type="number" class="cart-qty" value="${item.cantidad}" min="1" onchange="actualizarCantidad(${index}, this.value)">
+                        <button class="btn-remove" onclick="removerDelCarrito(${index})">X</button>
+                    </div>
+                `;
+                cartList.appendChild(li);
+            });
+        }
+
+        function copiarReporte() {
+            if (carrito.length === 0) {
+                alert("El carrito está vacío. Agrega insumos primero.");
+                return;
+            }
+
+            let tipoReporte = document.getElementById('tipoReporteSelect').value;
+            let fecha = new Date().toLocaleDateString('es-PE');
+            let textoReporte = "";
+
+            if (tipoReporte === 'gestion') {
+                let sala = document.getElementById('salaSelect').value;
+                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+                textoReporte += `*Destino:* ${sala}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
+            } else {
+                let recibe = document.getElementById('recibeInput').value || "[Nombre]";
+                let hora = new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false });
+                textoReporte += `*REPORTE DE INGRESO insumos*\n`;
+                textoReporte += `*Destino:* Farmacia\n`;
+                textoReporte += `*Recibe:* ${recibe}\n`;
+                textoReporte += `*Fecha:* ${fecha}\n`;
+                textoReporte += `*Hora:* ${hora}\n`;
+            }
+            
+            textoReporte += `----------------------------\n`;
+            
+            // Omitiendo el ID y el almacén
+            carrito.forEach(item => {
+                textoReporte += `- ${item.cantidad}x ${item.descripcion} (Lote: ${item.lote})\n`;
+            });
+            textoReporte += `----------------------------\n`;
+
+            navigator.clipboard.writeText(textoReporte).then(() => {
+                alert("✅ Reporte copiado con éxito.");
+            }).catch(err => {
+                alert("❌ Error al copiar el reporte.");
+            });
+        }
+    </script>
+</body>
+</html>
