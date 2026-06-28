@@ -280,9 +280,12 @@
             </section>
 
             <section class="oxy-section" id="oxigeno-section">
-                <div class="section-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z"/></svg>
-                    Oxígeno Novo Clinic
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z"/></svg>
+                        Oxígeno Novo Clinic
+                    </div>
+                    <button class="card-action-btn" id="copyAllOxyBtn" title="Copiar Todo el Reporte" style="position: static; font-size: 12px; width: auto; padding: 6px 12px; font-weight: bold;">📋 Copiar Todo</button>
                 </div>
                 <div class="oxygen-grid" id="oxigeno-container"></div>
             </section>
@@ -740,13 +743,53 @@
                 }).join('');
             };
 
+            // Generador de texto para WhatsApp por sección
+            const getOxyCopyText = (title, list) => {
+                let txt = `🏥 *NOVO CLINIC*\n*${title.toUpperCase()}*\n`;
+                list.forEach(i => txt += `• ${i.label}: ${i.val}\n`);
+                return encodeURIComponent(txt);
+            };
+
             const oxyContainer = document.getElementById('oxigeno-container');
             let oxyHtml = `
-                <div class="glass oxy-category"><h3>🛠️ Salas de Operaciones</h3>${renderOxyList(oxigeno.operaciones)}</div>
-                <div class="glass oxy-category"><h3>🩺 UCI & Nebulización</h3>${renderOxyList(oxigeno.uci)}</div>
-                <div class="glass oxy-category recuperacion-full"><h3>🛏️ Recuperación</h3><div class="recuperacion-cols">${renderOxyList(oxigeno.recuperacion)}</div></div>
-                <div class="glass oxy-category"><h3>🏥 Hospitalización</h3>${renderOxyList(oxigeno.hospitalizacion)}</div>
-                <div class="glass oxy-category"><h3>📦 Reservas de Gases</h3><div class="reserva-grid">
+                <div class="glass oxy-category">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin-bottom: 0;">🛠️ Salas de Operaciones</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Salas de Operaciones', oxigeno.operaciones)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.operaciones)}
+                </div>
+                
+                <div class="glass oxy-category">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin-bottom: 0;">🩺 UCI & Nebulización</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('UCI & Nebulización', oxigeno.uci)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.uci)}
+                </div>
+                
+                <div class="glass oxy-category recuperacion-full">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin-bottom: 0;">🛏️ Recuperación</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Recuperación', oxigeno.recuperacion)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    <div class="recuperacion-cols">${renderOxyList(oxigeno.recuperacion)}</div>
+                </div>
+                
+                <div class="glass oxy-category">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin-bottom: 0;">🏥 Hospitalización</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Hospitalización', oxigeno.hospitalizacion)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.hospitalizacion)}
+                </div>
+                
+                <div class="glass oxy-category">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="margin-bottom: 0;">📦 Reservas de Gases</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Reservas de Gases', oxigeno.reservas)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    <div class="reserva-grid">
             `;
 
             oxigeno.reservas.forEach(r => {
@@ -755,7 +798,19 @@
             });
             oxyContainer.innerHTML = oxyHtml + `</div></div>`;
 
-            document.getElementById('copyWppBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('Reporte WhatsApp copiado'));
+            // Activar botones individuales
+            document.querySelectorAll('.copy-oxy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    copyTextUniversal(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
+                        this.innerHTML = '✅'; setTimeout(() => { this.innerHTML = '📋'; }, 1500);
+                        showToast('Bloque copiado');
+                    });
+                });
+            });
+
+            // Activar botones generales
+            document.getElementById('copyAllOxyBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('Reporte General copiado'));
+            document.getElementById('copyWppBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('Reporte General copiado'));
             document.getElementById('printBtn').onclick = () => window.print();
         }
 
