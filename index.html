@@ -681,7 +681,7 @@
                         const card = document.createElement('div');
                         card.className = 'glass patient-card';
                         
-                        const copyDataStr = `PACIENTE:\t${c.paciente || ''}\nHORA PROG.:\t${c.hora || ''}\nSALA:\t${c.sala || ''}\nMEDICO:\t${c.medico || ''}\nPROCEDIMIENTO:\t${c.procedimiento || ''}\nOBS:\t${c.obs || ''}\nH:\t${c.h || ''}`;
+                        const copyDataStr = `🏥 *CIRUGÍA PROGRAMADA*\n\n🚪 *SALA:* ${c.sala || '---'}\n🕒 *HORA PROG.:* ${c.hora || '---'}\n\n👤 *PACIENTE:* ${c.paciente || '---'}\n👨‍⚕️ *MÉDICO:* ${c.medico || '---'}\n🩺 *PROCEDIMIENTO:* ${c.procedimiento || '---'}\n\n📋 *OBS:* ${c.obs || '---'}\n🛏️ *H:* ${c.h || '---'}`;
                         const safeModalPayload = encodeURIComponent(JSON.stringify(c));
 
                         card.innerHTML = `
