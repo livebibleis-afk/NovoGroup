@@ -207,6 +207,35 @@
         .cart-item-info { flex-grow: 1; }
         .cart-item-actions { display: flex; align-items: center; gap: 10px; }
         .cart-qty { width: 70px; margin-bottom: 0; text-align: center; }
+
+        /* Plantillas Rápidas */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn-template {
+            background-color: var(--container-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .btn-template:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .btn-template strong { color: var(--primary); font-size: 1rem; }
+        .btn-template span { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -371,15 +400,16 @@
         
         <div class="cart-controls">
             <select id="tipoReporteSelect" onchange="alternarCamposReporte()">
-                <option value="gestion">📋 Gestión Quirúrgica</option>
+                <option value="salida">📋 Sale con dirección</option>
                 <option value="ingreso">📥 Ingreso a Farmacia</option>
             </select>
 
             <select id="salaSelect">
-                <option value="Sala S1">Quirófano S1</option>
-                <option value="Sala S2">Quirófano S2</option>
-                <option value="Sala S3">Quirófano S3</option>
-                <option value="Destino Pendiente">Destino Pendiente</option>
+                <option value="MANSIÓN">MANSIÓN</option>
+                <option value="Novo Clinic">Novo Clinic</option>
+                <option value="NOVO INTEGRAL">NOVO INTEGRAL</option>
+                <option value="NOVO Q">NOVO Q</option>
+                <option value="PLANTA">PLANTA</option>
             </select>
 
             <input type="text" id="recibeInput" class="input-field" placeholder="¿Quién recibe? (ej. Verónica)" style="display: none;">
@@ -391,6 +421,38 @@
         <ul id="cart-list">
             <li style="color: var(--text-muted); justify-content: center; border: none; background: transparent;">El carrito está vacío. Añade insumos desde cualquiera de las pestañas.</li>
         </ul>
+    </div>
+
+    <div class="container">
+        <h2>📝 Plantillas Rápidas (Textos Repetitivos)</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -10px; margin-bottom: 15px;">Haz clic en cualquier tarjeta para copiar el texto de reporte directamente a tu portapapeles.</p>
+        
+        <div class="template-grid">
+            <button class="btn-template" onclick="copiarPlantilla('Se realiza ronda perimetral e interna por las instalaciones. Todo conforme, sin novedades que reportar.')">
+                <strong>🚶‍♂️ Ronda sin novedad</strong>
+                <span>"Se realiza ronda perimetral e interna por las instalaciones. Todo conforme..."</span>
+            </button>
+            
+            <button class="btn-template" onclick="copiarPlantilla('Se realiza el relevo de turno. Se hace entrega de equipos de radio, llaves y bitácora en orden. Sin novedades.')">
+                <strong>🔄 Relevo de Turno</strong>
+                <span>"Se realiza el relevo de turno. Se hace entrega de equipos..."</span>
+            </button>
+            
+            <button class="btn-template" onclick="copiarPlantilla('Se registra el ingreso de personal/proveedor a las instalaciones. Se valida identidad y se autoriza el acceso.')">
+                <strong>✅ Ingreso Autorizado</strong>
+                <span>"Se registra el ingreso de personal/proveedor a las instalaciones..."</span>
+            </button>
+            
+            <button class="btn-template" onclick="copiarPlantilla('🚨 REPORTE DE INCIDENTE:\n- Sede:\n- Hora:\n- Detalle:\n- Acción tomada:')">
+                <strong>⚠️ Reporte de Incidente</strong>
+                <span>Formato base para estructurar la notificación de una incidencia.</span>
+            </button>
+            
+            <button class="btn-template" onclick="copiarPlantilla('Se verifica el cierre total de puertas, apagado de equipos y luces. Instalaciones debidamente aseguradas.')">
+                <strong>🔒 Cierre de Instalaciones</strong>
+                <span>"Se verifica el cierre total de puertas, apagado de equipos..."</span>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -578,9 +640,9 @@
             let fecha = new Date().toLocaleDateString('es-PE');
             let textoReporte = "";
 
-            if (tipoReporte === 'gestion') {
+            if (tipoReporte === 'salida') {
                 let sala = document.getElementById('salaSelect').value;
-                textoReporte += `*REPORTE DE GESTIÓN QUIRÚRGICA*\n`;
+                textoReporte += `*SALE CON DIRECCIÓN*\n`;
                 textoReporte += `*Destino:* ${sala}\n`;
                 textoReporte += `*Fecha:* ${fecha}\n`;
             } else {
@@ -605,6 +667,15 @@
                 alert("✅ Reporte copiado con éxito.");
             }).catch(err => {
                 alert("❌ Error al copiar el reporte.");
+            });
+        }
+
+        // --- FUNCIONES DE PLANTILLAS RÁPIDAS ---
+        function copiarPlantilla(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("✅ Plantilla copiada al portapapeles. ¡Lista para pegar en WhatsApp!");
+            }).catch(err => {
+                alert("❌ Error al copiar la plantilla. Intenta de nuevo.");
             });
         }
     </script>
