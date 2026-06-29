@@ -131,7 +131,6 @@
         }
         .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; }
 
-        /* MÓDULO RESPONSIVO PARA MÓVILES (TABLETS Y SMARTPHONES) */
         @media (max-width: 820px) {
             body { padding: 20px 15px; }
             
@@ -153,7 +152,6 @@
 
             .btn-all { width: 100%; justify-content: center; }
 
-            /* Transformar tabla en tarjetas visuales */
             table, thead, tbody, th, td, tr { display: block; }
             thead { display: none; } 
             
@@ -179,7 +177,6 @@
 
             td:last-child { border-bottom: none; justify-content: flex-end; }
 
-            /* Generar etiquetas automáticas desde el atributo data-label */
             td::before {
                 content: attr(data-label);
                 float: left;
@@ -270,7 +267,7 @@
                 <td data-label="Hora" class="highlight-hora">${hora}</td>
                 <td data-label="Anestesiólogo">Dr(a). ${doctor}</td>
                 <td style="text-align: right;">
-                    <button class="btn-copy" onclick="copyRow('${hora}', '${doctor}')">
+                    <button class="btn-copy" onclick="copyRow('${sede}', '${hora}', '${doctor}')">
                         <i class="fa-solid fa-clipboard"></i> Turno
                     </button>
                 </td>
@@ -286,10 +283,10 @@
         setTimeout(() => { t.style.display = 'none'; }, 2500);
     }
 
-    function copyRow(hora, dr) {
-        const text = `PROGRAMACIÓN: ${hora} - Dr(a). ${dr}`;
+    function copyRow(sede, hora, dr) {
+        const text = `*${sede}* | ${hora} - *Dr(a). ${dr}*`;
         navigator.clipboard.writeText(text);
-        showToast("Turno copiado: " + text);
+        showToast("Turno copiado");
     }
 
     function copyAll() {
@@ -298,15 +295,15 @@
             return;
         }
         
-        const fechaTitulo = globalData[0].fecha !== '-' ? ` (${globalData[0].fecha})` : '';
-        let text = `📋 PROGRAMACIÓN DE ANESTESIÓLOGOS${fechaTitulo}\n-----------------------------------\n`;
+        const fechaTitulo = globalData[0].fecha !== '-' ? ` *Fecha:* ${globalData[0].fecha}` : '';
+        let text = `*PROGRAMACION DE ANESTESIOLOGOS*\n${fechaTitulo}\n-----------------------------------\n`;
         
         globalData.forEach(r => {
-            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\n`;
+            text += `*${r.sede}* | Ord ${r.orden} | ${r.hora} - *Dr(a). ${r.doctor}*\n`;
         });
         
         navigator.clipboard.writeText(text);
-        showToast("Toda la programación ha sido copiada");
+        showToast("Programación copiada");
     }
 
     function updateStatus(isOnline, msg) {
@@ -349,7 +346,7 @@
                 <tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 40px;">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size: 30px; margin-bottom: 15px; display: block;"></i>
                     <strong>Error de sincronización</strong><br><br>
-                    <span style="color: #94a3b8; font-size: 14px;">Verifica que la pestaña "ANESTECIOLOGOS" siga correctamente publicada como archivo CSV en Google Sheets (Archivo > Compartir > Publicar en la Web).</span>
+                    <span style="color: #94a3b8; font-size: 14px;">Verifica que la pestaña "ANESTECIOLOGOS" siga correctamente publicada como archivo CSV en Google Sheets.</span>
                 </td></tr>
             `;
             updateStatus(false, "Desconectado");
@@ -357,7 +354,7 @@
     }
 
     syncSheets();
-    setInterval(syncSheets, 60000); // Sincroniza automáticamente cada 60 segundos
+    setInterval(syncSheets, 60000);
 </script>
 </body>
 </html>
