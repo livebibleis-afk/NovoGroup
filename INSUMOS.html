@@ -428,9 +428,9 @@
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -10px; margin-bottom: 15px;">Haz clic en cualquier tarjeta para copiar el texto de reporte directamente a tu portapapeles.</p>
         
         <div class="template-grid">
-            <button class="btn-template" onclick="copiarPlantilla('Se realiza ronda perimetral e interna por las instalaciones. Todo conforme, sin novedades que reportar.')">
+            <button class="btn-template" onclick="copiarPlantilla('Se realiza ronda perimetral e interna por las instalaciones. Todo conforme, sin novedades que reportar.\nHora: ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false }))">
                 <strong>🚶‍♂️ Ronda sin novedad</strong>
-                <span>"Se realiza ronda perimetral e interna por las instalaciones. Todo conforme..."</span>
+                <span>"Se realiza ronda perimetral e interna por las instalaciones... La hora se genera automáticamente."</span>
             </button>
             
             <button class="btn-template" onclick="copiarPlantilla('Se realiza el relevo de turno. Se hace entrega de equipos de radio, llaves y bitácora en orden. Sin novedades.')">
@@ -453,9 +453,9 @@
                 <span>"Se verifica el cierre total de puertas, apagado de equipos..."</span>
             </button>
 
-            <button class="btn-template" onclick="copiarPlantilla('📦 INGRESO DE MATERIAL:\n- Hora:\n- Proveedor/Origen:\n- Material:\n- Recibe:')">
+            <button class="btn-template" onclick="copiarPlantilla('📦 INGRESO DE MATERIAL:\n- Hora: ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false }) + '\n- Material: Esterilizado')">
                 <strong>📥 Ingreso de Material</strong>
-                <span>"Se registra el ingreso de material. Incluye campos para origen y receptor..."</span>
+                <span>"Registro de material esterilizado. La hora se genera automáticamente."</span>
             </button>
 
             <button class="btn-template" onclick="copiarPlantilla('📤 SALIDA DE MATERIAL:\n- Hora: ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false }) + '\n- Destino: MANSIÓN\n- Material:\n- Persona que retira:')">
@@ -463,9 +463,9 @@
                 <span>"Se registra la salida hacia MANSIÓN. La hora se genera automáticamente."</span>
             </button>
 
-            <button class="btn-template" onclick="copiarPlantilla('🦴 INGRESO SPINE:\nSe registra el ingreso de personal y/o material para procedimiento SPINE a las instalaciones. Todo conforme.')">
-                <strong>🦴 Ingreso SPINE</strong>
-                <span>"Se registra el ingreso de personal y/o material de SPINE. Todo conforme..."</span>
+            <button class="btn-template" onclick="copiarPlantilla('🚛 INGRESO SPINE:\nSe registra el ingreso de camión para procedimiento de retiro material a las instalaciones.\nHora: ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false }))">
+                <strong>🚛 Ingreso SPINE</strong>
+                <span>"Ingreso de camión para retiro de material. La hora se genera automáticamente."</span>
             </button>
 
             <button class="btn-template" onclick="copiarPlantilla('🗑️ RESIDUOS SÓLIDOS:\nSe realiza el recojo y cambio de bolsas/contenedores de residuos sólidos. Área limpia y conforme.')">
