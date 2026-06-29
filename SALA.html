@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surgical Management Dashboard</title>
+    <title>SALA | Dashboard Quirúrgico</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* CONFIGURACIÓN BASE MODO OSCURO QUIRÚRGICO */
         * { box-sizing: border-box; }
         body {
             background-color: #0f172a;
@@ -32,7 +31,6 @@
         h1 { margin: 0; color: #38bdf8; font-size: 32px; display: flex; align-items: center; gap: 15px;}
         .accent { color: #f8fafc; }
 
-        /* DASHBOARD TABLE STYLES */
         .table-layout { 
             width: 100%; 
             background: #020617; 
@@ -71,7 +69,6 @@
 
         .highlight-hora { color: #38bdf8; font-weight: 700; }
 
-        /* BOTONES */
         .btn-copy {
             background: transparent;
             border: 1px solid #38bdf8;
@@ -103,7 +100,6 @@
         }
         .btn-all:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4); }
 
-        /* TOAST NOTIFICATION */
         #toast {
             position: fixed;
             bottom: 30px;
@@ -116,7 +112,6 @@
             display: none;
             z-index: 100;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease forwards;
         }
 
         .status-indicator {
@@ -130,8 +125,6 @@
             border-radius: 20px;
         }
         .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -143,7 +136,7 @@
         </h1>
         <div style="display: flex; gap: 20px; align-items: center;">
             <div class="status-indicator" id="status">
-                <div class="dot" id="statusDot"></div>
+                <div class="dot" id="statusDot" style="background: #f59e0b; box-shadow: 0 0 10px #f59e0b;"></div>
                 <span id="statusText">Conectando...</span>
             </div>
             <button class="btn-all" onclick="copyAll()">
@@ -174,34 +167,28 @@
 
 <script>
     // ==========================================
-    // CONFIGURACIÓN DE TU GOOGLE SHEETS
+    // ID Y PESTAÑA EXACTOS YA CONFIGURADOS
     // ==========================================
     const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
     const TAB_NAME = 'ANESTECIOLOGOS';
     
-    // Variable global para almacenar los datos descargados
     let globalData = [];
 
     function renderTable(data) {
         const body = document.getElementById('tableBody');
         body.innerHTML = '';
-        
-        // Guardar los datos para la función "Copiar Todo"
         globalData = [];
 
-        // Filtrar filas vacías
-        const validRows = data.filter(row => row.length > 3 && row[0] && row[0].trim() !== '');
+        const validRows = data.filter(row => row.length >= 4 && row[0] && row[0].trim() !== '');
 
-        if (validRows.length <= 1) { // Solo está la cabecera o está vacía
-             body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8;">No hay turnos programados o la hoja está vacía.</td></tr>';
+        if (validRows.length <= 1) { 
+             body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">No hay turnos programados en este momento.</td></tr>';
              return;
         }
 
         validRows.forEach((row, index) => {
-            // Saltar la primera fila si detectamos que es la cabecera ("Sede / Clínica")
             if (index === 0 && row[0].toLowerCase().includes("sede")) return; 
             
-            // Asumiendo el orden exacto de tus columnas: [Sede, Orden, Fecha, Hora, Doctor]
             const sede = row[0] || '-';
             const orden = row[1] || '-';
             const fecha = row[2] || '-';
@@ -246,12 +233,11 @@
             return;
         }
         
-        // Tomamos la fecha del primer turno para el título (si existe)
         const fechaTitulo = globalData[0].fecha !== '-' ? ` (${globalData[0].fecha})` : '';
-        let text = `📋 PROGRAMACIÓN QUIRÚRGICA${fechaTitulo}\n-----------------------------------\n`;
+        let text = `📋 PROGRAMACIÓN QUIRÚRGICA${fechaTitulo}\\n-----------------------------------\\n`;
         
         globalData.forEach(r => {
-            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\n`;
+            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\\n`;
         });
         
         navigator.clipboard.writeText(text);
@@ -271,7 +257,6 @@
         }
     }
 
-    // Función principal para obtener los datos
     async function syncSheets() {
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${TAB_NAME}`;
         
@@ -281,9 +266,11 @@
             
             const csv = await res.text();
             
-            // Parseo básico de CSV (divide por saltos de línea y luego por comas, limpiando comillas)
+            if (csv.includes("<!DOCTYPE html>")) {
+                throw new Error("El documento no está publicado en la web");
+            }
+
             const rows = csv.split('\\n').map(row => {
-                // Maneja comas dentro de comillas si existen
                 const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
                 return row.split(regex).map(cell => cell.replace(/^"|"$/g, '').trim());
             });
@@ -294,23 +281,19 @@
         } catch(e) {
             console.error("Error al sincronizar:", e);
             document.getElementById('tableBody').innerHTML = `
-                <tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 30px;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
-                    Error de conexión. Asegúrate de que tu hoja esté "Publicada en la Web".<br>
-                    <span style="font-size: 13px; color: #94a3b8; margin-top: 10px; display: block;">
-                    (Archivo > Compartir > Publicar en la Web > Selecciona la pestaña y elige CSV)
-                    </span>
+                <tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 40px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 30px; margin-bottom: 15px; display: block;"></i>
+                    <strong>Error de conexión.</strong><br><br>
+                    <span style="color: #94a3b8;">Asegúrate de haber completado el <strong>Paso 1</strong>:<br>
+                    Ir a tu Google Sheets > Archivo > Compartir > Publicar en la Web > Seleccionar "ANESTECIOLOGOS" y "CSV" > Publicar.</span>
                 </td></tr>
             `;
             updateStatus(false, "Desconectado");
         }
     }
 
-    // Iniciar sincronización al cargar la página
     syncSheets();
-    
-    // Opcional: Actualizar datos cada 5 minutos automáticamente
-    setInterval(syncSheets, 300000); 
+    setInterval(syncSheets, 60000); // Actualiza cada minuto
 
 </script>
 </body>
