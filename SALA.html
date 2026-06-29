@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surgical Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CONFIGURACIÓN BASE MODO OSCURO QUIRÚRGICO */
+        * { box-sizing: border-box; }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Urbanist', sans-serif;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; color: #38bdf8; font-size: 32px; display: flex; align-items: center; gap: 15px;}
+        .accent { color: #f8fafc; }
+
+        /* DASHBOARD TABLE STYLES */
+        .table-layout { 
+            width: 100%; 
+            background: #020617; 
+            border-radius: 12px; 
+            border: 1px solid #1e293b; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        table { border-collapse: collapse; width: 100%; }
+        th { 
+            background-color: #1e293b; 
+            color: #94a3b8; 
+            font-size: 14px; 
+            font-weight: 700; 
+            padding: 16px; 
+            text-align: left; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        td { 
+            border-bottom: 1px solid #1e293b; 
+            padding: 16px; 
+            font-family: 'Azeret Mono', monospace; 
+            font-size: 15px; 
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+        .badge-orden {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .highlight-hora { color: #38bdf8; font-weight: 700; }
+
+        /* BOTONES */
+        .btn-copy {
+            background: transparent;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: 'Urbanist', sans-serif;
+        }
+        .btn-copy:hover { background: #38bdf8; color: #020617; }
+        
+        .btn-all {
+            background: #38bdf8;
+            color: #020617;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2);
+            transition: all 0.2s;
+        }
+        .btn-all:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4); }
+
+        /* TOAST NOTIFICATION */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; }
+
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>
+            <i class="fa-solid fa-heart-pulse"></i> 
+            <span class="accent">Dashboard</span> Quirúrgico
+        </h1>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div class="status-indicator" id="status">
+                <div class="dot" id="statusDot"></div>
+                <span id="statusText">Conectando...</span>
+            </div>
+            <button class="btn-all" onclick="copyAll()">
+                <i class="fa-solid fa-copy"></i> Copiar Programación
+            </button>
+        </div>
+    </div>
+
+    <div class="table-layout">
+        <table id="scheduleTable">
+            <thead>
+                <tr>
+                    <th>Sede / Clínica</th>
+                    <th>Orden</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Anestesiólogo</th>
+                    <th style="text-align: right;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="6" style="text-align: center; color: #94a3b8;">Cargando datos desde Google Sheets...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="toast">Copiado exitosamente</div>
+
+<script>
+    // ==========================================
+    // CONFIGURACIÓN DE TU GOOGLE SHEETS
+    // ==========================================
+    const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
+    const TAB_NAME = 'ANESTECIOLOGOS';
+    
+    // Variable global para almacenar los datos descargados
+    let globalData = [];
+
+    function renderTable(data) {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+        
+        // Guardar los datos para la función "Copiar Todo"
+        globalData = [];
+
+        // Filtrar filas vacías
+        const validRows = data.filter(row => row.length > 3 && row[0] && row[0].trim() !== '');
+
+        if (validRows.length <= 1) { // Solo está la cabecera o está vacía
+             body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8;">No hay turnos programados o la hoja está vacía.</td></tr>';
+             return;
+        }
+
+        validRows.forEach((row, index) => {
+            // Saltar la primera fila si detectamos que es la cabecera ("Sede / Clínica")
+            if (index === 0 && row[0].toLowerCase().includes("sede")) return; 
+            
+            // Asumiendo el orden exacto de tus columnas: [Sede, Orden, Fecha, Hora, Doctor]
+            const sede = row[0] || '-';
+            const orden = row[1] || '-';
+            const fecha = row[2] || '-';
+            const hora = row[3] || '-';
+            const doctor = row[4] || '-';
+
+            globalData.push({ sede, orden, fecha, hora, doctor });
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${sede}</strong></td>
+                <td><span class="badge-orden">#${orden}</span></td>
+                <td>${fecha}</td>
+                <td class="highlight-hora">${hora}</td>
+                <td>Dr(a). ${doctor}</td>
+                <td style="text-align: right;">
+                    <button class="btn-copy" onclick="copyRow('${hora}', '${doctor}')">
+                        <i class="fa-solid fa-clipboard"></i> Turno
+                    </button>
+                </td>
+            `;
+            body.appendChild(tr);
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    function copyRow(hora, dr) {
+        const text = `PROGRAMACIÓN: ${hora} - Dr(a). ${dr}`;
+        navigator.clipboard.writeText(text);
+        showToast("Turno copiado: " + text);
+    }
+
+    function copyAll() {
+        if (globalData.length === 0) {
+            showToast("No hay datos para copiar");
+            return;
+        }
+        
+        // Tomamos la fecha del primer turno para el título (si existe)
+        const fechaTitulo = globalData[0].fecha !== '-' ? ` (${globalData[0].fecha})` : '';
+        let text = `📋 PROGRAMACIÓN QUIRÚRGICA${fechaTitulo}\n-----------------------------------\n`;
+        
+        globalData.forEach(r => {
+            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\n`;
+        });
+        
+        navigator.clipboard.writeText(text);
+        showToast("Toda la programación ha sido copiada");
+    }
+
+    function updateStatus(isOnline, msg) {
+        const text = document.getElementById('statusText');
+        const dot = document.getElementById('statusDot');
+        text.innerText = msg;
+        if(isOnline) {
+            dot.style.background = '#10b981';
+            dot.style.boxShadow = '0 0 10px #10b981';
+        } else {
+            dot.style.background = '#ef4444';
+            dot.style.boxShadow = '0 0 10px #ef4444';
+        }
+    }
+
+    // Función principal para obtener los datos
+    async function syncSheets() {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${TAB_NAME}`;
+        
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("Error de red o permisos");
+            
+            const csv = await res.text();
+            
+            // Parseo básico de CSV (divide por saltos de línea y luego por comas, limpiando comillas)
+            const rows = csv.split('\\n').map(row => {
+                // Maneja comas dentro de comillas si existen
+                const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
+                return row.split(regex).map(cell => cell.replace(/^"|"$/g, '').trim());
+            });
+            
+            renderTable(rows);
+            updateStatus(true, "Sincronizado");
+            
+        } catch(e) {
+            console.error("Error al sincronizar:", e);
+            document.getElementById('tableBody').innerHTML = `
+                <tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 30px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                    Error de conexión. Asegúrate de que tu hoja esté "Publicada en la Web".<br>
+                    <span style="font-size: 13px; color: #94a3b8; margin-top: 10px; display: block;">
+                    (Archivo > Compartir > Publicar en la Web > Selecciona la pestaña y elige CSV)
+                    </span>
+                </td></tr>
+            `;
+            updateStatus(false, "Desconectado");
+        }
+    }
+
+    // Iniciar sincronización al cargar la página
+    syncSheets();
+    
+    // Opcional: Actualizar datos cada 5 minutos automáticamente
+    setInterval(syncSheets, 300000); 
+
+</script>
+</body>
+</html>
