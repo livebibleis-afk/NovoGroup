@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SALA | Dashboard Quirúrgico</title>
+    <title>Programación de anestesiólogos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,10 +26,10 @@
             margin-bottom: 30px;
             border-bottom: 1px solid #1e293b;
             padding-bottom: 20px;
+            gap: 20px;
         }
 
         h1 { margin: 0; color: #38bdf8; font-size: 32px; display: flex; align-items: center; gap: 15px;}
-        .accent { color: #f8fafc; }
 
         .table-layout { 
             width: 100%; 
@@ -80,6 +80,9 @@
             font-weight: 600;
             transition: all 0.2s;
             font-family: 'Urbanist', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-copy:hover { background: #38bdf8; color: #020617; }
         
@@ -97,6 +100,7 @@
             gap: 10px;
             box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2);
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .btn-all:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4); }
 
@@ -123,8 +127,72 @@
             background: #1e293b;
             padding: 6px 12px;
             border-radius: 20px;
+            white-space: nowrap;
         }
         .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; }
+
+        /* MÓDULO RESPONSIVO PARA MÓVILES (TABLETS Y SMARTPHONES) */
+        @media (max-width: 820px) {
+            body { padding: 20px 15px; }
+            
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                text-align: center;
+            }
+
+            h1 { font-size: 24px; justify-content: center; }
+
+            .header-actions {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .btn-all { width: 100%; justify-content: center; }
+
+            /* Transformar tabla en tarjetas visuales */
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; } 
+            
+            .table-layout { background: transparent; border: none; box-shadow: none; }
+            
+            tr {
+                background: #020617;
+                border: 1px solid #1e293b;
+                border-radius: 12px;
+                margin-bottom: 15px;
+                padding: 10px 5px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            td {
+                text-align: right;
+                padding: 12px 16px;
+                border-bottom: 1px dashed #1e293b;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            td:last-child { border-bottom: none; justify-content: flex-end; }
+
+            /* Generar etiquetas automáticas desde el atributo data-label */
+            td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 700;
+                color: #94a3b8;
+                text-transform: uppercase;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                font-family: 'Urbanist', sans-serif;
+            }
+            
+            .btn-copy { width: 100%; justify-content: center; padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -132,9 +200,9 @@
     <div class="header-container">
         <h1>
             <i class="fa-solid fa-heart-pulse"></i> 
-            <span class="accent">Dashboard</span> Quirúrgico
+            Programación de anestesiólogos
         </h1>
-        <div style="display: flex; gap: 20px; align-items: center;">
+        <div class="header-actions" style="display: flex; gap: 20px; align-items: center;">
             <div class="status-indicator" id="status">
                 <div class="dot" id="statusDot" style="background: #f59e0b; box-shadow: 0 0 10px #f59e0b;"></div>
                 <span id="statusText">Conectando...</span>
@@ -166,9 +234,6 @@
     <div id="toast">Copiado exitosamente</div>
 
 <script>
-    // ==========================================
-    // ID Y PESTAÑA EXACTOS YA CONFIGURADOS
-    // ==========================================
     const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
     const TAB_NAME = 'ANESTECIOLOGOS';
     
@@ -199,11 +264,11 @@
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><strong>${sede}</strong></td>
-                <td><span class="badge-orden">#${orden}</span></td>
-                <td>${fecha}</td>
-                <td class="highlight-hora">${hora}</td>
-                <td>Dr(a). ${doctor}</td>
+                <td data-label="Sede / Clínica"><strong>${sede}</strong></td>
+                <td data-label="Orden"><span class="badge-orden">#${orden}</span></td>
+                <td data-label="Fecha">${fecha}</td>
+                <td data-label="Hora" class="highlight-hora">${hora}</td>
+                <td data-label="Anestesiólogo">Dr(a). ${doctor}</td>
                 <td style="text-align: right;">
                     <button class="btn-copy" onclick="copyRow('${hora}', '${doctor}')">
                         <i class="fa-solid fa-clipboard"></i> Turno
@@ -234,10 +299,10 @@
         }
         
         const fechaTitulo = globalData[0].fecha !== '-' ? ` (${globalData[0].fecha})` : '';
-        let text = `📋 PROGRAMACIÓN QUIRÚRGICA${fechaTitulo}\\n-----------------------------------\\n`;
+        let text = `📋 PROGRAMACIÓN DE ANESTESIÓLOGOS${fechaTitulo}\n-----------------------------------\n`;
         
         globalData.forEach(r => {
-            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\\n`;
+            text += `[${r.sede}] Orden ${r.orden} | ${r.hora} - Dr(a). ${r.doctor}\n`;
         });
         
         navigator.clipboard.writeText(text);
@@ -262,15 +327,15 @@
         
         try {
             const res = await fetch(url);
-            if (!res.ok) throw new Error("Error de red o permisos");
+            if (!res.ok) throw new Error("Error de red");
             
             const csv = await res.text();
             
             if (csv.includes("<!DOCTYPE html>")) {
-                throw new Error("El documento no está publicado en la web");
+                throw new Error("Permisos CSV incorrectos");
             }
 
-            const rows = csv.split('\\n').map(row => {
+            const rows = csv.split('\n').map(row => {
                 const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
                 return row.split(regex).map(cell => cell.replace(/^"|"$/g, '').trim());
             });
@@ -279,13 +344,12 @@
             updateStatus(true, "Sincronizado");
             
         } catch(e) {
-            console.error("Error al sincronizar:", e);
+            console.error(e);
             document.getElementById('tableBody').innerHTML = `
                 <tr><td colspan="6" style="text-align: center; color: #ef4444; padding: 40px;">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size: 30px; margin-bottom: 15px; display: block;"></i>
-                    <strong>Error de conexión.</strong><br><br>
-                    <span style="color: #94a3b8;">Asegúrate de haber completado el <strong>Paso 1</strong>:<br>
-                    Ir a tu Google Sheets > Archivo > Compartir > Publicar en la Web > Seleccionar "ANESTECIOLOGOS" y "CSV" > Publicar.</span>
+                    <strong>Error de sincronización</strong><br><br>
+                    <span style="color: #94a3b8; font-size: 14px;">Verifica que la pestaña "ANESTECIOLOGOS" siga correctamente publicada como archivo CSV en Google Sheets (Archivo > Compartir > Publicar en la Web).</span>
                 </td></tr>
             `;
             updateStatus(false, "Desconectado");
@@ -293,8 +357,7 @@
     }
 
     syncSheets();
-    setInterval(syncSheets, 60000); // Actualiza cada minuto
-
+    setInterval(syncSheets, 60000); // Sincroniza automáticamente cada 60 segundos
 </script>
 </body>
 </html>
