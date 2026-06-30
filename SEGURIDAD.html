@@ -94,7 +94,7 @@
         // ID EXACTO DE TU GOOGLE SHEETS
         const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
         
-        // Pestaña donde pegas las 7 columnas
+        // Pestaña de donde se leen los datos
         const SHEET_NAME = 'Personal'; 
 
         let globalData = [];
@@ -179,7 +179,7 @@
             renderDashboard(globalData, e.target.value);
         });
 
-        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA (7 COLUMNAS) */
+        /* LECTURA INTELIGENTE DESDE GOOGLE SHEETS (FORMATO WHATSAPP RAW) */
         async function cargarDatosPersonal() {
             const URL_PERSONAL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
@@ -197,29 +197,53 @@
                 };
 
                 const personalData = [];
-                let startIdx = 0; 
+                let currentSede = 'OTRAS ÁREAS'; 
                 
-                // Saltar encabezados si la primera celda dice "ID" o "FECHA"
-                if(json.table.rows.length > 0 && (getVal(json.table.rows[0].c[0]).toUpperCase() === 'ID' || getVal(json.table.rows[0].c[0]).toUpperCase() === 'FECHA')) {
-                    startIdx = 1;
-                }
+                // Palabras clave para detectar automáticamente los encabezados de Sede
+                const sedesConocidas = ['NOVO CLINIC', 'NOVO INTEGRAL', 'NOVO CENTRAL', 'ESTERELIZA', 'PLANTA KAORI', 'NOVO Q'];
 
-                for(let i = startIdx; i < json.table.rows.length; i++) {
+                for(let i = 0; i < json.table.rows.length; i++) {
                     const row = json.table.rows[i];
                     if(!row || !row.c) continue;
                     
-                    // LECTURA DE LAS 7 COLUMNAS (Índices: A=0, B=1, C=2, D=3, E=4, F=5, G=6)
-                    const sedeVal = getVal(row.c[2]);    // Columna C (Sede)
-                    const cargoVal = getVal(row.c[4]);   // Columna E (Cargo)
-                    const nombreVal = getVal(row.c[5]);  // Columna F (Personal Asignado)
+                    // En tu estructura de Sheets los datos están en las columnas C y D (Índices 2 y 3)
+                    const rawCargo = getVal(row.c[2]);  
+                    const rawNombre = getVal(row.c[3]); 
                     
-                    // Si la fila está vacía en Sede, Cargo y Nombre, la ignoramos
-                    if(!sedeVal && !cargoVal && !nombreVal) continue;
+                    if(!rawCargo) continue; // Salta filas completamente en blanco
 
+                    // 1. Detectar si la fila es un título de Sede
+                    let upperCargo = rawCargo.toUpperCase();
+                    let esSede = sedesConocidas.find(s => upperCargo.includes(s));
+
+                    if (esSede) {
+                        currentSede = rawCargo.replace(/[\*\_\-\:]/g, '').trim(); // Limpia el formato de WhatsApp
+                        
+                        // Si la Sede tiene nombres en la misma línea (Ej: Esterilización: Bricelia)
+                        if (rawNombre) {
+                            personalData.push({
+                                sede: currentSede,
+                                cargo: 'Personal', 
+                                nombre: rawNombre
+                            });
+                        }
+                        continue; 
+                    }
+
+                    // 2. Omitir subtítulos de áreas vacías (Ej: 🏨 *Hospitalización:*_)
+                    // Importante: Si alguien falta, poner "pend." o "-" en la columna de nombres.
+                    if (!rawNombre && !rawCargo.toLowerCase().includes('pend')) {
+                        continue; 
+                    }
+
+                    // 3. Limpiar caracteres basura (* _ - : 🏨 ✓) del texto del cargo
+                    let cargoLimpio = rawCargo.replace(/[\*\_\-\:🏨✓]/g, '').trim();
+
+                    // 4. Guardar al trabajador con la Sede actual recordada
                     personalData.push({
-                        sede: sedeVal || 'Sin Sede',
-                        cargo: cargoVal || 'Sin Cargo',
-                        nombre: nombreVal || 'PENDIENTE'
+                        sede: currentSede,
+                        cargo: cargoLimpio,
+                        nombre: rawNombre || 'PENDIENTE'
                     });
                 }
 
@@ -229,7 +253,7 @@
 
             } catch (error) {
                 console.error("Error sincronizando Sheets:", error);
-                document.getElementById('loader').innerHTML = "<span style='color:#e74c3c'>⚠️ Error al sincronizar. Verifica el nombre de la pestaña en Google Sheets.</span>";
+                document.getElementById('loader').innerHTML = "<span style='color:#e74c3c'>⚠️ Error al sincronizar. Verifica tu conexión a Google Sheets.</span>";
             }
         }
 
