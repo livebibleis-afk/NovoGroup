@@ -94,7 +94,7 @@
         // ID EXACTO DE TU GOOGLE SHEETS
         const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
         
-        // Pestaña donde pegas las 4 columnas (ID, SEDE, CARGO, NOMBRE)
+        // Pestaña donde pegas las 7 columnas
         const SHEET_NAME = 'Personal'; 
 
         let globalData = [];
@@ -179,7 +179,7 @@
             renderDashboard(globalData, e.target.value);
         });
 
-        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA (4 COLUMNAS) */
+        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA (7 COLUMNAS) */
         async function cargarDatosPersonal() {
             const URL_PERSONAL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
@@ -199,8 +199,8 @@
                 const personalData = [];
                 let startIdx = 0; 
                 
-                // Saltar encabezados si la primera celda dice "ID"
-                if(json.table.rows.length > 0 && getVal(json.table.rows[0].c[0]).toUpperCase() === 'ID') {
+                // Saltar encabezados si la primera celda dice "ID" o "FECHA"
+                if(json.table.rows.length > 0 && (getVal(json.table.rows[0].c[0]).toUpperCase() === 'ID' || getVal(json.table.rows[0].c[0]).toUpperCase() === 'FECHA')) {
                     startIdx = 1;
                 }
 
@@ -208,10 +208,10 @@
                     const row = json.table.rows[i];
                     if(!row || !row.c) continue;
                     
-                    // LECTURA DE LAS 4 COLUMNAS
-                    const sedeVal = getVal(row.c[1]);
-                    const cargoVal = getVal(row.c[2]);
-                    const nombreVal = getVal(row.c[3]);
+                    // LECTURA DE LAS 7 COLUMNAS (Índices: A=0, B=1, C=2, D=3, E=4, F=5, G=6)
+                    const sedeVal = getVal(row.c[2]);    // Columna C (Sede)
+                    const cargoVal = getVal(row.c[4]);   // Columna E (Cargo)
+                    const nombreVal = getVal(row.c[5]);  // Columna F (Personal Asignado)
                     
                     // Si la fila está vacía en Sede, Cargo y Nombre, la ignoramos
                     if(!sedeVal && !cargoVal && !nombreVal) continue;
