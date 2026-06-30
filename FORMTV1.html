@@ -221,8 +221,8 @@
     </div>
 
     <script>
-        // ======= CONFIGURACIÓN GOOGLE SHEETS =======
-        const urlAPI = "URL_DE_TU_APPS_SCRIPT_AQUI"; 
+        // ======= API CONFIGURADA =======
+        const urlAPI = "https://script.google.com/macros/s/AKfycbxz_7fIrUl1J_vIhuQLbprPUBPJDwlPj_HhFra_rJI9hbL51CPaIDKlVhDaw_Dhljyi/exec"; 
 
         const inicioHora = 4;
         const finHora = 23;
@@ -251,34 +251,74 @@
         }
 
         async function guardarEnSheet() {
-            if(urlAPI === "URL_DE_TU_APPS_SCRIPT_AQUI") return alert("Primero debes poner la URL de tu Apps Script en el código.");
             alert("Guardando datos...");
-            const tbody = document.getElementById('body-sala1'); // Ejemplo solo Sala 1
-            const filas = tbody.getElementsByTagName('tr');
-            let datos = [["Hora", "Médico", "Paciente", "Procedimiento", "Cant", "Obs"]];
             
-            for (let f of filas) {
-                let celdas = f.getElementsByTagName('td');
-                datos.push(Array.from(celdas).map(c => c.innerText));
-            }
+            const salas = ['sala1', 'sala2', 'sala3'];
+            let datos = [["Sala", "Hora", "Médico", "Paciente", "Procedimiento", "Cant", "Obs"]];
+            
+            salas.forEach(sala => {
+                const tbody = document.getElementById(`body-${sala}`);
+                const filas = tbody.getElementsByTagName('tr');
+                for (let f of filas) {
+                    let celdas = f.getElementsByTagName('td');
+                    let hayDatos = Array.from(celdas).slice(1).some(c => c.innerText.trim() !== "");
+                    
+                    if (hayDatos) {
+                        let filaDatos = [sala.toUpperCase(), celdas[0].innerText, celdas[1].innerText, celdas[2].innerText, celdas[3].innerText, celdas[4].innerText, celdas[5].innerText];
+                        datos.push(filaDatos);
+                    }
+                }
+            });
+
             try {
                 const res = await fetch(urlAPI, { method: 'POST', body: JSON.stringify(datos) });
-                if((await res.json()).status === "éxito") alert("¡Guardado!");
-            } catch (e) { alert("Error al guardar."); }
+                if((await res.json()).status === "éxito") alert("¡Guardado correctamente en Sheets!");
+            } catch (e) { 
+                console.error(e);
+                alert("Error al guardar."); 
+            }
         }
 
         async function cargarDesdeSheet() {
-            if(urlAPI === "URL_DE_TU_APPS_SCRIPT_AQUI") return alert("Falta la URL de Apps Script.");
-            alert("Cargando...");
+            alert("Cargando datos desde Sheets...");
             try {
                 const res = await fetch(urlAPI);
                 const datos = await res.json();
-                const tbody = document.getElementById('body-sala1');
-                tbody.innerHTML = '';
+                
+                // Limpiar todas las tablas primero
+                ['sala1', 'sala2', 'sala3'].forEach(s => {
+                    const tbody = document.getElementById(`body-${s}`);
+                    Array.from(tbody.getElementsByTagName('tr')).forEach(tr => {
+                        Array.from(tr.getElementsByTagName('td')).slice(1).forEach(td => td.innerText = "");
+                    });
+                });
+
+                // Llenar datos correspondientes
                 for (let i = 1; i < datos.length; i++) {
-                    tbody.innerHTML += `<tr><td>${datos[i][0]}</td><td contenteditable="true">${datos[i][1]}</td><td contenteditable="true">${datos[i][2]}</td><td contenteditable="true">${datos[i][3]}</td><td contenteditable="true">${datos[i][4]}</td><td contenteditable="true">${datos[i][5]}</td></tr>`;
+                    let salaName = datos[i][0].toLowerCase();
+                    let hora = datos[i][1];
+                    let tbody = document.getElementById(`body-${salaName}`);
+                    
+                    if (tbody) {
+                        let filas = tbody.getElementsByTagName('tr');
+                        for (let tr of filas) {
+                            if (tr.getElementsByTagName('td')[0].innerText === hora) {
+                                let celdas = tr.getElementsByTagName('td');
+                                celdas[1].innerText = datos[i][2];
+                                celdas[2].innerText = datos[i][3];
+                                celdas[3].innerText = datos[i][4];
+                                celdas[4].innerText = datos[i][5];
+                                celdas[5].innerText = datos[i][6];
+                                break;
+                            }
+                        }
+                    }
                 }
-            } catch (e) { alert("Error al cargar."); }
+                alert("¡Carga completada!");
+            } catch (e) { 
+                console.error(e);
+                alert("Error al cargar."); 
+            }
         }
 
         window.onload = generarTablas;
