@@ -3,241 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Novo Clinic - Rol de Personal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Reporte de Sedes</title>
     <style>
         :root {
-            --bg-color: #f4f6f9;
-            --text-color: #333333;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            --header-bg: #2c3e50;
-            --header-text: #ffffff;
-            --card-hover: rgba(255, 255, 255, 0.95);
-            --border-line: rgba(150,150,150,0.15);
+            /* Modo día - Tonos bajos y suaves */
+            --bg-gradient: linear-gradient(135deg, #b8c6db 0%, #f5f7fa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-main: #2c3e50;
+            --text-muted: #5d6d7e;
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --toggle-bg: #2c3e50;
+            --toggle-icon: '🌙';
         }
 
         [data-theme="dark"] {
-            --bg-color: #121820;
-            --text-color: #e0e0e0;
-            --glass-bg: rgba(20, 30, 45, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --header-bg: #1a252f;
-            --card-hover: rgba(30, 45, 65, 0.9);
-            --border-line: rgba(200,200,200,0.08);
+            /* Modo oscuro - Tonos azules medios/oscuros */
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --glass-bg: rgba(20, 35, 65, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8f9f9;
+            --text-muted: #bdc3c7;
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --toggle-bg: #f8f9f9;
+            --toggle-icon: '☀️';
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; min-height: 100vh; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background 0.4s ease, color 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .glass { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 12px; }
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 15px;
+            line-height: 1.5;
+        }
 
-        header { position: sticky; top: 0; z-index: 100; background: var(--header-bg); color: var(--header-text); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .header-title { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .header-controls { display: flex; gap: 10px; align-items: center; }
-        
-        .search-bar { padding: 8px 15px; border-radius: 20px; border: none; outline: none; width: 200px; }
-        
-        .icon-btn { background: transparent; border: none; color: var(--header-text); cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; transition: 0.2s; }
-        .icon-btn:hover { background: rgba(255,255,255,0.1); }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
 
-        main { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        /* Efecto Cristal (Glassmorphism) Apple Style */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+        }
 
-        /* Tarjeta única por Sede */
-        .sede-card { padding: 20px; margin-bottom: 25px; transition: transform 0.2s; border-left: 5px solid #3498db; }
-        .sede-card:hover { transform: translateY(-2px); background: var(--card-hover); }
-        
-        .sede-title { font-size: 1.3rem; color: #2c3e50; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid var(--border-line); font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 8px;}
-        [data-theme="dark"] .sede-title { color: #ecf0f1; }
-        .sede-title svg { color: #3498db; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+        }
 
-        /* Filas de Personal dentro de la tarjeta */
-        .staff-list { display: flex; flex-direction: column; }
-        .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border-line); }
-        .staff-row:last-child { border-bottom: none; padding-bottom: 0; }
-        
-        .staff-role { font-size: 0.85rem; color: #7f8c8d; font-weight: 600; text-transform: uppercase; width: 45%; padding-right: 10px; line-height: 1.3; }
-        [data-theme="dark"] .staff-role { color: #aaa; }
-        
-        .staff-name { font-size: 1rem; font-weight: 700; color: #2c3e50; width: 55%; text-align: right; word-break: break-word; }
-        [data-theme="dark"] .staff-name { color: #ecf0f1; }
-        
-        /* Estado Pendiente */
-        .name-empty { color: #e74c3c !important; font-style: italic; font-size: 0.9rem; }
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
 
-        .loader { text-align: center; padding: 40px; color: #7f8c8d; font-style: italic; }
+        .theme-toggle {
+            background: var(--toggle-bg);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+
+        .theme-toggle::after {
+            content: var(--toggle-icon);
+        }
+
+        /* Tarjetas */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            padding: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sede-title {
+            color: #2980b9; 
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        [data-theme="dark"] .sede-title {
+            color: #5dade2;
+        }
+
+        .area-title {
+            font-weight: 600;
+            margin-top: 12px;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.05);
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .area-title {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ul {
+            list-style-type: none;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(150, 150, 150, 0.15);
+            font-size: 0.95rem;
+            align-items: center;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .role {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: capitalize;
+        }
+
+        .name {
+            text-align: right;
+            font-weight: 500;
+            max-width: 60%;
+        }
+
+        /* Optimizaciones para teléfonos */
+        @media (max-width: 480px) {
+            li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+                padding: 12px 0;
+            }
+            .name {
+                text-align: left;
+                max-width: 100%;
+                font-size: 1.05rem;
+                padding-left: 10px;
+                border-left: 2px solid #5dade2;
+            }
+            .role {
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <header>
-        <div class="header-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            Rol de Personal & Seguridad
-        </div>
-        <div class="header-controls">
-            <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar persona o cargo...">
-            <button class="icon-btn" id="themeToggle" title="Modo Claro/Oscuro">
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z"/></svg>
-            </button>
-        </div>
-    </header>
+    <div class="container">
+        <header class="glass">
+            <h1 id="report-title">Reporte</h1>
+            <button class="theme-toggle" id="toggle-btn" aria-label="Cambiar tema"></button>
+        </header>
 
-    <main>
-        <div id="loader" class="loader">Sincronizando con la base de datos...</div>
-        <div id="staff-container"></div>
-    </main>
+        <div class="card-container" id="cards-wrapper">
+            </div>
+    </div>
 
     <script>
-        // ID EXACTO DE TU GOOGLE SHEETS
-        const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
-        
-        // Pestaña donde pegas las 7 columnas
-        const SHEET_NAME = 'Personal'; 
-
-        let globalData = [];
-        
-        /* INICIO SISTEMA Y THEME */
-        const initTheme = () => {
-            try {
-                const savedTheme = localStorage.getItem('theme_staff') || 'light';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
-        };
-        initTheme();
-
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            try { localStorage.setItem('theme_staff', newTheme); } catch(e){}
-        });
-
-        /* FUNCIÓN DE RENDERIZADO: UNA TARJETA POR SEDE */
-        function renderDashboard(data, filtro = '') {
-            const container = document.getElementById('staff-container');
-            container.innerHTML = '';
-            
-            if(data.length === 0) {
-                container.innerHTML = '<div class="loader">No hay datos registrados aún.</div>';
-                return;
-            }
-
-            // Filtrado de búsqueda
-            const searchLower = filtro.toLowerCase();
-            const filteredData = data.filter(item => 
-                (item.nombre || '').toLowerCase().includes(searchLower) ||
-                (item.cargo || '').toLowerCase().includes(searchLower) ||
-                (item.sede || '').toLowerCase().includes(searchLower)
-            );
-
-            // Agrupar por SEDE
-            const sedes = {};
-            filteredData.forEach(item => {
-                const sedeName = item.sede || 'OTRAS ÁREAS';
-                if(!sedes[sedeName]) sedes[sedeName] = [];
-                sedes[sedeName].push(item);
-            });
-
-            // Crear UNA sola tarjeta por Sede
-            for (const [sedeName, staffList] of Object.entries(sedes)) {
-                const card = document.createElement('div');
-                card.className = 'glass sede-card';
-                
-                let html = `
-                    <div class="sede-title">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 3.83L19.17 20H4.83L12 5.83zM11 16h2v2h-2v-2zm0-7h2v5h-2V9z"/></svg>
-                        ${sedeName}
-                    </div>
-                    <div class="staff-list">
-                `;
-
-                // Agregar cada empleado como una fila dentro de la tarjeta
-                staffList.forEach(s => {
-                    const isEmpty = (!s.nombre || s.nombre === '-' || s.nombre.toLowerCase().includes('pend'));
-                    const nombreMostrar = isEmpty ? 'PENDIENTE / NO ASIGNADO' : s.nombre;
-                    const nameClass = isEmpty ? 'name-empty' : '';
-
-                    html += `
-                        <div class="staff-row">
-                            <div class="staff-role">${s.cargo}</div>
-                            <div class="staff-name ${nameClass}">${nombreMostrar}</div>
-                        </div>
-                    `;
-                });
-
-                html += `</div>`; // Cierra staff-list
-                card.innerHTML = html;
-                container.appendChild(card);
-            }
-        }
-
-        // Buscador en tiempo real
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            renderDashboard(globalData, e.target.value);
-        });
-
-        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA (7 COLUMNAS) */
-        async function cargarDatosPersonal() {
-            const URL_PERSONAL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
-
-            try {
-                const res = await fetch(URL_PERSONAL);
-                const txt = await res.text();
-                // Limpiar la respuesta de Google
-                const json = JSON.parse(txt.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
-
-                const getVal = (col) => {
-                    if (!col) return '';
-                    if (col.f) return col.f.toString().trim();
-                    if (col.v !== null && col.v !== undefined) return col.v.toString().trim();
-                    return '';
-                };
-
-                const personalData = [];
-                let startIdx = 0; 
-                
-                // Saltar encabezados si la primera celda dice "ID" o "FECHA"
-                if(json.table.rows.length > 0 && (getVal(json.table.rows[0].c[0]).toUpperCase() === 'ID' || getVal(json.table.rows[0].c[0]).toUpperCase() === 'FECHA')) {
-                    startIdx = 1;
+        // ======= BASE DE DATOS INCRUSTADA =======
+        const database = {
+            "titulo": "REPORTE SEDE NOCHE JUEVES (02) JULIO 26",
+            "tarjetas": [
+                {
+                    "id": "Tarjeta 01",
+                    "sedes": [
+                        {
+                            "nombre": "NOVO CLINIC",
+                            "areas": [
+                                {
+                                    "nombre": "Hospitalización",
+                                    "personal": [
+                                        {"rol": "Técnica", "nombres": "Karina"},
+                                        {"rol": "Técnica", "nombres": "Reyna"},
+                                        {"rol": "Licenciada", "nombres": "Katerin Analia"},
+                                        {"rol": "Dr piso", "nombres": "Dra Rodolfo Luzardo"},
+                                        {"rol": "Pacientes", "nombres": "11 (falta bajar más pacientes)"}
+                                    ]
+                                },
+                                {
+                                    "nombre": "S.O.P.",
+                                    "personal": [
+                                        {"rol": "Recuperación", "nombres": "Eudi cuevas"},
+                                        {"rol": "Instrumentista", "nombres": "Isabel"},
+                                        {"rol": "Farmacia", "nombres": "Vera Zully"},
+                                        {"rol": "Circulante 01", "nombres": "Lumiyork"},
+                                        {"rol": "Circulante 02", "nombres": "Alex"},
+                                        {"rol": "Circulante 03", "nombres": "Airomar"},
+                                        {"rol": "Limpieza SOP", "nombres": "Josefa Rojas"},
+                                        {"rol": "Limpieza Hosp", "nombres": "Lauri Rawdow"},
+                                        {"rol": "Seguridad", "nombres": "Exel Fernandez"},
+                                        {"rol": "Coordinador", "nombres": "Alexander Intriago"}
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "nombre": "NOVO INTEGRAL",
+                            "personal": [
+                                {"rol": "Seguridad", "nombres": "Giovanni Vernaza"},
+                                {"rol": "Limpieza", "nombres": "Roberth Morilla"},
+                                {"rol": "UCI", "nombres": "Dr. Diego Espinoza"},
+                                {"rol": "Procedimiento", "nombres": "en proceso"},
+                                {"rol": "Farmacia", "nombres": "Haciel"},
+                                {"rol": "Laboratorio", "nombres": "Bianca"},
+                                {"rol": "S.O.P.", "nombres": "Lic Lorena"},
+                                {"rol": "Hospitalización", "nombres": "Dra Evelyn, lic almendra, Tc Pacsy"}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "Tarjeta 02",
+                    "sedes": [
+                        {
+                            "nombre": "Novo Central",
+                            "personal": [
+                                {"rol": "Coordinador", "nombres": "Johan Barreto"},
+                                {"rol": "Seguridad", "nombres": "José Da silva"},
+                                {"rol": "Limpieza", "nombres": "Liliam Monje, -"}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "Tarjeta 03",
+                    "sedes": [
+                        {
+                            "nombre": "Esterilización",
+                            "personal": [
+                                {"rol": "Personal", "nombres": "Johander, Carmen"}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "Tarjeta 04",
+                    "sedes": [
+                        {
+                            "nombre": "Planta Kaori",
+                            "personal": [
+                                {"rol": "Seguridad", "nombres": "Roberto"},
+                                {"rol": "Lavandería 01", "nombres": "Greyvi (nueva)"},
+                                {"rol": "Lavandería 02", "nombres": "-"},
+                                {"rol": "Chofer", "nombres": "Carlos Carpio"}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "Tarjeta 05",
+                    "sedes": [
+                        {
+                            "nombre": "Novo Q",
+                            "personal": [
+                                {"rol": "Seguridad", "nombres": "Benedicto"},
+                                {"rol": "Limpieza", "nombres": "Carmen Corso"},
+                                {"rol": "Farmacia", "nombres": "Pendiente"}
+                            ]
+                        }
+                    ]
                 }
+            ]
+        };
 
-                for(let i = startIdx; i < json.table.rows.length; i++) {
-                    const row = json.table.rows[i];
-                    if(!row || !row.c) continue;
-                    
-                    // LECTURA DE LAS 7 COLUMNAS (Índices: A=0, B=1, C=2, D=3, E=4, F=5, G=6)
-                    const sedeVal = getVal(row.c[2]);    // Columna C (Sede)
-                    const cargoVal = getVal(row.c[4]);   // Columna E (Cargo)
-                    const nombreVal = getVal(row.c[5]);  // Columna F (Personal Asignado)
-                    
-                    // Si la fila está vacía en Sede, Cargo y Nombre, la ignoramos
-                    if(!sedeVal && !cargoVal && !nombreVal) continue;
+        // ======= LÓGICA DE RENDERIZADO =======
+        document.getElementById('report-title').textContent = database.titulo;
+        
+        const wrapper = document.getElementById('cards-wrapper');
 
-                    personalData.push({
-                        sede: sedeVal || 'Sin Sede',
-                        cargo: cargoVal || 'Sin Cargo',
-                        nombre: nombreVal || 'PENDIENTE'
+        database.tarjetas.forEach(tarjeta => {
+            let htmlCard = `<div class="card glass"><div class="card-header">${tarjeta.id}</div>`;
+
+            tarjeta.sedes.forEach(sede => {
+                htmlCard += `<div class="sede-title">✓ ${sede.nombre}</div>`;
+                
+                if (sede.areas) {
+                    sede.areas.forEach(area => {
+                        htmlCard += `<div class="area-title">${area.nombre}</div><ul>`;
+                        area.personal.forEach(p => {
+                            htmlCard += `<li><span class="role">${p.rol}</span> <span class="name">${p.nombres}</span></li>`;
+                        });
+                        htmlCard += `</ul>`;
                     });
                 }
 
-                document.getElementById('loader').style.display = 'none';
-                globalData = personalData; // Guardamos en variable global para el buscador
-                renderDashboard(globalData);
+                if (sede.personal) {
+                    htmlCard += `<ul>`;
+                    sede.personal.forEach(p => {
+                        htmlCard += `<li><span class="role">${p.rol}</span> <span class="name">${p.nombres}</span></li>`;
+                    });
+                    htmlCard += `</ul>`;
+                }
+            });
 
-            } catch (error) {
-                console.error("Error sincronizando Sheets:", error);
-                document.getElementById('loader').innerHTML = "<span style='color:#e74c3c'>⚠️ Error al sincronizar. Verifica el nombre de la pestaña en Google Sheets.</span>";
+            htmlCard += `</div>`;
+            wrapper.innerHTML += htmlCard;
+        });
+
+        // ======= LÓGICA DE TEMA OSCURO/CLARO =======
+        const btnToggle = document.getElementById('toggle-btn');
+        const body = document.body;
+
+        btnToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
             }
-        }
-
-        window.onload = () => {
-            cargarDatosPersonal();
-            // Refrescar automáticamente cada 60 segundos
-            setInterval(cargarDatosPersonal, 60000); 
-        };
+        });
     </script>
 </body>
 </html>
