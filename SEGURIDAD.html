@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Reporte de Sedes</title>
+    <title>Base de Datos - Personal</title>
     <style>
         :root {
             /* Modo día - Tonos bajos y suaves */
-            --bg-gradient: linear-gradient(135deg, #b8c6db 0%, #f5f7fa 100%);
-            --glass-bg: rgba(255, 255, 255, 0.45);
+            --bg-gradient: linear-gradient(135deg, #d5dee7 0%, #e8edf3 100%);
+            --glass-bg: rgba(255, 255, 255, 0.5);
             --glass-border: rgba(255, 255, 255, 0.6);
-            --text-main: #2c3e50;
+            --text-main: #34495e;
             --text-muted: #5d6d7e;
-            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
             --toggle-bg: #2c3e50;
             --toggle-icon: '🌙';
+            --accent-color: #2980b9;
         }
 
         [data-theme="dark"] {
             /* Modo oscuro - Tonos azules medios/oscuros */
             --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            --glass-bg: rgba(20, 35, 65, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(20, 35, 65, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f8f9f9;
             --text-muted: #bdc3c7;
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             --toggle-bg: #f8f9f9;
             --toggle-icon: '☀️';
+            --accent-color: #5dade2;
         }
 
         * {
@@ -53,7 +55,7 @@
             padding-bottom: 30px;
         }
 
-        /* Efecto Cristal (Glassmorphism) Apple Style */
+        /* Efecto Cristal (Glassmorphism) */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -100,6 +102,21 @@
             content: var(--toggle-icon);
         }
 
+        /* Cargando */
+        .loader {
+            text-align: center;
+            padding: 40px;
+            font-weight: 600;
+            color: var(--accent-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
         /* Tarjetas */
         .card-container {
             display: flex;
@@ -117,46 +134,17 @@
             font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 15px;
-            color: var(--text-main);
+            color: var(--accent-color);
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 12px;
             display: flex;
             align-items: center;
-        }
-
-        .sede-title {
-            color: #2980b9; 
-            font-weight: 700;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-size: 1.05rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        [data-theme="dark"] .sede-title {
-            color: #5dade2;
-        }
-
-        .area-title {
-            font-weight: 600;
-            margin-top: 12px;
-            color: var(--text-muted);
-            background: rgba(0,0,0,0.05);
-            padding: 4px 10px;
-            border-radius: 8px;
-            display: inline-block;
-            font-size: 0.9rem;
-        }
-
-        [data-theme="dark"] .area-title {
-            background: rgba(255,255,255,0.05);
         }
 
         ul {
             list-style-type: none;
             margin-top: 10px;
-            margin-bottom: 15px;
         }
 
         li {
@@ -173,7 +161,7 @@
         }
 
         .role {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-muted);
             font-size: 0.85rem;
             text-transform: capitalize;
@@ -198,7 +186,7 @@
                 max-width: 100%;
                 font-size: 1.05rem;
                 padding-left: 10px;
-                border-left: 2px solid #5dade2;
+                border-left: 2px solid var(--accent-color);
             }
             .role {
                 font-size: 0.8rem;
@@ -212,156 +200,77 @@
 
     <div class="container">
         <header class="glass">
-            <h1 id="report-title">Reporte</h1>
+            <h1>Base de Datos - Personal</h1>
             <button class="theme-toggle" id="toggle-btn" aria-label="Cambiar tema"></button>
         </header>
 
         <div class="card-container" id="cards-wrapper">
-            </div>
+            <div class="glass loader" id="loader">Conectando a Google Sheets...</div>
+        </div>
     </div>
 
     <script>
-        // ======= BASE DE DATOS INCRUSTADA =======
-        const database = {
-            "titulo": "REPORTE SEDE NOCHE JUEVES (02) JULIO 26",
-            "tarjetas": [
-                {
-                    "id": "Tarjeta 01",
-                    "sedes": [
-                        {
-                            "nombre": "NOVO CLINIC",
-                            "areas": [
-                                {
-                                    "nombre": "Hospitalización",
-                                    "personal": [
-                                        {"rol": "Técnica", "nombres": "Karina"},
-                                        {"rol": "Técnica", "nombres": "Reyna"},
-                                        {"rol": "Licenciada", "nombres": "Katerin Analia"},
-                                        {"rol": "Dr piso", "nombres": "Dra Rodolfo Luzardo"},
-                                        {"rol": "Pacientes", "nombres": "11 (falta bajar más pacientes)"}
-                                    ]
-                                },
-                                {
-                                    "nombre": "S.O.P.",
-                                    "personal": [
-                                        {"rol": "Recuperación", "nombres": "Eudi cuevas"},
-                                        {"rol": "Instrumentista", "nombres": "Isabel"},
-                                        {"rol": "Farmacia", "nombres": "Vera Zully"},
-                                        {"rol": "Circulante 01", "nombres": "Lumiyork"},
-                                        {"rol": "Circulante 02", "nombres": "Alex"},
-                                        {"rol": "Circulante 03", "nombres": "Airomar"},
-                                        {"rol": "Limpieza SOP", "nombres": "Josefa Rojas"},
-                                        {"rol": "Limpieza Hosp", "nombres": "Lauri Rawdow"},
-                                        {"rol": "Seguridad", "nombres": "Exel Fernandez"},
-                                        {"rol": "Coordinador", "nombres": "Alexander Intriago"}
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "nombre": "NOVO INTEGRAL",
-                            "personal": [
-                                {"rol": "Seguridad", "nombres": "Giovanni Vernaza"},
-                                {"rol": "Limpieza", "nombres": "Roberth Morilla"},
-                                {"rol": "UCI", "nombres": "Dr. Diego Espinoza"},
-                                {"rol": "Procedimiento", "nombres": "en proceso"},
-                                {"rol": "Farmacia", "nombres": "Haciel"},
-                                {"rol": "Laboratorio", "nombres": "Bianca"},
-                                {"rol": "S.O.P.", "nombres": "Lic Lorena"},
-                                {"rol": "Hospitalización", "nombres": "Dra Evelyn, lic almendra, Tc Pacsy"}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "Tarjeta 02",
-                    "sedes": [
-                        {
-                            "nombre": "Novo Central",
-                            "personal": [
-                                {"rol": "Coordinador", "nombres": "Johan Barreto"},
-                                {"rol": "Seguridad", "nombres": "José Da silva"},
-                                {"rol": "Limpieza", "nombres": "Liliam Monje, -"}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "Tarjeta 03",
-                    "sedes": [
-                        {
-                            "nombre": "Esterilización",
-                            "personal": [
-                                {"rol": "Personal", "nombres": "Johander, Carmen"}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "Tarjeta 04",
-                    "sedes": [
-                        {
-                            "nombre": "Planta Kaori",
-                            "personal": [
-                                {"rol": "Seguridad", "nombres": "Roberto"},
-                                {"rol": "Lavandería 01", "nombres": "Greyvi (nueva)"},
-                                {"rol": "Lavandería 02", "nombres": "-"},
-                                {"rol": "Chofer", "nombres": "Carlos Carpio"}
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "Tarjeta 05",
-                    "sedes": [
-                        {
-                            "nombre": "Novo Q",
-                            "personal": [
-                                {"rol": "Seguridad", "nombres": "Benedicto"},
-                                {"rol": "Limpieza", "nombres": "Carmen Corso"},
-                                {"rol": "Farmacia", "nombres": "Pendiente"}
-                            ]
-                        }
-                    ]
-                }
-            ]
-        };
+        // Configuración de Google Sheets
+        // Se usa tu ID de documento y se especifica la hoja "Personal"
+        const sheetId = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
+        const sheetName = 'Personal';
+        const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
-        // ======= LÓGICA DE RENDERIZADO =======
-        document.getElementById('report-title').textContent = database.titulo;
-        
         const wrapper = document.getElementById('cards-wrapper');
 
-        database.tarjetas.forEach(tarjeta => {
-            let htmlCard = `<div class="card glass"><div class="card-header">${tarjeta.id}</div>`;
-
-            tarjeta.sedes.forEach(sede => {
-                htmlCard += `<div class="sede-title">✓ ${sede.nombre}</div>`;
+        // Función para obtener y pintar los datos
+        fetch(url)
+            .then(response => response.text())
+            .then(text => {
+                // Limpiar la respuesta de Google para obtener JSON válido
+                const jsonStr = text.substring(47).slice(0, -2);
+                const data = JSON.parse(jsonStr);
                 
-                if (sede.areas) {
-                    sede.areas.forEach(area => {
-                        htmlCard += `<div class="area-title">${area.nombre}</div><ul>`;
-                        area.personal.forEach(p => {
-                            htmlCard += `<li><span class="role">${p.rol}</span> <span class="name">${p.nombres}</span></li>`;
-                        });
-                        htmlCard += `</ul>`;
-                    });
-                }
+                const cols = data.table.cols.map(c => c ? c.label : '');
+                const rows = data.table.rows;
 
-                if (sede.personal) {
-                    htmlCard += `<ul>`;
-                    sede.personal.forEach(p => {
-                        htmlCard += `<li><span class="role">${p.rol}</span> <span class="name">${p.nombres}</span></li>`;
-                    });
-                    htmlCard += `</ul>`;
+                let htmlContent = '';
+
+                // Generar tarjetas dinámicamente basadas en las filas y columnas de tu Excel
+                rows.forEach(row => {
+                    // Tomamos la primera columna como Título Principal (ej. Nombre, Sede o ID)
+                    const mainTitle = (row.c[0] && row.c[0].v !== null) ? row.c[0].v : 'Registro';
+                    
+                    let cardHtml = `<div class="card glass">
+                                        <div class="card-header">${mainTitle}</div>
+                                        <ul>`;
+                    
+                    // Las demás columnas se añaden como propiedades (Rol - Nombre)
+                    for (let i = 1; i < cols.length; i++) {
+                        if (row.c[i] && row.c[i].v !== null && row.c[i].v !== '') {
+                            let columnHeader = cols[i] || `Dato ${i}`;
+                            let cellValue = row.c[i].v;
+                            cardHtml += `<li>
+                                            <span class="role">${columnHeader}</span> 
+                                            <span class="name">${cellValue}</span>
+                                         </li>`;
+                        }
+                    }
+                    cardHtml += `</ul></div>`;
+                    htmlContent += cardHtml;
+                });
+
+                // Insertar en la página web
+                if(htmlContent === '') {
+                    wrapper.innerHTML = `<div class="glass loader">No se encontraron datos en la hoja "Personal". Verifica que tenga información.</div>`;
+                } else {
+                    wrapper.innerHTML = htmlContent;
                 }
+            })
+            .catch(error => {
+                console.error('Error cargando la base de datos:', error);
+                wrapper.innerHTML = `<div class="glass loader" style="color: #e74c3c;">
+                    Error al conectar con Google Sheets.<br><br>
+                    Asegúrate de que el documento esté configurado como "Cualquier persona con el enlace puede leer".
+                </div>`;
             });
 
-            htmlCard += `</div>`;
-            wrapper.innerHTML += htmlCard;
-        });
-
-        // ======= LÓGICA DE TEMA OSCURO/CLARO =======
+        // Lógica de cambio de Modo Noche / Día
         const btnToggle = document.getElementById('toggle-btn');
         const body = document.body;
 
