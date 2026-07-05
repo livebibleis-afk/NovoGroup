@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Sedes - Sistema Dinámico</title>
+    <style>
+        /* Variables de Color */
+        :root {
+            --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #333333; --text-muted: #666666;
+            --border-color: #e2e8f0; --shadow-color: rgba(0, 0, 0, 0.05); --header-bg: #ffffff;
+            --input-bg: #ffffff; --input-border: #cbd5e1;
+            --color-blue: #3b82f6; --color-green: #10b981; --color-purple: #8b5cf6;
+            --color-orange: #f97316; --color-grey: #6b7280; --color-red: #ef4444;
+        }
+        [data-theme="dark"] {
+            --bg-color: #0f172a; --card-bg: #1e293b; --text-color: #f8fafc; --text-muted: #94a3b8;
+            --border-color: #334155; --shadow-color: rgba(0, 0, 0, 0.3); --header-bg: #1e293b;
+            --input-bg: #334155; --input-border: #475569;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; transition: 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; min-height: 100vh; }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background-color: var(--header-bg); padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color); margin-bottom: 24px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+        }
+        .date-input {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-color);
+            background-color: var(--input-bg); border: 1px solid var(--input-border);
+            padding: 6px 12px; border-radius: 6px; text-transform: uppercase;
+        }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card {
+            background-color: var(--card-bg); border-radius: 12px; padding: 20px;
+            border-top: 5px solid var(--border-color); box-shadow: 0 4px 6px var(--shadow-color);
+        }
+        .card.theme-blue { border-top-color: var(--color-blue); }
+        .card.theme-green { border-top-color: var(--color-green); }
+        .card.theme-purple { border-top-color: var(--color-purple); }
+        .card.theme-orange { border-top-color: var(--color-orange); }
+        .card.theme-red { border-top-color: var(--color-red); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .card-title { font-weight: 700; font-size: 1.1rem; }
+        .btn-copy {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+        }
+        .btn-copy:hover { background-color: var(--border-color); }
+        .btn-copy.copied { background-color: var(--color-green); color: white; }
+
+        .section-title { font-weight: 700; border-bottom: 1px dashed var(--border-color); margin: 12px 0 6px; font-size: 0.9rem; }
+        .data-item { display: flex; margin-bottom: 4px; font-size: 0.9rem; }
+        .data-label { font-weight: 600; color: var(--text-muted); min-width: 110px; }
+        .data-value { color: var(--text-color); font-weight: 500; }
+        .loading { font-style: italic; color: #999; font-size: 0.8rem; }
+
+        footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; }
+        @media print { .btn-copy, #themeToggle { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="title-area">
+            <span style="font-weight:bold; margin-right:10px;">📋 REPORTE:</span>
+            <input type="text" id="reportDate" class="date-input" value="DOMINGO 24MAYO26">
+        </div>
+        <div class="actions">
+            <button class="btn-copy" id="themeToggle" style="font-size: 1.2rem;">🌙</button>
+            <button class="btn-copy" onclick="window.print()" style="font-size: 1.2rem;">🖨️</button>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- NOVO CLINIC -->
+        <div class="card theme-blue">
+            <div class="card-header">
+                <span class="card-title">🏢 NOVO CLINIC</span>
+                <button class="btn-copy" id="btn-1" onclick="copyCard(1)">📋 Copiar</button>
+            </div>
+            <div class="section-title">🏨 Hospitalización</div>
+            <div class="data-item"><span class="data-label">Técnica:</span><span id="nc_tec1" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Técnica:</span><span id="nc_tec2" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Licenciada:</span><span id="nc_lic" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Dr Piso:</span><span id="nc_dr" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Pacientes:</span><span id="nc_pac" class="data-value loading">Cargando...</span></div>
+            
+            <div class="section-title">⚡ S.O.P</div>
+            <div class="data-item"><span class="data-label">Recuperación:</span><span id="nc_recu" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Instrumentista:</span><span id="nc_inst" class="data-value loading">Cargando...</span></div>
+            
+            <div class="section-title">🧹 Apoyo</div>
+            <div class="data-item"><span class="data-label">Seguridad:</span><span id="nc_seg" class="data-value loading">Cargando...</span></div>
+        </div>
+
+        <!-- NOVO INTEGRAL -->
+        <div class="card theme-green">
+            <div class="card-header">
+                <span class="card-title">💚 NOVO INTEGRAL</span>
+                <button class="btn-copy" id="btn-2" onclick="copyCard(2)">📋 Copiar</button>
+            </div>
+            <div class="data-item"><span class="data-label">Seguridad:</span><span id="ni_seg" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">UCI:</span><span id="ni_uci" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Farmacia:</span><span id="ni_far" class="data-value loading">Cargando...</span></div>
+            <div class="section-title">⚡ S.O.P.</div>
+            <div class="data-item"><span class="data-label">Licenciada:</span><span id="ni_lic_sop" class="data-value loading">Cargando...</span></div>
+            <div class="section-title">🏨 Hospitalización</div>
+            <div class="data-item"><span class="data-label">Licenciada:</span><span id="ni_lic_hosp" class="data-value loading">Cargando...</span></div>
+        </div>
+
+        <!-- NOVO CENTRAL -->
+        <div class="card theme-purple">
+            <div class="card-header">
+                <span class="card-title">🏙️ NOVO CENTRAL</span>
+                <button class="btn-copy" id="btn-3" onclick="copyCard(3)">📋 Copiar</button>
+            </div>
+            <div class="data-item"><span class="data-label">Seguridad:</span><span id="nce_seg" class="data-value loading">Cargando...</span></div>
+            <div class="section-title">🧪 Esterilización</div>
+            <div class="data-item"><span class="data-label">Personal:</span><span id="nce_est" class="data-value loading">Cargando...</span></div>
+        </div>
+
+        <!-- PLANTA KAORI -->
+        <div class="card theme-orange">
+            <div class="card-header">
+                <span class="card-title">🌱 PLANTA KAORI</span>
+                <button class="btn-copy" id="btn-4" onclick="copyCard(4)">📋 Copiar</button>
+            </div>
+            <div class="data-item"><span class="data-label">Lavandería:</span><span id="pk_lav1" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Chofer:</span><span id="pk_cho" class="data-value loading">Cargando...</span></div>
+        </div>
+
+        <!-- NOVO Q -->
+        <div class="card theme-red">
+            <div class="card-header">
+                <span class="card-title">🔴 NOVO Q</span>
+                <button class="btn-copy" id="btn-5" onclick="copyCard(5)">📋 Copiar</button>
+            </div>
+            <div class="data-item"><span class="data-label">Seguridad:</span><span id="nq_seg" class="data-value loading">Cargando...</span></div>
+            <div class="data-item"><span class="data-label">Info:</span><span id="nq_far" class="data-value loading">Cargando...</span></div>
+        </div>
+    </main>
+
+    <footer>BvanOs By Jeshua Él Mesías | Datos en tiempo real desde Sheets</footer>
+</div>
+
+<script>
+    const SHEET_URL = "https://script.google.com/macros/s/AKfycbxdPIkpTWiEEt_xVnxmlhroem8qYf4G4eKfzx8-o6vknW-XzUoH3-VVPvqnjbtwOA34/exec";
+
+    async function loadData() {
+        try {
+            const response = await fetch(SHEET_URL);
+            const data = await response.json();
+            for (const key in data) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = data[key] || "-";
+                    element.classList.remove('loading');
+                }
+            }
+        } catch (error) {
+            console.error("Error cargando datos:", error);
+        }
+    }
+
+    function copyCard(num) {
+        const date = document.getElementById('reportDate').value;
+        const btn = document.getElementById('btn-' + num);
+        let text = "";
+
+        if(num === 1) {
+            text = `_*REPORTE SEDE NOCHE ${date}*_\n\n*NOVO CLINIC:*\n\n_🏨 Hospitalización:_\nTECNICA: ${getV('nc_tec1')}\nTECNICA: ${getV('nc_tec2')}\nLICENCIADA: ${getV('nc_lic')}\nDR PISO: ${getV('nc_dr')}\nPACIENTES: ${getV('nc_pac')}\n\n_*S.O.P:*_\nRECUPERACIÓN: ${getV('nc_recu')}\nINSTRUMENTISTA: ${getV('nc_inst')}\n\n_*Seguridad:*_ ${getV('nc_seg')}`;
+        } else if(num === 2) {
+            text = `*NOVO INTEGRAL:*\n\n- Seguridad: ${getV('ni_seg')}\n- UCI: ${getV('ni_uci')}\n- Farmacia: ${getV('ni_far')}\n\n*S.O.P:* ${getV('ni_lic_sop')}\n*Hosp:* ${getV('ni_lic_hosp')}`;
+        } else if(num === 3) {
+            text = `*NOVO CENTRAL:*\n\n- Seguridad: ${getV('nce_seg')}\n- Esterilización: ${getV('nce_est')}`;
+        } else if(num === 4) {
+            text = `*PLANTA KAORI:*\n\n- Lavandería: ${getV('pk_lav1')}\n- Chofer: ${getV('pk_cho')}`;
+        } else if(num === 5) {
+            text = `*NOVO Q:*\n\n- Seguridad: ${getV('nq_seg')}\n- Info: ${getV('nq_far')}`;
+        }
+
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✅ Copiado";
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    function getV(id) { 
+        const el = document.getElementById(id);
+        return el ? el.textContent : "-"; 
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        themeToggle.textContent = isDark ? '🌙' : '☀️';
+    });
+
+    window.onload = loadData;
+</script>
+
+</body>
+</html>
