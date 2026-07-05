@@ -39,7 +39,6 @@
         .card.theme-green { border-top-color: var(--color-green); }
         .card.theme-purple { border-top-color: var(--color-purple); }
         .card.theme-orange { border-top-color: var(--color-orange); }
-        .card.theme-red { border-top-color: var(--color-red); }
         
         .card-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: bold; font-size: 1rem; }
         .btn-copy { 
@@ -126,18 +125,15 @@
             <div class=""item""><span class=""label"">Personal:</span><span id=""nce_est"" class=""val"">...</span></div>
         </div>
 
-        <!-- CARD 4: PLANTA KAORI -->
+        <!-- CARD 4: KAORI & NOVO Q -->
         <div class=""card theme-orange"">
-            <div class=""card-header"">🌱 PLANTA KAORI <button class=""btn-copy"" id=""btn-4"" onclick=""copyC(4)"">📋 Copiar</button></div>
+            <div class=""card-header"">🌱 KAORI / 🔴 NOVO Q <button class=""btn-copy"" id=""btn-4"" onclick=""copyC(4)"">📋 Copiar</button></div>
             <div class=""item""><span class=""label"">Seguridad:</span><span id=""pk_seg"" class=""val"">...</span></div>
             <div class=""item""><span class=""label"">Lavandería 1:</span><span id=""pk_lav1"" class=""val"">...</span></div>
             <div class=""item""><span class=""label"">Lavandería 2:</span><span id=""pk_lav2"" class=""val"">...</span></div>
             <div class=""item""><span class=""label"">Chofer:</span><span id=""pk_cho"" class=""val"">...</span></div>
-        </div>
-
-        <!-- CARD 5: NOVO Q -->
-        <div class=""card theme-red"">
-            <div class=""card-header"">🔴 NOVO Q <button class=""btn-copy"" id=""btn-5"" onclick=""copyC(5)"">📋 Copiar</button></div>
+            
+            <div class=""sec-t"" style=""color: var(--color-red); margin-top: 15px;"">🔴 NOVO Q</div>
             <div class=""item""><span class=""label"">Seguridad:</span><span id=""nq_seg"" class=""val"">...</span></div>
             <div class=""item""><span class=""label"">Limpieza:</span><span id=""nq_lim"" class=""val"">...</span></div>
             <div class=""item""><span class=""label"">Farmacia:</span><span id=""nq_far"" class=""val"">...</span></div>
@@ -148,8 +144,10 @@
 </div>
 
 <script>
+    // --- NUEVA URL DEL SCRIPT ---
     const SHEET_URL = ""https://script.google.com/macros/s/AKfycbzaVR4dVkgWZzpeBTNTS0-9MIR2Sz6xfky7WiGfAcKw0QJqLCIG3hHD2pGzmorC_YfY/exec"";
 
+    // Fecha Automática
     function setAutoDate() {
         const days = [""DOMINGO"", ""LUNES"", ""MARTES"", ""MIERCOLES"", ""JUEVES"", ""VIERNES"", ""SABADO""];
         const months = [""ENE"", ""FEB"", ""MAR"", ""ABR"", ""MAY"", ""JUN"", ""JUL"", ""AGO"", ""SEP"", ""OCT"", ""NOV"", ""DIC""];
@@ -158,6 +156,7 @@
         document.getElementById('reportDate').value = dateStr;
     }
 
+    // Carga de Datos desde Sheets
     async function loadData() {
         try {
             const response = await fetch(SHEET_URL);
@@ -173,6 +172,7 @@
         }
     }
 
+    // Función Copiar con formato profesional
     function copyC(num) {
         const date = document.getElementById('reportDate').value;
         const btn = document.getElementById('btn-' + num);
@@ -185,9 +185,7 @@
         } else if(num === 3) {
             t = `✓ *Novo Central:*\n- Coordinador: ${getV('nce_coord')}\n- Seguridad: ${getV('nce_seg')}\n- Limpieza: ${getV('nce_lim1')}\n- Limpieza: ${getV('nce_lim2')}\n\n✓ *Esterelizacion:* ${getV('nce_est')}`;
         } else if(num === 4) {
-            t = `*Planta Kaori:*\n- Seguridad: ${getV('pk_seg')}\n- Lavandería 01: ${getV('pk_lav1')}\n- Lavandería 02: ${getV('pk_lav2')}\n- Chofer: ${getV('pk_cho')}`;
-        } else if(num === 5) {
-            t = `*Novo Q:*\n- Seguridad: ${getV('nq_seg')}\n- Limpieza: ${getV('nq_lim')}\n- Farmacia: ${getV('nq_far')}`;
+            t = `*Planta Kaori:*\n- Seguridad: ${getV('pk_seg')}\n- Lavandería 01: ${getV('pk_lav1')}\n- Lavandería 02: ${getV('pk_lav2')}\n- Chofer: ${getV('pk_cho')}\n\n*Novo Q:*\n- Seguridad: ${getV('nq_seg')}\n- Limpieza: ${getV('nq_lim')}\n- Farmacia: ${getV('nq_far')}`;
         }
 
         navigator.clipboard.writeText(t).then(() => {
@@ -206,12 +204,14 @@
         return el ? el.innerText : ""-""; 
     }
 
+    // Toggle Modo Oscuro
     document.getElementById('themeToggle').addEventListener('click', () => {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
         document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
     });
 
+    // Iniciar
     setAutoDate();
     loadData();
 </script>
