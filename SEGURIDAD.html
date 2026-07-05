@@ -23,7 +23,6 @@
         body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; min-height: 100vh; }
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* Header */
         header {
             background-color: var(--header-bg); padding: 20px; border-radius: 12px;
             box-shadow: 0 4px 6px var(--shadow-color); margin-bottom: 24px;
@@ -35,7 +34,6 @@
             padding: 6px 12px; border-radius: 6px; text-transform: uppercase;
         }
 
-        /* Grid & Cards */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .card {
             background-color: var(--card-bg); border-radius: 12px; padding: 20px;
@@ -53,16 +51,16 @@
             background: var(--bg-color); border: 1px solid var(--border-color);
             padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
         }
+        .btn-copy:hover { background-color: var(--border-color); }
         .btn-copy.copied { background-color: var(--color-green); color: white; }
 
         .section-title { font-weight: 700; border-bottom: 1px dashed var(--border-color); margin: 12px 0 6px; font-size: 0.9rem; }
         .data-item { display: flex; margin-bottom: 4px; font-size: 0.9rem; }
         .data-label { font-weight: 600; color: var(--text-muted); min-width: 110px; }
         .data-value { color: var(--text-color); font-weight: 500; }
-        .loading { font-style: italic; color: #999; }
+        .loading { font-style: italic; color: #999; font-size: 0.8rem; }
 
         footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; }
-
         @media print { .btn-copy, #themeToggle { display: none; } }
     </style>
 </head>
@@ -85,7 +83,7 @@
         <div class="card theme-blue">
             <div class="card-header">
                 <span class="card-title">🏢 NOVO CLINIC</span>
-                <button class="btn-copy" onclick="copyCard(1)">📋 Copiar</button>
+                <button class="btn-copy" id="btn-1" onclick="copyCard(1)">📋 Copiar</button>
             </div>
             <div class="section-title">🏨 Hospitalización</div>
             <div class="data-item"><span class="data-label">Técnica:</span><span id="nc_tec1" class="data-value loading">Cargando...</span></div>
@@ -106,7 +104,7 @@
         <div class="card theme-green">
             <div class="card-header">
                 <span class="card-title">💚 NOVO INTEGRAL</span>
-                <button class="btn-copy" onclick="copyCard(2)">📋 Copiar</button>
+                <button class="btn-copy" id="btn-2" onclick="copyCard(2)">📋 Copiar</button>
             </div>
             <div class="data-item"><span class="data-label">Seguridad:</span><span id="ni_seg" class="data-value loading">Cargando...</span></div>
             <div class="data-item"><span class="data-label">UCI:</span><span id="ni_uci" class="data-value loading">Cargando...</span></div>
@@ -121,7 +119,7 @@
         <div class="card theme-purple">
             <div class="card-header">
                 <span class="card-title">🏙️ NOVO CENTRAL</span>
-                <button class="btn-copy" onclick="copyCard(3)">📋 Copiar</button>
+                <button class="btn-copy" id="btn-3" onclick="copyCard(3)">📋 Copiar</button>
             </div>
             <div class="data-item"><span class="data-label">Seguridad:</span><span id="nce_seg" class="data-value loading">Cargando...</span></div>
             <div class="section-title">🧪 Esterilización</div>
@@ -132,7 +130,7 @@
         <div class="card theme-orange">
             <div class="card-header">
                 <span class="card-title">🌱 PLANTA KAORI</span>
-                <button class="btn-copy" onclick="copyCard(4)">📋 Copiar</button>
+                <button class="btn-copy" id="btn-4" onclick="copyCard(4)">📋 Copiar</button>
             </div>
             <div class="data-item"><span class="data-label">Lavandería:</span><span id="pk_lav1" class="data-value loading">Cargando...</span></div>
             <div class="data-item"><span class="data-label">Chofer:</span><span id="pk_cho" class="data-value loading">Cargando...</span></div>
@@ -142,20 +140,19 @@
         <div class="card theme-red">
             <div class="card-header">
                 <span class="card-title">🔴 NOVO Q</span>
-                <button class="btn-copy" onclick="copyCard(5)">📋 Copiar</button>
+                <button class="btn-copy" id="btn-5" onclick="copyCard(5)">📋 Copiar</button>
             </div>
             <div class="data-item"><span class="data-label">Seguridad:</span><span id="nq_seg" class="data-value loading">Cargando...</span></div>
             <div class="data-item"><span class="data-label">Info:</span><span id="nq_far" class="data-value loading">Cargando...</span></div>
         </div>
     </main>
 
-    <footer>BvanOs By Jeshua Él Mesías | Datos en tiempo real</footer>
+    <footer>BvanOs By Jeshua Él Mesías | Datos en tiempo real desde Sheets</footer>
 </div>
 
 <script>
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbxdPIkpTWiEEt_xVnxmlhroem8qYf4G4eKfzx8-o6vknW-XzUoH3-VVPvqnjbtwOA34/exec";
 
-    // Cargar Datos
     async function loadData() {
         try {
             const response = await fetch(SHEET_URL);
@@ -172,9 +169,9 @@
         }
     }
 
-    // Copiar Texto (Formato WhatsApp)
     function copyCard(num) {
         const date = document.getElementById('reportDate').value;
+        const btn = document.getElementById('btn-' + num);
         let text = "";
 
         if(num === 1) {
@@ -184,4 +181,36 @@
         } else if(num === 3) {
             text = `*NOVO CENTRAL:*\n\n- Seguridad: ${getV('nce_seg')}\n- Esterilización: ${getV('nce_est')}`;
         } else if(num === 4) {
-            text = `*PLANTA KAORI:*\n\n- Lavandería: ${getV('pk_lav1')}\n- Chofer: ${getV(
+            text = `*PLANTA KAORI:*\n\n- Lavandería: ${getV('pk_lav1')}\n- Chofer: ${getV('pk_cho')}`;
+        } else if(num === 5) {
+            text = `*NOVO Q:*\n\n- Seguridad: ${getV('nq_seg')}\n- Info: ${getV('nq_far')}`;
+        }
+
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✅ Copiado";
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    function getV(id) { 
+        const el = document.getElementById(id);
+        return el ? el.textContent : "-"; 
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        themeToggle.textContent = isDark ? '🌙' : '☀️';
+    });
+
+    window.onload = loadData;
+</script>
+
+</body>
+</html>
