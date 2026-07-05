@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang=""es"">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
     <title>Reporte de Sedes - NovoGroup</title>
     <style>
         :root {
@@ -11,7 +11,7 @@
             --color-blue: #3b82f6; --color-green: #10b981; --color-purple: #8b5cf6;
             --color-orange: #f97316; --color-red: #ef4444;
         }
-        [data-theme="dark"] {
+        [data-theme=""dark""] {
             --bg-color: #0f172a; --card-bg: #1e293b; --text-color: #f8fafc; --text-muted: #94a3b8;
             --border-color: #334155; --header-bg: #1e293b;
         }
@@ -63,84 +63,84 @@
 </head>
 <body>
 
-<div class="container">
+<div class=""container"">
     <header>
         <div>
-            <span style="font-size: 0.8rem; font-weight: bold; color: gray;">FECHA DE REPORTE:</span><br>
-            <input type="text" id="reportDate" class="date-input">
+            <span style=""font-size: 0.8rem; font-weight: bold; color: gray;"">FECHA DE REPORTE:</span><br>
+            <input type=""text"" id=""reportDate"" class=""date-input"">
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button id="themeToggle" class="btn-copy">🌙</button>
-            <button onclick="window.print()" class="btn-copy">🖨️ Imprimir</button>
+        <div style=""display: flex; gap: 10px;"">
+            <button id=""themeToggle"" class=""btn-copy"">🌙</button>
+            <button onclick=""window.print()"" class=""btn-copy"">🖨️ Imprimir</button>
         </div>
     </header>
 
-    <main class="grid">
+    <main class=""grid"">
         <!-- CARD 1: NOVO CLINIC -->
-        <div class="card theme-blue">
-            <div class="card-header">🏢 NOVO CLINIC <button class="btn-copy" id="btn-1" onclick="copyC(1)">📋 Copiar</button></div>
-            <div class="sec-t">🏨 Hospitalización</div>
-            <div class="item"><span class="label">Técnica 1:</span><span id="nc_tec1" class="val">...</span></div>
-            <div class="item"><span class="label">Técnica 2:</span><span id="nc_tec2" class="val">...</span></div>
-            <div class="item"><span class="label">Licenciada:</span><span id="nc_lic" class="val">...</span></div>
-            <div class="item"><span class="label">Dr Piso:</span><span id="nc_dr" class="val">...</span></div>
-            <div class="item"><span class="label">Pacientes:</span><span id="nc_pac" class="val">...</span></div>
+        <div class=""card theme-blue"">
+            <div class=""card-header"">🏢 NOVO CLINIC <button class=""btn-copy"" id=""btn-1"" onclick=""copyC(1)"">📋 Copiar</button></div>
+            <div class=""sec-t"">🏨 Hospitalización</div>
+            <div class=""item""><span class=""label"">Técnica 1:</span><span id=""nc_tec1"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Técnica 2:</span><span id=""nc_tec2"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Licenciada:</span><span id=""nc_lic"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Dr Piso:</span><span id=""nc_dr"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Pacientes:</span><span id=""nc_pac"" class=""val"">...</span></div>
             
-            <div class="sec-t">⚡ S.O.P / Farmacia</div>
-            <div class="item"><span class="label">Recuperación:</span><span id="nc_sop_recu" class="val">...</span></div>
-            <div class="item"><span class="label">Instrumentista:</span><span id="nc_sop_inst" class="val">...</span></div>
-            <div class="item"><span class="label">Jefa Farmacia:</span><span id="nc_far_jefa" class="val">...</span></div>
-            <div class="item"><span class="label">Circulante 1:</span><span id="nc_cir1" class="val">...</span></div>
-            <div class="item"><span class="label">Circulante 2:</span><span id="nc_cir2" class="val">...</span></div>
-            <div class="item"><span class="label">Circulante 3:</span><span id="nc_cir3" class="val">...</span></div>
+            <div class=""sec-t"">⚡ S.O.P / Farmacia</div>
+            <div class=""item""><span class=""label"">Recuperación:</span><span id=""nc_sop_recu"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Instrumentista:</span><span id=""nc_sop_inst"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Jefa Farmacia:</span><span id=""nc_far_jefa"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Circulante 1:</span><span id=""nc_cir1"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Circulante 2:</span><span id=""nc_cir2"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Circulante 3:</span><span id=""nc_cir3"" class=""val"">...</span></div>
             
-            <div class="sec-t">🧹 Apoyo / Seguridad</div>
-            <div class="item"><span class="label">Limpieza SOP:</span><span id="nc_lim_sop" class="val">...</span></div>
-            <div class="item"><span class="label">Limpieza Hosp:</span><span id="nc_lim_hosp" class="val">...</span></div>
-            <div class="item"><span class="label">Seguridad:</span><span id="nc_seg" class="val">...</span></div>
-            <div class="item"><span class="label">Coordinador:</span><span id="nc_coord" class="val">...</span></div>
+            <div class=""sec-t"">🧹 Apoyo / Seguridad</div>
+            <div class=""item""><span class=""label"">Limpieza SOP:</span><span id=""nc_lim_sop"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Limpieza Hosp:</span><span id=""nc_lim_hosp"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Seguridad:</span><span id=""nc_seg"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Coordinador:</span><span id=""nc_coord"" class=""val"">...</span></div>
         </div>
 
         <!-- CARD 2: NOVO INTEGRAL -->
-        <div class="card theme-green">
-            <div class="card-header">💚 NOVO INTEGRAL <button class="btn-copy" id="btn-2" onclick="copyC(2)">📋 Copiar</button></div>
-            <div class="item"><span class="label">Seguridad:</span><span id="ni_seg" class="val">...</span></div>
-            <div class="item"><span class="label">Limpieza:</span><span id="ni_lim" class="val">...</span></div>
-            <div class="item"><span class="label">UCI:</span><span id="ni_uci" class="val">...</span></div>
-            <div class="item"><span class="label">Procedimiento:</span><span id="ni_proc" class="val">...</span></div>
-            <div class="item"><span class="label">Farmacia:</span><span id="ni_far" class="val">...</span></div>
-            <div class="item"><span class="label">Laboratorio:</span><span id="ni_lab" class="val">...</span></div>
-            <div class="sec-t">⚡ Staff Médico</div>
-            <div class="item"><span class="label">S.O.P:</span><span id="ni_sop" class="val">...</span></div>
-            <div class="item"><span class="label">Hospitalización:</span><span id="ni_hosp" class="val">...</span></div>
+        <div class=""card theme-green"">
+            <div class=""card-header"">💚 NOVO INTEGRAL <button class=""btn-copy"" id=""btn-2"" onclick=""copyC(2)"">📋 Copiar</button></div>
+            <div class=""item""><span class=""label"">Seguridad:</span><span id=""ni_seg"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Limpieza:</span><span id=""ni_lim"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">UCI:</span><span id=""ni_uci"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Procedimiento:</span><span id=""ni_proc"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Farmacia:</span><span id=""ni_far"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Laboratorio:</span><span id=""ni_lab"" class=""val"">...</span></div>
+            <div class=""sec-t"">⚡ Staff Médico</div>
+            <div class=""item""><span class=""label"">S.O.P:</span><span id=""ni_sop"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Hospitalización:</span><span id=""ni_hosp"" class=""val"">...</span></div>
         </div>
 
         <!-- CARD 3: NOVO CENTRAL -->
-        <div class="card theme-purple">
-            <div class="card-header">🏙️ NOVO CENTRAL <button class="btn-copy" id="btn-3" onclick="copyC(3)">📋 Copiar</button></div>
-            <div class="item"><span class="label">Coordinador:</span><span id="nce_coord" class="val">...</span></div>
-            <div class="item"><span class="label">Seguridad:</span><span id="nce_seg" class="val">...</span></div>
-            <div class="item"><span class="label">Limpieza 1:</span><span id="nce_lim1" class="val">...</span></div>
-            <div class="item"><span class="label">Limpieza 2:</span><span id="nce_lim2" class="val">...</span></div>
-            <div class="sec-t">🧪 Esterilización</div>
-            <div class="item"><span class="label">Personal:</span><span id="nce_est" class="val">...</span></div>
+        <div class=""card theme-purple"">
+            <div class=""card-header"">🏙️ NOVO CENTRAL <button class=""btn-copy"" id=""btn-3"" onclick=""copyC(3)"">📋 Copiar</button></div>
+            <div class=""item""><span class=""label"">Coordinador:</span><span id=""nce_coord"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Seguridad:</span><span id=""nce_seg"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Limpieza 1:</span><span id=""nce_lim1"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Limpieza 2:</span><span id=""nce_lim2"" class=""val"">...</span></div>
+            <div class=""sec-t"">🧪 Esterilización</div>
+            <div class=""item""><span class=""label"">Personal:</span><span id=""nce_est"" class=""val"">...</span></div>
         </div>
 
         <!-- CARD 4: PLANTA KAORI -->
-        <div class="card theme-orange">
-            <div class="card-header">🌱 PLANTA KAORI <button class="btn-copy" id="btn-4" onclick="copyC(4)">📋 Copiar</button></div>
-            <div class="item"><span class="label">Seguridad:</span><span id="pk_seg" class="val">...</span></div>
-            <div class="item"><span class="label">Lavandería 1:</span><span id="pk_lav1" class="val">...</span></div>
-            <div class="item"><span class="label">Lavandería 2:</span><span id="pk_lav2" class="val">...</span></div>
-            <div class="item"><span class="label">Chofer:</span><span id="pk_cho" class="val">...</span></div>
+        <div class=""card theme-orange"">
+            <div class=""card-header"">🌱 PLANTA KAORI <button class=""btn-copy"" id=""btn-4"" onclick=""copyC(4)"">📋 Copiar</button></div>
+            <div class=""item""><span class=""label"">Seguridad:</span><span id=""pk_seg"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Lavandería 1:</span><span id=""pk_lav1"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Lavandería 2:</span><span id=""pk_lav2"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Chofer:</span><span id=""pk_cho"" class=""val"">...</span></div>
         </div>
 
         <!-- CARD 5: NOVO Q -->
-        <div class="card theme-red">
-            <div class="card-header">🔴 NOVO Q <button class="btn-copy" id="btn-5" onclick="copyC(5)">📋 Copiar</button></div>
-            <div class="item"><span class="label">Seguridad:</span><span id="nq_seg" class="val">...</span></div>
-            <div class="item"><span class="label">Limpieza:</span><span id="nq_lim" class="val">...</span></div>
-            <div class="item"><span class="label">Farmacia:</span><span id="nq_far" class="val">...</span></div>
+        <div class=""card theme-red"">
+            <div class=""card-header"">🔴 NOVO Q <button class=""btn-copy"" id=""btn-5"" onclick=""copyC(5)"">📋 Copiar</button></div>
+            <div class=""item""><span class=""label"">Seguridad:</span><span id=""nq_seg"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Limpieza:</span><span id=""nq_lim"" class=""val"">...</span></div>
+            <div class=""item""><span class=""label"">Farmacia:</span><span id=""nq_far"" class=""val"">...</span></div>
         </div>
     </main>
 
@@ -148,11 +148,11 @@
 </div>
 
 <script>
-    const SHEET_URL = "https://script.google.com/macros/s/AKfycbzaVR4dVkgWZzpeBTNTS0-9MIR2Sz6xfky7WiGfAcKw0QJqLCIG3hHD2pGzmorC_YfY/exec";
+    const SHEET_URL = ""https://script.google.com/macros/s/AKfycbzaVR4dVkgWZzpeBTNTS0-9MIR2Sz6xfky7WiGfAcKw0QJqLCIG3hHD2pGzmorC_YfY/exec"";
 
     function setAutoDate() {
-        const days = ["DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
-        const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+        const days = [""DOMINGO"", ""LUNES"", ""MARTES"", ""MIERCOLES"", ""JUEVES"", ""VIERNES"", ""SABADO""];
+        const months = [""ENE"", ""FEB"", ""MAR"", ""ABR"", ""MAY"", ""JUN"", ""JUL"", ""AGO"", ""SEP"", ""OCT"", ""NOV"", ""DIC""];
         const d = new Date();
         const dateStr = `${days[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}${months[d.getMonth()]}${String(d.getFullYear()).slice(-2)}`;
         document.getElementById('reportDate').value = dateStr;
@@ -165,18 +165,18 @@
             for (const key in data) {
                 const element = document.getElementById(key);
                 if (element) {
-                    element.textContent = data[key] || "-";
+                    element.textContent = data[key] || ""-"";
                 }
             }
         } catch (e) {
-            console.error("Error cargando base de datos:", e);
+            console.error(""Error cargando base de datos:"", e);
         }
     }
 
     function copyC(num) {
         const date = document.getElementById('reportDate').value;
         const btn = document.getElementById('btn-' + num);
-        let t = "";
+        let t = """";
 
         if(num === 1) {
             t = `_*REPORTE SEDE NOCHE ${date}*_\n✓ *NOVO CLINIC:*\n_🏨 *Hospitalización:*_\nTECNICA: ${getV('nc_tec1')}\nTECNICA: ${getV('nc_tec2')}\nLICENCIADA: ${getV('nc_lic')}\nDr piso: ${getV('nc_dr')}\nPacientes: ${getV('nc_pac')}\n\n_*S.O.P:*_\n_Recuperación:_ ${getV('nc_sop_recu')}\n- instrumentista: ${getV('nc_sop_inst')}\n\n_*Farmacia:*_\nJefa: ${getV('nc_far_jefa')}\n*CIRCULANTE 01:* ${getV('nc_cir1')}\n*CIRCULANTE 02:* ${getV('nc_cir2')}\n*CIRCULANTE 03:* ${getV('nc_cir3')}\n\n_*LIMPIEZA SOP:*_ ${getV('nc_lim_sop')}\n_*LIMPIEZA HOSP:*_ ${getV('nc_lim_hosp')}\n_*Seguridad:*_ ${getV('nc_seg')}\n_Coordinador:_ ${getV('nc_coord')}`;
@@ -192,7 +192,7 @@
 
         navigator.clipboard.writeText(t).then(() => {
             const oldT = btn.innerHTML;
-            btn.innerHTML = "✅ Copiado";
+            btn.innerHTML = ""✅ Copiado"";
             btn.classList.add('copied');
             setTimeout(() => {
                 btn.innerHTML = oldT;
@@ -203,7 +203,7 @@
 
     function getV(id) { 
         const el = document.getElementById(id);
-        return el ? el.innerText : "-"; 
+        return el ? el.innerText : ""-""; 
     }
 
     document.getElementById('themeToggle').addEventListener('click', () => {
