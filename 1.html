@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Zonificación Arquitectónica</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            max-width: 800px;
+        }
+        h1 { color: #333; font-size: 1.2rem; text-align: center; margin-bottom: 20px; }
+        
+        /* Estilos del Plano SVG */
+        svg {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        .wall { stroke: #333; stroke-width: 2; fill: none; }
+        .text-room { font-size: 14px; font-weight: bold; fill: #000; }
+        .text-dim { font-size: 10px; fill: #666; }
+        .zone-circle { stroke-width: 1; stroke: white; }
+        .zone-text { font-size: 10px; fill: white; font-weight: bold; text-anchor: middle; }
+        
+        /* Leyenda */
+        .legend {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            font-size: 0.85rem;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
+        .legend-item { display: flex; align-items: center; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PLANO DE DISTRIBUCIÓN Y ZONIFICACIÓN</h1>
+    
+    <!-- SVG del Plano (Escala 1m = 40px aprox) -->
+    <!-- Dimensiones totales: 6.20m x 17m (incluyendo jardín ext) -->
+    <svg viewBox="-50 -20 350 750" xmlns="http://www.w3.org/2000/svg">
+        
+        <!-- Líneas de Ejes Externos -->
+        <text x="0" y="-5" class="text-dim">B</text>
+        <text x="248" y="-5" class="text-dim">D</text>
+        <text x="-20" y="680" class="text-dim" style="font-size: 18px; font-weight: bold;">A</text>
+        <text x="260" y="680" class="text-dim" style="font-size: 18px; font-weight: bold;">C</text>
+
+        <!-- Cotas Superiores -->
+        <line x1="0" y1="-15" x2="248" y2="-15" stroke="#999" />
+        <text x="120" y="-20" class="text-dim" text-anchor="middle">6.20 M</text>
+        
+        <!-- CUERPO DEL EDIFICIO (15m de largo) -->
+        <!-- Contorno Principal -->
+        <rect x="0" y="0" width="248" height="600" class="wall" />
+        <line x1="120" y1="0" x2="120" y2="600" class="wall" stroke-dasharray="5,5" /> <!-- Eje central -->
+
+        <!-- DIVISIONES IZQUIERDA (3.00m de ancho) -->
+        <!-- Cuarto 03 (4.50m) -->
+        <rect x="0" y="0" width="120" height="180" fill="#fff" class="wall" />
+        <text x="30" y="90" class="text-room" transform="rotate(-30 30,90)">Cuarto "03"</text>
+        <circle cx="90" cy="40" r="10" fill="#e74c3c" /> <text x="90" y="44" class="zone-text">E</text>
+
+        <!-- Baño (2.50m) -->
+        <rect x="0" y="180" width="120" height="100" fill="#fff" class="wall" />
+        <text x="40" y="240" class="text-room">Baño</text>
+        <circle cx="100" cy="230" r="10" fill="#3498db" /> <text x="100" y="234" class="zone-text">F</text>
+
+        <!-- Cuarto 02 (3.50m) -->
+        <rect x="0" y="280" width="120" height="140" fill="#fff" class="wall" />
+        <text x="30" y="370" class="text-room" transform="rotate(-30 30,370)">Cuarto "02"</text>
+        <circle cx="90" cy="320" r="10" fill="#e74c3c" /> <text x="90" y="324" class="zone-text">G</text>
+
+        <!-- Cochera (4.50m) -->
+        <rect x="0" y="420" width="120" height="180" fill="#fff" class="wall" />
+        <text x="35" y="520" class="text-room">Cochera</text>
+        <circle cx="20" cy="580" r="10" fill="#95a5a6" /> <text x="20" y="584" class="zone-text">H</text>
+
+        <!-- DIVISIONES DERECHA (3.20m de ancho) -->
+        <!-- Lavandería y Cocina (5.50m) -->
+        <rect x="120" y="0" width="128" height="220" fill="#fff" class="wall" />
+        <text x="130" y="30" class="text-room" style="font-size: 12px;">Lavandería</text>
+        <text x="150" y="150" class="text-room">Cocina</text>
+        <circle cx="130" cy="50" r="10" fill="#f1c40f" /> <text x="130" y="54" class="zone-text">I</text>
+        <circle cx="140" cy="80" r="10" fill="#f1c40f" /> <text x="140" y="84" class="zone-text">J</text>
+
+        <!-- Sala (8.00m) -->
+        <rect x="120" y="220" width="128" height="320" fill="#fff" class="wall" />
+        <text x="165" y="400" class="text-room">Sala</text>
+        <circle cx="220" cy="520" r="10" fill="#2ecc71" /> <text x="220" y="524" class="zone-text">K</text>
+
+        <!-- Jardín Interior (1.50m) -->
+        <rect x="120" y="540" width="128" height="60" fill="#d5f5e3" class="wall" />
+        <text x="150" y="580" class="text-room" style="font-size: 12px;">Jardín</text>
+        <circle cx="135" cy="585" r="10" fill="#27ae60" /> <text x="135" y="589" class="zone-text">L</text>
+
+        <!-- ÁREAS EXTERIORES -->
+        <!-- Vereda (1.00m) -->
+        <rect x="0" y="600" width="248" height="40" fill="#ecf0f1" stroke="#bdc3c7" />
+        <text x="85" y="625" class="text-dim" style="font-weight: bold;">VEREDA (1.00 M)</text>
+
+        <!-- Jardín Exterior (1.00m) -->
+        <rect x="0" y="640" width="248" height="40" fill="#e9f7ef" stroke="#bdc3c7" />
+        <text x="60" y="665" class="text-dim" style="font-weight: bold; fill: #27ae60;">JARDÍN EXTERIOR (1.00 M)</text>
+
+        <!-- Cotas Laterales (Izquierda) -->
+        <text x="-40" y="90" class="text-dim">4.50</text>
+        <text x="-40" y="230" class="text-dim">2.50</text>
+        <text x="-40" y="350" class="text-dim">3.50</text>
+        <text x="-40" y="510" class="text-dim">4.50</text>
+        <text x="-50" y="300" class="text-dim" transform="rotate(-90 -50,300)" style="font-weight: bold;">15.00 M</text>
+
+    </svg>
+
+    <!-- Leyenda Técnica -->
+    <div class="legend">
+        <div class="legend-item"><div class="dot" style="background: #e74c3c;"></div> E, G: Área Íntima</div>
+        <div class="legend-item"><div class="dot" style="background: #3498db;"></div> F: Área Húmeda</div>
+        <div class="legend-item"><div class="dot" style="background: #95a5a6;"></div> H: Acceso</div>
+        <div class="legend-item"><div class="dot" style="background: #f1c40f;"></div> I, J: Servicio</div>
+        <div class="legend-item"><div class="dot" style="background: #2ecc71;"></div> K: Social</div>
+        <div class="legend-item"><div class="dot" style="background: #27ae60;"></div> L: Libre / Jardín</div>
+    </div>
+
+    <p class="no-print" style="margin-top: 20px; font-size: 0.8rem; color: #888; text-align: center;">
+        Tip: Para guardar como PDF, presiona <b>Ctrl+P</b> y elige "Guardar como PDF".
+    </p>
+</div>
+
+</body>
+</html>
