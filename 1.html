@@ -1,155 +1,383 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang=""es"">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Zonificación Arquitectónica</title>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visor de Planos Integrados - Proyecto Maestro</title>
     <style>
+        /* Estilos del Sistema Web (Dashboard) */
         body {
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f0f0f0;
-            margin: 0;
+            height: 100vh;
+            background-color: #2c3e50;
+            overflow: hidden;
+        }
+
+        /* Panel Lateral de Controles */
+        #panel-control {
+            width: 320px;
+            background-color: #1a252f;
+            color: #ecf0f1;
             padding: 20px;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.5);
+            overflow-y: auto;
+            z-index: 10;
         }
-        .container {
-            background-color: white;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            max-width: 800px;
+
+        #panel-control h2 {
+            font-size: 18px;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #34495e;
+            color: #3498db;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        h1 { color: #333; font-size: 1.2rem; text-align: center; margin-bottom: 20px; }
-        
-        /* Estilos del Plano SVG */
+
+        /* Botones / Checkboxes */
+        .layer-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #2c3e50;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .layer-control:hover {
+            background-color: #34495e;
+            border-left: 4px solid #3498db;
+        }
+
+        .layer-control input[type=""checkbox""] {
+            margin-right: 15px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .layer-control span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Cuadros de Color en la Leyenda del Menú */
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 12px;
+            display: inline-block;
+        }
+
+        /* Contenedor principal del Plano SVG */
+        #visor-plano {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+            background-color: #e2e6ea;
+        }
+
+        /* Ajustes del SVG para la pantalla */
         svg {
-            width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-        }
-        .wall { stroke: #333; stroke-width: 2; fill: none; }
-        .text-room { font-size: 14px; font-weight: bold; fill: #000; }
-        .text-dim { font-size: 10px; fill: #666; }
-        .zone-circle { stroke-width: 1; stroke: white; }
-        .zone-text { font-size: 10px; fill: white; font-weight: bold; text-anchor: middle; }
-        
-        /* Leyenda */
-        .legend {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            font-size: 0.85rem;
-            border-top: 2px solid #eee;
-            padding-top: 15px;
-        }
-        .legend-item { display: flex; align-items: center; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
-        
-        @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; border: none; }
-            .no-print { display: none; }
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background-color: #f8f9fa;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>PLANO DE DISTRIBUCIÓN Y ZONIFICACIÓN</h1>
-    
-    <!-- SVG del Plano (Escala 1m = 40px aprox) -->
-    <!-- Dimensiones totales: 6.20m x 17m (incluyendo jardín ext) -->
-    <svg viewBox="-50 -20 350 750" xmlns="http://www.w3.org/2000/svg">
+    <!-- ========================================== -->
+    <!-- PANEL DE CONTROL LATERAL (MENÚ)            -->
+    <!-- ========================================== -->
+    <div id=""panel-control"">
+        <h2>Arquitectura y Base</h2>
+
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-muros')"">
+            <div class=""color-box"" style=""background-color: #333;""></div>
+            <span>Muros y Divisiones</span>
+        </label>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-arquitectura')"">
+            <div class=""color-box"" style=""background-color: #777;""></div>
+            <span>Puertas y Ventanas</span>
+        </label>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-mobiliario')"">
+            <div class=""color-box"" style=""background-color: #95a5a6;""></div>
+            <span>Mobiliario y Auto</span>
+        </label>
+
+        <h2 style=""margin-top: 25px;"">Especialidades (Redes)</h2>
         
-        <!-- Líneas de Ejes Externos -->
-        <text x="0" y="-5" class="text-dim">B</text>
-        <text x="248" y="-5" class="text-dim">D</text>
-        <text x="-20" y="680" class="text-dim" style="font-size: 18px; font-weight: bold;">A</text>
-        <text x="260" y="680" class="text-dim" style="font-size: 18px; font-weight: bold;">C</text>
-
-        <!-- Cotas Superiores -->
-        <line x1="0" y1="-15" x2="248" y2="-15" stroke="#999" />
-        <text x="120" y="-20" class="text-dim" text-anchor="middle">6.20 M</text>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-instalaciones-electricas-fuerza')"">
+            <div class=""color-box"" style=""background-color: #27ae60;""></div>
+            <span>Eléctrica: Tomacorrientes</span>
+        </label>
         
-        <!-- CUERPO DEL EDIFICIO (15m de largo) -->
-        <!-- Contorno Principal -->
-        <rect x="0" y="0" width="248" height="600" class="wall" />
-        <line x1="120" y1="0" x2="120" y2="600" class="wall" stroke-dasharray="5,5" /> <!-- Eje central -->
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-instalaciones-electricas-luz')"">
+            <div class=""color-box"" style=""background-color: #f39c12;""></div>
+            <span>Eléctrica: Iluminación</span>
+        </label>
 
-        <!-- DIVISIONES IZQUIERDA (3.00m de ancho) -->
-        <!-- Cuarto 03 (4.50m) -->
-        <rect x="0" y="0" width="120" height="180" fill="#fff" class="wall" />
-        <text x="30" y="90" class="text-room" transform="rotate(-30 30,90)">Cuarto "03"</text>
-        <circle cx="90" cy="40" r="10" fill="#e74c3c" /> <text x="90" y="44" class="zone-text">E</text>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-instalaciones-comunicaciones')"">
+            <div class=""color-box"" style=""background-color: #8e44ad;""></div>
+            <span>Telecomunicaciones (Data)</span>
+        </label>
 
-        <!-- Baño (2.50m) -->
-        <rect x="0" y="180" width="120" height="100" fill="#fff" class="wall" />
-        <text x="40" y="240" class="text-room">Baño</text>
-        <circle cx="100" cy="230" r="10" fill="#3498db" /> <text x="100" y="234" class="zone-text">F</text>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-instalaciones-gas')"">
+            <div class=""color-box"" style=""background-color: #d35400;""></div>
+            <span>Gas Natural (PE-AL-PE)</span>
+        </label>
 
-        <!-- Cuarto 02 (3.50m) -->
-        <rect x="0" y="280" width="120" height="140" fill="#fff" class="wall" />
-        <text x="30" y="370" class="text-room" transform="rotate(-30 30,370)">Cuarto "02"</text>
-        <circle cx="90" cy="320" r="10" fill="#e74c3c" /> <text x="90" y="324" class="zone-text">G</text>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-instalaciones-sanitarias-desague')"">
+            <div class=""color-box"" style=""background-color: #1b5e20;""></div>
+            <span>Alcantarillado (Desagüe)</span>
+        </label>
 
-        <!-- Cochera (4.50m) -->
-        <rect x="0" y="420" width="120" height="180" fill="#fff" class="wall" />
-        <text x="35" y="520" class="text-room">Cochera</text>
-        <circle cx="20" cy="580" r="10" fill="#95a5a6" /> <text x="20" y="584" class="zone-text">H</text>
-
-        <!-- DIVISIONES DERECHA (3.20m de ancho) -->
-        <!-- Lavandería y Cocina (5.50m) -->
-        <rect x="120" y="0" width="128" height="220" fill="#fff" class="wall" />
-        <text x="130" y="30" class="text-room" style="font-size: 12px;">Lavandería</text>
-        <text x="150" y="150" class="text-room">Cocina</text>
-        <circle cx="130" cy="50" r="10" fill="#f1c40f" /> <text x="130" y="54" class="zone-text">I</text>
-        <circle cx="140" cy="80" r="10" fill="#f1c40f" /> <text x="140" y="84" class="zone-text">J</text>
-
-        <!-- Sala (8.00m) -->
-        <rect x="120" y="220" width="128" height="320" fill="#fff" class="wall" />
-        <text x="165" y="400" class="text-room">Sala</text>
-        <circle cx="220" cy="520" r="10" fill="#2ecc71" /> <text x="220" y="524" class="zone-text">K</text>
-
-        <!-- Jardín Interior (1.50m) -->
-        <rect x="120" y="540" width="128" height="60" fill="#d5f5e3" class="wall" />
-        <text x="150" y="580" class="text-room" style="font-size: 12px;">Jardín</text>
-        <circle cx="135" cy="585" r="10" fill="#27ae60" /> <text x="135" y="589" class="zone-text">L</text>
-
-        <!-- ÁREAS EXTERIORES -->
-        <!-- Vereda (1.00m) -->
-        <rect x="0" y="600" width="248" height="40" fill="#ecf0f1" stroke="#bdc3c7" />
-        <text x="85" y="625" class="text-dim" style="font-weight: bold;">VEREDA (1.00 M)</text>
-
-        <!-- Jardín Exterior (1.00m) -->
-        <rect x="0" y="640" width="248" height="40" fill="#e9f7ef" stroke="#bdc3c7" />
-        <text x="60" y="665" class="text-dim" style="font-weight: bold; fill: #27ae60;">JARDÍN EXTERIOR (1.00 M)</text>
-
-        <!-- Cotas Laterales (Izquierda) -->
-        <text x="-40" y="90" class="text-dim">4.50</text>
-        <text x="-40" y="230" class="text-dim">2.50</text>
-        <text x="-40" y="350" class="text-dim">3.50</text>
-        <text x="-40" y="510" class="text-dim">4.50</text>
-        <text x="-50" y="300" class="text-dim" transform="rotate(-90 -50,300)" style="font-weight: bold;">15.00 M</text>
-
-    </svg>
-
-    <!-- Leyenda Técnica -->
-    <div class="legend">
-        <div class="legend-item"><div class="dot" style="background: #e74c3c;"></div> E, G: Área Íntima</div>
-        <div class="legend-item"><div class="dot" style="background: #3498db;"></div> F: Área Húmeda</div>
-        <div class="legend-item"><div class="dot" style="background: #95a5a6;"></div> H: Acceso</div>
-        <div class="legend-item"><div class="dot" style="background: #f1c40f;"></div> I, J: Servicio</div>
-        <div class="legend-item"><div class="dot" style="background: #2ecc71;"></div> K: Social</div>
-        <div class="legend-item"><div class="dot" style="background: #27ae60;"></div> L: Libre / Jardín</div>
+        <h2 style=""margin-top: 25px;"">Topografía y Leyendas</h2>
+        
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-ejes-y-cotas')"">
+            <div class=""color-box"" style=""background-color: #bdc3c7;""></div>
+            <span>Ejes y Cotas</span>
+        </label>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-exteriores-urbanos')"">
+            <div class=""color-box"" style=""background-color: #d4ebd5;""></div>
+            <span>Exteriores Urbanos</span>
+        </label>
+        <label class=""layer-control"">
+            <input type=""checkbox"" checked onchange=""toggleLayer('capa-textos-y-zonas')"">
+            <div class=""color-box"" style=""background-color: #000;""></div>
+            <span>Textos y Leyenda General</span>
+        </label>
     </div>
 
-    <p class="no-print" style="margin-top: 20px; font-size: 0.8rem; color: #888; text-align: center;">
-        Tip: Para guardar como PDF, presiona <b>Ctrl+P</b> y elige "Guardar como PDF".
-    </p>
-</div>
+    <!-- ========================================== -->
+    <!-- VISOR DEL PLANO: CÓDIGO SVG INTEGRADO      -->
+    <!-- ========================================== -->
+    <div id=""visor-plano"">
+        <svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 1100 2350"" width=""100%"" height=""100%"" style=""background-color: #f8f9fa; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;"">
+
+          <!-- SIMBOLOGÍA -->
+          <defs>
+            <g id=""sym-medidor-gas"" stroke=""#d35400"" stroke-width=""2"" fill=""#fff""><rect x=""-18"" y=""-12"" width=""36"" height=""24"" rx=""3"" /><text x=""0"" y=""5"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#d35400"" text-anchor=""middle"">G</text></g>
+            <g id=""sym-valvula-gas"" stroke=""#d35400"" stroke-width=""2"" fill=""#f39c12""><polygon points=""-8,-8 8,8 8,-8 -8,8"" /><line x1=""0"" y1=""-10"" x2=""0"" y2=""10"" stroke=""#d35400"" stroke-width=""2"" /></g>
+            <g id=""sym-cr"" stroke=""#1b5e20"" stroke-width=""2"" fill=""#fff""><rect x=""-20"" y=""-30"" width=""40"" height=""60"" /><line x1=""-20"" y1=""-30"" x2=""20"" y2=""30"" /><line x1=""-20"" y1=""30"" x2=""20"" y2=""-30"" /></g>
+            <g id=""sym-sumidero"" stroke=""#1b5e20"" stroke-width=""2"" fill=""#fff""><circle cx=""0"" cy=""0"" r=""10"" /><line x1=""-10"" y1=""0"" x2=""10"" y2=""0"" /><line x1=""0"" y1=""-10"" x2=""0"" y2=""10"" /></g>
+            <g id=""sym-luz-techo"" stroke=""#f39c12"" stroke-width=""2.5"" fill=""#fff""><circle cx=""0"" cy=""0"" r=""14"" /><line x1=""-14"" y1=""0"" x2=""14"" y2=""0"" /><line x1=""0"" y1=""-14"" x2=""0"" y2=""14"" /></g>
+            <g id=""sym-data"" stroke=""#8e44ad"" stroke-width=""2"" fill=""#fff""><polygon points=""-12,10 0,-10 12,10"" /><circle cx=""0"" cy=""2"" r=""3"" fill=""#8e44ad"" /></g>
+            <g id=""sym-rack"" stroke=""#8e44ad"" stroke-width=""2"" fill=""#f4ecf7""><rect x=""-15"" y=""-20"" width=""30"" height=""40"" rx=""2"" /><line x1=""-15"" y1=""-10"" x2=""15"" y2=""-10"" /><line x1=""-15"" y1=""0"" x2=""15"" y2=""0"" /><line x1=""-15"" y1=""10"" x2=""15"" y2=""10"" /></g>
+          </defs>
+
+          <!-- EXTERIORES -->
+          <g id=""capa-exteriores-urbanos"">
+            <rect x=""250"" y=""1700"" width=""620"" height=""100"" fill=""#e0e0e0"" stroke=""#999"" stroke-width=""2"" />
+            <text x=""560"" y=""1760"" font-family=""sans-serif"" font-size=""22"" font-weight=""bold"" fill=""#666"" text-anchor=""middle"" letter-spacing=""2"">VEREDA (1.00 M)</text>
+            <rect x=""250"" y=""1800"" width=""620"" height=""100"" fill=""#d4ebd5"" stroke=""#999"" stroke-width=""2"" />
+            <text x=""560"" y=""1860"" font-family=""sans-serif"" font-size=""22"" font-weight=""bold"" fill=""#2e7d32"" text-anchor=""middle"" letter-spacing=""2"">JARDÍN EXTERIOR (1.00 M)</text>
+            <line x1=""200"" y1=""1900"" x2=""920"" y2=""1900"" stroke=""#777"" stroke-width=""3"" stroke-dasharray=""10,5"" />
+          </g>
+
+          <!-- EJES Y COTAS -->
+          <g id=""capa-ejes-y-cotas"">
+            <g id=""ejes-y-guias"" stroke=""#777"" stroke-width=""1.5"" fill=""none"">
+              <line x1=""250"" y1=""200"" x2=""250"" y2=""40"" /> <line x1=""550"" y1=""200"" x2=""550"" y2=""40"" /> <line x1=""870"" y1=""200"" x2=""870"" y2=""40"" />
+              <line x1=""250"" y1=""100"" x2=""870"" y2=""100"" /> <line x1=""250"" y1=""50"" x2=""870"" y2=""50"" />
+              <line x1=""250"" y1=""1700"" x2=""250"" y2=""2080"" /> <line x1=""550"" y1=""1700"" x2=""550"" y2=""2080"" /> <line x1=""870"" y1=""1700"" x2=""870"" y2=""2080"" />
+              <line x1=""250"" y1=""2040"" x2=""870"" y2=""2040"" /> <line x1=""250"" y1=""1990"" x2=""870"" y2=""1990"" />
+              <line x1=""250"" y1=""200"" x2=""80"" y2=""200"" /> <line x1=""250"" y1=""650"" x2=""130"" y2=""650"" /> <line x1=""250"" y1=""900"" x2=""130"" y2=""900"" /> <line x1=""250"" y1=""1250"" x2=""130"" y2=""1250"" /> <line x1=""250"" y1=""1700"" x2=""80"" y2=""1700"" />
+              <line x1=""150"" y1=""200"" x2=""150"" y2=""1700"" /> <line x1=""100"" y1=""200"" x2=""100"" y2=""1700"" />
+              <line x1=""870"" y1=""200"" x2=""990"" y2=""200"" /> <line x1=""870"" y1=""1700"" x2=""990"" y2=""1700"" />
+            </g>
+            <g id=""textos-cotas"" fill=""#333"" font-family=""monospace"" font-size=""20"" text-anchor=""middle"">
+              <text x=""560"" y=""35"">6.20 M</text> <text x=""560"" y=""2025"">6.20m</text>
+              <text x=""80"" y=""950"" transform=""rotate(-90 80 950)"">15.00 M</text> <text x=""985"" y=""950"" transform=""rotate(-90 985 950)"">15.00 M</text>
+            </g>
+            <g id=""letras-ejes"" fill=""#000"" font-family=""sans-serif"" font-size=""45"" font-weight=""900"">
+              <text x=""220"" y=""1945"" text-anchor=""end"">A</text> <text x=""220"" y=""180"" text-anchor=""end"">B</text>
+              <text x=""890"" y=""1945"" text-anchor=""start"">C</text> <text x=""890"" y=""180"" text-anchor=""start"">D</text>
+            </g>
+          </g>
+
+          <!-- MUROS Y ESTRUCTURA -->
+          <g id=""capa-muros"" fill=""none"" stroke=""#666"" stroke-width=""8"" stroke-linecap=""square"">
+            <path d=""M 250 200 L 870 200 L 870 1700 L 250 1700 Z"" stroke=""#333"" />
+            <line x1=""550"" y1=""200"" x2=""550"" y2=""1700"" stroke-width=""6"" /> 
+            <line x1=""250"" y1=""650"" x2=""550"" y2=""650"" stroke-width=""6"" /> 
+            <line x1=""250"" y1=""900"" x2=""550"" y2=""900"" stroke-width=""6"" /> 
+            <line x1=""250"" y1=""1250"" x2=""550"" y2=""1250"" stroke-width=""6"" /> 
+            <line x1=""630"" y1=""350"" x2=""870"" y2=""350"" stroke-width=""6"" /> 
+            <line x1=""630"" y1=""750"" x2=""870"" y2=""750"" stroke-width=""6"" /> 
+          </g>
+
+          <!-- ARQUITECTURA -->
+          <g id=""capa-arquitectura"">
+            <g id=""ventanas"" fill=""#f4f4f4"">
+              <rect x=""700"" y=""1545"" width=""100"" height=""10"" /> <line x1=""700"" y1=""1550"" x2=""800"" y2=""1550"" stroke=""#777"" stroke-width=""2"" />
+              <rect x=""245"" y=""700"" width=""10"" height=""80"" /> <line x1=""250"" y1=""700"" x2=""250"" y2=""780"" stroke=""#777"" stroke-width=""2"" />
+            </g>
+            <g id=""puertas"" stroke=""#444"" stroke-width=""2"" fill=""none"">
+              <line x1=""550"" y1=""1550"" x2=""550"" y2=""1470"" /> <path d=""M 630 1550 A 80 80 0 0 0 550 1470"" stroke-dasharray=""6,4"" />
+              <line x1=""550"" y1=""650"" x2=""470"" y2=""650"" /> <path d=""M 550 570 A 80 80 0 0 0 470 650"" stroke-dasharray=""6,4"" />
+              <line x1=""550"" y1=""900"" x2=""470"" y2=""900"" /> <path d=""M 550 820 A 80 80 0 0 0 470 900"" stroke-dasharray=""6,4"" />
+              <line x1=""550"" y1=""1250"" x2=""470"" y2=""1250"" /> <path d=""M 550 1170 A 80 80 0 0 0 470 1250"" stroke-dasharray=""6,4"" />
+              <line x1=""250"" y1=""1700"" x2=""250"" y2=""1550"" /> <path d=""M 400 1700 A 150 150 0 0 1 250 1550"" stroke-dasharray=""6,4"" />
+              <line x1=""550"" y1=""1700"" x2=""550"" y2=""1550"" /> <path d=""M 400 1700 A 150 150 0 0 0 550 1550"" stroke-dasharray=""6,4"" />
+            </g>
+          </g>
+
+          <!-- MOBILIARIO -->
+          <g id=""capa-mobiliario"">
+            <g id=""mobiliario"" stroke=""#555"" stroke-width=""2"" fill=""none"">
+              <rect x=""270"" y=""300"" width=""140"" height=""190"" rx=""5"" /> <rect x=""420"" y=""310"" width=""40"" height=""40"" /> 
+              <rect x=""270"" y=""1000"" width=""140"" height=""190"" rx=""5"" />
+              <rect x=""260"" y=""660"" width=""80"" height=""80"" /> <line x1=""260"" y1=""660"" x2=""340"" y2=""740"" stroke-width=""1"" /> <line x1=""340"" y1=""660"" x2=""260"" y2=""740"" stroke-width=""1"" />
+              <ellipse cx=""495"" cy=""700"" rx=""25"" ry=""18"" stroke=""#34495e"" /> <circle cx=""380"" cy=""870"" r=""15"" /> 
+              <rect x=""635"" y=""450"" width=""230"" height=""60"" fill=""#fcfcfc"" />
+              <rect x=""635"" y=""690"" width=""230"" height=""60"" fill=""#fcfcfc"" />
+              <rect x=""640"" y=""685"" width=""75"" height=""65"" rx=""2"" /> 
+              <circle cx=""810"" cy=""720"" r=""10"" /> <circle cx=""840"" cy=""720"" r=""10"" /> 
+              <rect x=""750"" y=""220"" width=""70"" height=""70"" rx=""8"" /> <rect x=""640"" y=""220"" width=""80"" height=""50"" /> 
+              <rect x=""710"" y=""805"" width=""80"" height=""42"" rx=""4"" /> <circle cx=""837.5"" cy=""828"" r=""12"" stroke-width=""1.5"" />
+              <!-- Toyota -->
+              <rect x=""300"" y=""1350"" width=""180"" height=""300"" rx=""40"" opacity=""0.6"" /> 
+              <path d=""M 310 1420 Q 390 1400 470 1420 L 460 1480 Q 390 1470 320 1480 Z"" stroke-width=""1"" opacity=""0.6"" />
+              <path d=""M 310 1580 Q 390 1600 470 1580 L 460 1540 Q 390 1550 320 1540 Z"" stroke-width=""1"" opacity=""0.6"" />
+            </g>
+          </g>
+
+          <!-- FUERZA ELÉCTRICA (TOMACORRIENTES) -->
+          <g id=""capa-instalaciones-electricas-fuerza"" opacity=""0.5"">
+            <path d=""M 645 1685 L 645 1550 L 636 1550 L 636 350"" stroke=""#c0392b"" stroke-width=""4"" fill=""none"" />
+            <rect x=""625"" y=""1685"" width=""40"" height=""25"" fill=""#34495e"" stroke=""#c0392b"" stroke-width=""2"" />
+            <path d=""M 250 100 L 250 290 Q 250 300 270 300 L 535 300"" stroke=""#d35400"" stroke-width=""4"" stroke-dasharray=""8,4"" fill=""none"" />
+            <rect x=""645"" y=""310"" width=""15"" height=""40"" fill=""#7f8c8d"" stroke=""#2c3e50"" stroke-width=""2"" /> <text x=""665"" y=""335"" font-size=""16"" font-weight=""900"" fill=""#2c3e50"">TG1</text>
+            <rect x=""535"" y=""285"" width=""15"" height=""30"" fill=""#34495e"" stroke=""#2c3e50"" stroke-width=""2"" /> <text x=""530"" y=""275"" font-size=""16"" font-weight=""bold"" fill=""#2c3e50"" text-anchor=""end"">TG2</text>
+            <path d=""M 636 330 Q 640 750 750 750 Q 870 770 870 1000"" stroke=""#27ae60"" stroke-width=""2.5"" stroke-dasharray=""6,4"" fill=""none""/>
+            <path d=""M 750 350 Q 830 500 830 750"" stroke=""#27ae60"" stroke-width=""2"" stroke-dasharray=""6,4"" fill=""none""/>
+            <path d=""M 545 445 Q 400 480 255 455"" stroke=""#2980b9"" stroke-width=""2"" fill=""none"" stroke-dasharray=""6,4"" /> 
+            <path d=""M 360 900 Q 450 1000 550 1130"" stroke=""#2980b9"" stroke-width=""2"" fill=""none"" stroke-dasharray=""6,4"" /> 
+          </g>
+
+          <!-- ILUMINACIÓN -->
+          <g id=""capa-instalaciones-electricas-luz"">
+            <path d=""M 645 310 Q 750 250 750 280"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 645 310 Q 750 400 750 550"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 750 550 Q 750 800 750 1000"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 535 285 Q 400 350 400 450"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 400 450 Q 400 600 400 720"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 400 720 Q 400 900 400 1100"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <path d=""M 400 1100 Q 400 1300 400 1500"" stroke=""#f39c12"" stroke-width=""2"" fill=""none"" stroke-dasharray=""8,4"" /> 
+            <use href=""#sym-luz-techo"" x=""750"" y=""280"" /> <use href=""#sym-luz-techo"" x=""750"" y=""550"" /> <use href=""#sym-luz-techo"" x=""750"" y=""1000"" />
+            <use href=""#sym-luz-techo"" x=""400"" y=""450"" /> <use href=""#sym-luz-techo"" x=""400"" y=""720"" /> <use href=""#sym-luz-techo"" x=""400"" y=""1100"" /> <use href=""#sym-luz-techo"" x=""400"" y=""1500"" />
+            <text x=""860"" y=""235"" font-family=""sans-serif"" font-weight=""bold"" font-size=""16"" fill=""#f39c12"">S</text>
+            <text x=""860"" y=""635"" font-family=""sans-serif"" font-weight=""bold"" font-size=""16"" fill=""#f39c12"">S</text>
+            <text x=""530"" y=""625"" font-family=""sans-serif"" font-weight=""bold"" font-size=""16"" fill=""#f39c12"">S2</text>
+            <text x=""530"" y=""875"" font-family=""sans-serif"" font-weight=""bold"" font-size=""16"" fill=""#f39c12"">S2</text>
+            <text x=""530"" y=""1225"" font-family=""sans-serif"" font-weight=""bold"" font-size=""16"" fill=""#f39c12"">S2</text>
+          </g>
+
+          <!-- COMUNICACIONES -->
+          <g id=""capa-instalaciones-comunicaciones"">
+            <path d=""M 600 1700 L 600 1500 L 850 1500 L 850 1050"" stroke=""#8e44ad"" stroke-width=""3"" fill=""none"" stroke-dasharray=""12,4"" />
+            <use href=""#sym-rack"" x=""850"" y=""1050"" />
+            <path d=""M 850 1050 L 590 1050 L 590 480 L 410 480"" stroke=""#8e44ad"" stroke-width=""2"" fill=""none"" stroke-dasharray=""6,3"" /> 
+            <path d=""M 590 1050 L 590 1180 L 410 1180"" stroke=""#8e44ad"" stroke-width=""2"" fill=""none"" stroke-dasharray=""6,3"" /> 
+            <path d=""M 850 1050 L 850 1250"" stroke=""#8e44ad"" stroke-width=""2"" fill=""none"" stroke-dasharray=""6,3"" /> 
+            <use href=""#sym-data"" x=""410"" y=""480"" /> <use href=""#sym-data"" x=""410"" y=""1180"" /> <use href=""#sym-data"" x=""850"" y=""1250"" />
+          </g>
+
+          <!-- GAS NATURAL -->
+          <g id=""capa-instalaciones-gas"">
+            <path d=""M 850 1680 L 850 1660 L 590 1660 L 590 730 L 830 730"" stroke=""#d35400"" stroke-width=""4"" fill=""none"" />
+            <use href=""#sym-medidor-gas"" x=""850"" y=""1680"" /> <use href=""#sym-valvula-gas"" x=""830"" y=""730"" />
+          </g>
+
+          <!-- ALCANTARILLADO (DESAGÜE) -->
+          <g id=""capa-instalaciones-sanitarias-desague"" opacity=""0.85"">
+            <path d=""M 495 1645 L 495 700"" stroke=""#1b5e20"" stroke-width=""6"" fill=""none"" stroke-linecap=""round"" />
+            <path d=""M 495 1645 L 495 1900"" stroke=""#1b5e20"" stroke-width=""6"" fill=""none"" stroke-dasharray=""10,5"" />
+            <path d=""M 495 740 L 515 720 L 785 720 L 785 245 L 680 245"" stroke=""#1b5e20"" stroke-width=""3"" fill=""none"" stroke-linejoin=""round"" />
+            <path d=""M 785 710 L 677 710"" stroke=""#1b5e20"" stroke-width=""3"" fill=""none"" />
+            <path d=""M 495 720 L 475 700 L 300 700"" stroke=""#1b5e20"" stroke-width=""3"" fill=""none"" />
+            <path d=""M 495 890 L 475 870 L 380 870"" stroke=""#1b5e20"" stroke-width=""3"" fill=""none"" />
+            <use href=""#sym-cr"" x=""495"" y=""1645"" />
+            <use href=""#sym-sumidero"" x=""300"" y=""700"" /> <use href=""#sym-sumidero"" x=""380"" y=""870"" />
+            <use href=""#sym-sumidero"" x=""677"" y=""710"" /> <use href=""#sym-sumidero"" x=""680"" y=""245"" />
+          </g>
+
+          <!-- TEXTOS, ZONAS Y LEYENDA -->
+          <g id=""capa-textos-y-zonas"">
+            <g id=""nomenclatura-ambientes"" fill=""#000"" font-size=""28"" font-weight=""bold"">
+              <text x=""400"" y=""450"" transform=""rotate(-45 400 450)"" text-anchor=""middle"">Cuarto ""03""</text>
+              <text x=""400"" y=""800"" text-anchor=""middle"">Baño</text>
+              <text x=""400"" y=""1100"" transform=""rotate(-45 400 1100)"" text-anchor=""middle"">Cuarto ""02""</text>
+              <text x=""400"" y=""1460"" text-anchor=""middle"" font-size=""32"">Cochera</text>
+              <text x=""750"" y=""285"" text-anchor=""middle"">Lavandería</text> 
+              <text x=""750"" y=""550"" text-anchor=""middle"">Cocina</text>
+              <text x=""750"" y=""1150"" font-size=""36"" text-anchor=""middle"">Sala</text>
+            </g>
+            <g id=""leyenda-zonas"" transform=""translate(130, 2120)"">
+              <rect x=""0"" y=""0"" width=""860"" height=""150"" fill=""#fff"" stroke=""#777"" stroke-width=""2"" rx=""5""/>
+              <text x=""20"" y=""30"" font-family=""sans-serif"" font-size=""18"" font-weight=""bold"" fill=""#333"" text-anchor=""start"">LEYENDA DE INSTALACIONES (PLANO MAESTRO INTEGRADO)</text>
+              <line x1=""20"" y1=""60"" x2=""60"" y2=""60"" stroke=""#d35400"" stroke-width=""4"" />
+              <text x=""70"" y=""65"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#d35400"">Gas Natural (PE-AL-PE)</text>
+              <line x1=""330"" y1=""60"" x2=""370"" y2=""60"" stroke=""#1b5e20"" stroke-width=""6"" />
+              <text x=""380"" y=""65"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#1b5e20"">Desagüe (PVC SAL 4"" y 2"")</text>
+              <line x1=""20"" y1=""95"" x2=""60"" y2=""95"" stroke=""#27ae60"" stroke-width=""2"" stroke-dasharray=""4,2"" />
+              <text x=""70"" y=""100"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#27ae60"">Fuerza (Tomacorrientes)</text>
+              <line x1=""330"" y1=""95"" x2=""370"" y2=""95"" stroke=""#f39c12"" stroke-width=""2"" stroke-dasharray=""4,2"" />
+              <use href=""#sym-luz-techo"" x=""350"" y=""95"" transform=""scale(0.6)"" />
+              <text x=""380"" y=""100"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#f39c12"">Iluminación (Luz Techo)</text>
+              <line x1=""20"" y1=""130"" x2=""60"" y2=""130"" stroke=""#8e44ad"" stroke-width=""2"" stroke-dasharray=""6,3"" />
+              <use href=""#sym-data"" x=""40"" y=""130"" transform=""scale(0.8)"" />
+              <text x=""70"" y=""135"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#8e44ad"">Internet / Data (RJ45)</text>
+              <use href=""#sym-rack"" x=""350"" y=""130"" transform=""scale(0.6)"" />
+              <text x=""380"" y=""135"" font-family=""sans-serif"" font-size=""14"" font-weight=""bold"" fill=""#8e44ad"">Rack Comunicaciones</text>
+            </g>
+          </g>
+        </svg>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MOTOR JAVASCRIPT: Lógica de Interacción    -->
+    <!-- ========================================== -->
+    <script>
+        function toggleLayer(layerId) {
+            // Se captura el elemento SVG usando su ID
+            const capa = document.getElementById(layerId);
+            
+            // Si la capa existe en el plano, alternamos su visibilidad
+            if (capa) {
+                if (capa.style.display === ""none"") {
+                    capa.style.display = """"; // Se enciende la capa
+                } else {
+                    capa.style.display = ""none""; // Se apaga la capa
+                }
+            } else {
+                console.error(""Error: No se encontró la capa con el ID "" + layerId);
+            }
+        }
+    </script>
 
 </body>
 </html>
