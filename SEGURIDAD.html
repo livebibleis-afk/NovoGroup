@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
             --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #333333; --text-muted: #666666;
             --border-color: #e2e8f0; --header-bg: #ffffff;
             --color-blue: #3b82f6; --color-green: #10b981; --color-purple: #8b5cf6;
-            --color-orange: #f97316; --color-red: #ef4444;
+            --color-orange: #f97316; --color-red: #ef4444; --color-teal: #14b8a6;
         }
         [data-theme="dark"] {
             --bg-color: #0f172a; --card-bg: #1e293b; --text-color: #f8fafc; --text-muted: #94a3b8;
@@ -27,7 +27,7 @@
         .date-input { 
             font-size: 1.1rem; font-weight: bold; padding: 6px 12px; 
             border: 1px solid #ccc; border-radius: 6px; width: 280px; 
-            text-transform: uppercase; color: var(--color-blue);
+            text-transform: uppercase; color: var(--color-blue); background: transparent; color: inherit;
         }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 15px; }
@@ -39,6 +39,8 @@
         .card.theme-green { border-top-color: var(--color-green); }
         .card.theme-purple { border-top-color: var(--color-purple); }
         .card.theme-orange { border-top-color: var(--color-orange); }
+        .card.theme-teal { border-top-color: var(--color-teal); }
+        .card.theme-red { border-top-color: var(--color-red); }
         
         .card-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: bold; font-size: 1rem; }
         .btn-copy { 
@@ -69,13 +71,12 @@
             <input type="text" id="reportDate" class="date-input">
         </div>
         <div style="display: flex; gap: 10px;">
-            <button id="themeToggle" class="btn-copy">🌙</button>
+            <button id="themeToggle" class="btn-copy">☀️</button>
             <button onclick="window.print()" class="btn-copy">🖨️ Imprimir</button>
         </div>
     </header>
 
     <main class="grid">
-        <!-- CARD 1: NOVO CLINIC -->
         <div class="card theme-blue">
             <div class="card-header">🏢 NOVO CLINIC <button class="btn-copy" id="btn-1" onclick="copyC(1)">📋 Copiar</button></div>
             <div class="sec-t">🏨 Hospitalización</div>
@@ -100,7 +101,6 @@
             <div class="item"><span class="label">Coordinador:</span><span id="nc_coord" class="val">...</span></div>
         </div>
 
-        <!-- CARD 2: NOVO INTEGRAL -->
         <div class="card theme-green">
             <div class="card-header">💚 NOVO INTEGRAL <button class="btn-copy" id="btn-2" onclick="copyC(2)">📋 Copiar</button></div>
             <div class="item"><span class="label">Seguridad:</span><span id="ni_seg" class="val">...</span></div>
@@ -114,26 +114,29 @@
             <div class="item"><span class="label">Hospitalización:</span><span id="ni_hosp" class="val">...</span></div>
         </div>
 
-        <!-- CARD 3: NOVO CENTRAL -->
         <div class="card theme-purple">
             <div class="card-header">🏙️ NOVO CENTRAL <button class="btn-copy" id="btn-3" onclick="copyC(3)">📋 Copiar</button></div>
             <div class="item"><span class="label">Coordinador:</span><span id="nce_coord" class="val">...</span></div>
             <div class="item"><span class="label">Seguridad:</span><span id="nce_seg" class="val">...</span></div>
             <div class="item"><span class="label">Limpieza 1:</span><span id="nce_lim1" class="val">...</span></div>
             <div class="item"><span class="label">Limpieza 2:</span><span id="nce_lim2" class="val">...</span></div>
-            <div class="sec-t">🧪 Esterilización</div>
+        </div>
+
+        <div class="card theme-teal">
+            <div class="card-header">🧪 ESTERILIZACIÓN MANSIÓN <button class="btn-copy" id="btn-4" onclick="copyC(4)">📋 Copiar</button></div>
             <div class="item"><span class="label">Personal:</span><span id="nce_est" class="val">...</span></div>
         </div>
 
-        <!-- CARD 4: KAORI & NOVO Q -->
         <div class="card theme-orange">
-            <div class="card-header">🌱 KAORI / 🔴 NOVO Q <button class="btn-copy" id="btn-4" onclick="copyC(4)">📋 Copiar</button></div>
+            <div class="card-header">🌱 KAORI <button class="btn-copy" id="btn-5" onclick="copyC(5)">📋 Copiar</button></div>
             <div class="item"><span class="label">Seguridad:</span><span id="pk_seg" class="val">...</span></div>
             <div class="item"><span class="label">Lavandería 1:</span><span id="pk_lav1" class="val">...</span></div>
             <div class="item"><span class="label">Lavandería 2:</span><span id="pk_lav2" class="val">...</span></div>
             <div class="item"><span class="label">Chofer:</span><span id="pk_cho" class="val">...</span></div>
-            
-            <div class="sec-t" style="color: var(--color-red); margin-top: 15px;">🔴 NOVO Q</div>
+        </div>
+
+        <div class="card theme-red">
+            <div class="card-header">🔴 NOVO Q <button class="btn-copy" id="btn-6" onclick="copyC(6)">📋 Copiar</button></div>
             <div class="item"><span class="label">Seguridad:</span><span id="nq_seg" class="val">...</span></div>
             <div class="item"><span class="label">Limpieza:</span><span id="nq_lim" class="val">...</span></div>
             <div class="item"><span class="label">Farmacia:</span><span id="nq_far" class="val">...</span></div>
@@ -144,7 +147,6 @@
 </div>
 
 <script>
-    // --- NUEVA URL DEL SCRIPT ---
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbzaVR4dVkgWZzpeBTNTS0-9MIR2Sz6xfky7WiGfAcKw0QJqLCIG3hHD2pGzmorC_YfY/exec";
 
     // Fecha Automática
@@ -183,9 +185,13 @@
         } else if(num === 2) {
             t = `✓ *NOVO INTEGRAL:*\n- Seguridad: ${getV('ni_seg')}\n- Limpieza: ${getV('ni_lim')}\n- UCI: ${getV('ni_uci')}\n- Procedimiento: ${getV('ni_proc')}\n- Farmacia: ${getV('ni_far')}\n- Laboratorio: ${getV('ni_lab')}\n\nS.O.P: ${getV('ni_sop')}\nHospitalizción: ${getV('ni_hosp')}`;
         } else if(num === 3) {
-            t = `✓ *Novo Central:*\n- Coordinador: ${getV('nce_coord')}\n- Seguridad: ${getV('nce_seg')}\n- Limpieza: ${getV('nce_lim1')}\n- Limpieza: ${getV('nce_lim2')}\n\n✓ *Esterelizacion:* ${getV('nce_est')}`;
+            t = `✓ *Novo Central:*\n- Coordinador: ${getV('nce_coord')}\n- Seguridad: ${getV('nce_seg')}\n- Limpieza: ${getV('nce_lim1')}\n- Limpieza: ${getV('nce_lim2')}`;
         } else if(num === 4) {
-            t = `*Planta Kaori:*\n- Seguridad: ${getV('pk_seg')}\n- Lavandería 01: ${getV('pk_lav1')}\n- Lavandería 02: ${getV('pk_lav2')}\n- Chofer: ${getV('pk_cho')}\n\n*Novo Q:*\n- Seguridad: ${getV('nq_seg')}\n- Limpieza: ${getV('nq_lim')}\n- Farmacia: ${getV('nq_far')}`;
+            t = `✓ *Esterilización Mansión:*\n- Personal: ${getV('nce_est')}`;
+        } else if(num === 5) {
+            t = `*Planta Kaori:*\n- Seguridad: ${getV('pk_seg')}\n- Lavandería 01: ${getV('pk_lav1')}\n- Lavandería 02: ${getV('pk_lav2')}\n- Chofer: ${getV('pk_cho')}`;
+        } else if(num === 6) {
+            t = `*Novo Q:*\n- Seguridad: ${getV('nq_seg')}\n- Limpieza: ${getV('nq_lim')}\n- Farmacia: ${getV('nq_far')}`;
         }
 
         navigator.clipboard.writeText(t).then(() => {
