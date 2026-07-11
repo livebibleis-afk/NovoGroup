@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Quirófano - HUD</title>
+    <style>
+        /* Variables de colores neón y fondos */
+        :root {
+            --bg-dark: #050b14;
+            --cyan: #00f0ff;
+            --cyan-dim: rgba(0, 240, 255, 0.15);
+            --amber: #ffb700;
+            --amber-dim: rgba(255, 183, 0, 0.15);
+            --gray: #3a4659;
+            --text-main: #ffffff;
+            --text-muted: #a0b0c0;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            padding: 1rem;
+            /* Patrón de cuadrícula sutil */
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Efectos de Brillo */
+        .glow-cyan { text-shadow: 0 0 8px var(--cyan); }
+        .glow-amber { text-shadow: 0 0 8px var(--amber); }
+        .border-cyan { border: 1px solid rgba(0, 240, 255, 0.4); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1) inset; }
+        .border-amber { border: 1px solid rgba(255, 183, 0, 0.4); box-shadow: 0 0 10px rgba(255, 183, 0, 0.1) inset; }
+
+        /* Contenedor Principal */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* --- ENCABEZADO --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, rgba(0,240,255,0.05) 0%, rgba(0,240,255,0.15) 50%, rgba(0,240,255,0.05) 100%);
+            border-bottom: 2px solid var(--cyan);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--amber);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--amber);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--amber);
+            animation: pulse 2s infinite;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+
+        .clock {
+            color: var(--cyan);
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* --- GRID DE PANELES --- */
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: rgba(0, 240, 255, 0.02);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: linear-gradient(90deg, var(--cyan-dim) 0%, transparent 100%);
+            border-top: 2px solid var(--cyan);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 0.5rem 1rem;
+            color: var(--cyan);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .panel-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex-grow: 1;
+        }
+
+        /* --- TARJETAS DE PACIENTES --- */
+        .patient-card {
+            display: flex;
+            border-left: 4px solid var(--gray);
+            background: rgba(58, 70, 89, 0.1);
+            padding: 1rem;
+            position: relative;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .patient-card.next {
+            border-left-color: var(--amber);
+            background: var(--amber-dim);
+            border: 1px solid rgba(255, 183, 0, 0.2);
+            border-left: 4px solid var(--amber);
+        }
+
+        .card-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .patient-card.next .card-time {
+            color: var(--amber);
+        }
+
+        .card-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .card-proc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .patient-card.next .card-proc span {
+            color: var(--amber);
+            font-weight: bold;
+        }
+
+        .card-obs {
+            font-size: 0.8rem;
+            color: #607080;
+        }
+
+        .status-label {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: rgba(58, 70, 89, 0.2);
+            color: var(--text-muted);
+            border: 1px solid var(--gray);
+        }
+
+        .patient-card.next .status-label {
+            background: rgba(255, 183, 0, 0.2);
+            color: var(--amber);
+            border-color: var(--amber);
+        }
+
+        /* --- ESTADO DEL QUIRÓFANO --- */
+        .info-box {
+            padding: 1rem;
+            background: rgba(0, 240, 255, 0.04);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: var(--cyan);
+        }
+
+        /* Anillo Central CSS */
+        .hud-circle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            position: relative;
+            height: 150px;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px dashed var(--gray);
+        }
+
+        .circle-1 { width: 150px; height: 150px; border-width: 2px; animation: spin 20s linear infinite; }
+        .circle-2 { width: 120px; height: 120px; border-style: dotted; animation: spin 15s linear infinite reverse; }
+        .circle-3 { width: 90px; height: 90px; border: 1px solid rgba(255, 183, 0, 0.3); }
+
+        .hud-text-center {
+            position: absolute;
+            text-align: center;
+        }
+
+        /* --- MONITOR INFERIOR --- */
+        .monitor-panel {
+            grid-column: 1 / -1;
+        }
+
+        .ecg-display {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ecg-line {
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(90deg, var(--gray) 0, var(--gray) 15px, transparent 15px, transparent 25px);
+            opacity: 0.8;
+            position: absolute;
+        }
+
+        .monitor-warning {
+            z-index: 10;
+            color: var(--gray);
+            font-weight: bold;
+            letter-spacing: 4px;
+            background: var(--bg-dark);
+            padding: 0 1rem;
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 8px var(--amber); }
+            50% { opacity: 0.4; box-shadow: 0 0 2px var(--amber); }
+            100% { opacity: 1; box-shadow: 0 0 8px var(--amber); }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Media Queries para Responsividad */
+        @media (max-width: 900px) {
+            .panel-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <header class="header">
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span class="glow-amber">STANDBY MODE</span>
+            </div>
+            <div class="title glow-cyan">QUIRÓFANO: SALA 2</div>
+            <div class="clock glow-cyan" id="live-clock">00:00:00</div>
+        </header>
+
+        <main class="panel-grid">
+            
+            <section class="panel">
+                <div class="panel-header">CRONOGRAMA DE CIRUGÍAS</div>
+                <div class="panel-content border-cyan" style="border-top: none; border-bottom: none;">
+                    
+                    <div class="patient-card next glow-amber-box">
+                        <div class="status-label">PRÓXIMO</div>
+                        <div class="card-time">09:00</div>
+                        <div class="card-name text-white">PACIENTE: KATHI FALCON</div>
+                        <div class="card-proc">PROCEDIMIENTO: <span>MANGA GASTRICA</span></div>
+                        <div class="card-obs">OBSERVAR: 2H PREOP: DR</div>
+                    </div>
+
+                    <div class="patient-card">
+                        <div class="status-label">PROGRAMADO</div>
+                        <div class="card-time">11:00</div>
+                        <div class="card-name text-muted">PACIENTE: DAYANA PRADO</div>
+                        <div class="card-proc">PROCEDIMIENTO: <span>MANGA GASTRICA</span></div>
+                        <div class="card-obs">OBSERVAR: 2H PREOP: DR</div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">PERSONAL Y MONITOREO DE SALA</div>
+                <div class="panel-content border-cyan" style="border-top: none; border-bottom: none;">
+                    
+                    <div class="info-box border-cyan">
+                        <div class="info-label">MÉDICO ASIGNADO:</div>
+                        <div class="info-value glow-cyan">DR: HOSHE LEE JOO FERNANDEZ</div>
+                    </div>
+
+                    <div class="hud-circle-container">
+                        <div class="circle circle-1"></div>
+                        <div class="circle circle-2"></div>
+                        <div class="circle circle-3"></div>
+                        <div class="hud-text-center">
+                            <div style="color: var(--amber); font-weight: bold; letter-spacing: 3px; font-size: 1.2rem;" class="glow-amber">OFFLINE</div>
+                            <div style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px; margin-top: 5px;">SALA DESOCUPADA</div>
+                        </div>
+                    </div>
+
+                    <div class="info-box border-amber" style="background: var(--amber-dim);">
+                        <div class="info-label">TIEMPO PARA INICIO:</div>
+                        <div class="info-value glow-amber" style="color: var(--amber);" id="countdown">01h 14m 48s</div>
+                    </div>
+
+                    <div class="info-box border-cyan">
+                        <div class="info-label">MATERIAL REQUERIDO:</div>
+                        <div class="info-value" style="color: white; font-size: 0.85rem;">KIT MANGA + INSUMOS LAPAROSCOPÍA</div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="panel monitor-panel">
+                <div class="panel-header" style="display: flex; justify-content: space-between;">
+                    <span>SIGNOS VITALES SENSOR - <span style="color: var(--amber);" class="glow-amber">OFFLINE</span></span>
+                    <span style="color: var(--gray);">BPM: --</span>
+                </div>
+                <div class="panel-content border-cyan" style="border-top: none; padding: 0;">
+                    <div class="ecg-display">
+                        <div class="ecg-line"></div>
+                        <div class="monitor-warning">SISTEMA EN ESPERA • NINGÚN PACIENTE DETECTADO</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            const timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+            document.getElementById('live-clock').textContent = timeString;
+        }
+        
+        // Actualizar el reloj cada segundo
+        setInterval(updateClock, 1000);
+        updateClock(); // Llamada inicial
+    </script>
+</body>
+</html>
