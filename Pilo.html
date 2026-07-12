@@ -68,23 +68,20 @@
         .procedure { font-size: 0.9rem; color: var(--text-muted); }
         .active .procedure { color: var(--amber); }
         .obs-tag { display: inline-block; background: rgba(255, 255, 255, 0.1); padding: 2px 6px; font-size: 0.75rem; margin-top: 4px; width: fit-content; }
+        .empty-state { text-align: center; color: var(--text-muted); font-style: italic; padding: 2rem; }
 
         /* ESTILOS DE MONITOREO DE OXÍGENO */
         .gas-dashboard { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; height: 750px; overflow-y: auto; }
-        
         .gas-card { background: var(--bg-card); border: 1px solid rgba(0, 240, 255, 0.2); padding: 1rem; border-radius: 4px; }
         .gas-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(0, 240, 255, 0.1); padding-bottom: 0.5rem; }
         .gas-title { font-weight: bold; color: var(--cyan); font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .gas-btn-copy { background: transparent; border: 1px solid var(--gray); color: var(--text-muted); cursor: pointer; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; }
-        .gas-btn-copy:hover { border-color: var(--cyan); color: var(--cyan); }
-
+        
         .gas-item { margin-bottom: 1rem; }
         .gas-item:last-child { margin-bottom: 0; }
         .gas-label-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.3rem; }
         .gas-name { color: var(--text-main); }
         .gas-value-text { font-weight: bold; color: var(--text-main); }
         
-        /* Barras de progreso */
         .gas-bar-bg { width: 100%; height: 16px; background: rgba(0, 0, 0, 0.5); border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255, 255, 255, 0.1); }
         .gas-bar-fill { height: 100%; transition: width 0.8s ease-in-out; display: flex; align-items: center; padding-left: 8px; font-size: 0.7rem; color: #000; font-weight: bold; }
         
@@ -92,7 +89,6 @@
         .fill-orange { background: linear-gradient(90deg, #ff5500, #ffb700); box-shadow: 0 0 10px rgba(255, 183, 0, 0.5); }
         .bar-empty { border: 1px solid var(--red-alert); background: rgba(255, 51, 102, 0.1); color: var(--red-alert); justify-content: center; font-style: italic; }
 
-        /* Grid Reservas */
         .reserva-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .reserva-box { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--cyan); padding: 1rem; text-align: center; border-radius: 4px; }
         .reserva-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; }
@@ -104,6 +100,21 @@
         ::-webkit-scrollbar-thumb { background: var(--cyan); opacity: 0.5; }
 
         .toast { position: fixed; bottom: 20px; right: 20px; background: var(--bg-dark); border: 1px solid var(--cyan); color: var(--cyan); padding: 1rem; z-index: 1000; display: none; }
+        
+        @media print {
+            body { background: #ffffff; color: #000000; background-image: none; padding: 0; }
+            .header, .toolbar, .search-box, .toast { display: none !important; }
+            .main-grid { grid-template-columns: 1fr; gap: 0; }
+            .panel { border: none !important; background: transparent !important; height: auto !important; }
+            .panel-header { color: #000000 !important; background: #e0e0e0 !important; border-bottom: 2px solid #000000 !important; }
+            .schedule-list, .gas-dashboard { height: auto; overflow: visible; padding: 0; }
+            .list-item { background: transparent !important; border: 1px solid #cccccc !important; border-left: 5px solid #000000 !important; color: #000000 !important; page-break-inside: avoid; }
+            .patient-name, .doctor-name, .procedure, .item-time { color: #000000 !important; text-shadow: none !important; }
+            .obs-tag { border: 1px solid #000000; color: #000000; background: transparent; }
+            .gas-card { border: 1px solid #cccccc; page-break-inside: avoid; }
+            .gas-bar-bg { display: none; }
+            .gas-value-text { color: #000000 !important; }
+        }
     </style>
 </head>
 <body>
@@ -112,56 +123,24 @@
         <header class="header border-cyan">
             <div class="header-title glow-cyan">Programación Novo Clinic</div>
             <div class="toolbar">
+                <button class="btn-hud" onclick="copiarAgenda()">COPIAR AGENDA</button>
                 <button class="btn-hud" onclick="window.print()">IMPRIMIR</button>
-                <button class="btn-hud btn-amber" onclick="sincronizarSheets()">SINCRONIZAR OXÍGENO</button>
+                <button class="btn-hud btn-amber" onclick="sincronizarSheets()">SINCRONIZAR DATOS</button>
             </div>
         </header>
 
         <main class="main-grid">
-            
             <section class="panel border-cyan">
                 <div class="panel-header">
                     <span>AGENDA GENERAL</span>
-                    <input type="text" id="search-input" class="search-box" placeholder="BUSCAR PACIENTE..." onkeyup="filtrarLista()">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span id="total-cirugias" style="font-size: 0.8rem; color: var(--text-muted);">PROGRAMADAS: --</span>
+                        <input type="text" id="search-input" class="search-box" placeholder="BUSCAR PACIENTE..." onkeyup="filtrarLista()">
+                    </div>
                 </div>
                 
-                <div class="schedule-list">
-                    <div class="list-item">
-                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
-                        <div class="item-time">07:30</div>
-                        <div class="item-details">
-                            <div class="patient-name">LUIS MENDOZA</div>
-                            <div class="doctor-name">DRA: GLADYS</div>
-                            <div class="procedure">PROCEDIMIENTO: COLECISTECTOMÍA</div>
-                        </div>
-                    </div>
-                    <div class="list-item active">
-                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">2</span></div>
-                        <div class="item-time glow-amber">09:00</div>
-                        <div class="item-details">
-                            <div class="patient-name">KATHI FALCON</div>
-                            <div class="doctor-name">DR: HOSHE LEE JOO FERNANDEZ</div>
-                            <div class="procedure">PROCEDIMIENTO: MANGA GASTRICA</div>
-                        </div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">2</span></div>
-                        <div class="item-time">11:00</div>
-                        <div class="item-details">
-                            <div class="patient-name">DAYANA PRADO</div>
-                            <div class="doctor-name">DR: HOSHE LEE JOO FERNANDEZ</div>
-                            <div class="procedure">PROCEDIMIENTO: MANGA GASTRICA</div>
-                        </div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
-                        <div class="item-time">16:00</div>
-                        <div class="item-details">
-                            <div class="patient-name">IDALMI CRUZ</div>
-                            <div class="doctor-name">DR: HOSHE LEE JOO FERNANDEZ</div>
-                            <div class="procedure">PROCEDIMIENTO: MANGA GASTRICA + HERNIA</div>
-                        </div>
-                    </div>
+                <div class="schedule-list" id="schedule-container">
+                    <div class="empty-state">PRESIONA "SINCRONIZAR DATOS" PARA CARGAR LA AGENDA...</div>
                 </div>
             </section>
 
@@ -172,12 +151,8 @@
                 </div>
                 
                 <div class="gas-dashboard">
-                    
                     <div class="gas-card">
-                        <div class="gas-card-header">
-                            <div class="gas-title">🛠️ Salas de Operaciones</div>
-                            <button class="gas-btn-copy">📋</button>
-                        </div>
+                        <div class="gas-card-header"><div class="gas-title">🛠️ Salas de Operaciones</div></div>
                         <div class="gas-item">
                             <div class="gas-label-row"><span class="gas-name">S1. Sala 1</span><span class="gas-value-text" id="val-s1">--</span></div>
                             <div class="gas-bar-bg"><div id="bar-s1" class="gas-bar-fill bar-empty" style="width: 100%;">SIN DATOS</div></div>
@@ -193,10 +168,7 @@
                     </div>
 
                     <div class="gas-card">
-                        <div class="gas-card-header">
-                            <div class="gas-title">🫁 UCI & Nebulización</div>
-                            <button class="gas-btn-copy">📋</button>
-                        </div>
+                        <div class="gas-card-header"><div class="gas-title">🫁 UCI & Nebulización</div></div>
                         <div class="gas-item">
                             <div class="gas-label-row"><span class="gas-name">Ca1. Cama A1</span><span class="gas-value-text" id="val-ca1">--</span></div>
                             <div class="gas-bar-bg"><div id="bar-ca1" class="gas-bar-fill bar-empty" style="width: 100%;">SIN DATOS</div></div>
@@ -208,10 +180,7 @@
                     </div>
 
                     <div class="gas-card">
-                        <div class="gas-card-header">
-                            <div class="gas-title">🛏️ Recuperación</div>
-                            <button class="gas-btn-copy">📋</button>
-                        </div>
+                        <div class="gas-card-header"><div class="gas-title">🛏️ Recuperación</div></div>
                         <div class="gas-item">
                             <div class="gas-label-row"><span class="gas-name">Rb. Pto. B</span><span class="gas-value-text" id="val-ptob">--</span></div>
                             <div class="gas-bar-bg"><div id="bar-ptob" class="gas-bar-fill bar-empty" style="width: 100%;">SIN DATOS</div></div>
@@ -236,19 +205,14 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div class="gas-card">
-                            <div class="gas-card-header">
-                                <div class="gas-title">🏥 Hospitalización</div>
-                            </div>
+                            <div class="gas-card-header"><div class="gas-title">🏥 Hospitalización</div></div>
                             <div class="gas-item">
                                 <div class="gas-label-row"><span class="gas-name">General</span><span class="gas-value-text" id="val-hosp">--</span></div>
                                 <div class="gas-bar-bg"><div id="bar-hosp" class="gas-bar-fill bar-empty" style="width: 100%;">SIN DATOS</div></div>
                             </div>
                         </div>
-
                         <div class="gas-card">
-                            <div class="gas-card-header">
-                                <div class="gas-title">📦 Reservas de Gases</div>
-                            </div>
+                            <div class="gas-card-header"><div class="gas-title">📦 Reservas de Gases</div></div>
                             <div class="reserva-grid">
                                 <div class="reserva-box">
                                     <div class="reserva-label">RESERVA O2</div>
@@ -261,7 +225,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
         </main>
@@ -270,6 +233,27 @@
     <div class="toast" id="toast-alert"></div>
 
     <script>
+        function copiarAgenda() {
+            const items = document.querySelectorAll('.list-item');
+            if (items.length === 0) { showToast("Sincroniza primero para copiar datos."); return; }
+            
+            let textoCopiar = "=== PROGRAMACIÓN NOVO CLINIC ===\n\n";
+            items.forEach(item => {
+                if(item.style.display !== 'none') {
+                    const sala = item.querySelector('.item-room span').innerText;
+                    const hora = item.querySelector('.item-time').innerText;
+                    const paciente = item.querySelector('.patient-name').innerText;
+                    const medico = item.querySelector('.doctor-name').innerText;
+                    const proc = item.querySelector('.procedure').innerText;
+                    const obsEl = item.querySelector('.obs-tag');
+                    const obs = obsEl ? obsEl.innerText : "";
+                    
+                    textoCopiar += `Sala: ${sala} | Hora: ${hora}\nPaciente: ${paciente}\nMédico: ${medico}\n${proc}\n${obs}\n-----------------------------------\n`;
+                }
+            });
+            navigator.clipboard.writeText(textoCopiar).then(() => { showToast("Agenda copiada al portapapeles."); });
+        }
+
         function filtrarLista() {
             const input = document.getElementById('search-input').value.toUpperCase();
             const items = document.querySelectorAll('.list-item');
@@ -286,13 +270,11 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // LÓGICA PARA ACTUALIZAR BARRAS VISUALMENTE
         function updateBar(barId, valId, value, maxVal = 3000) {
             const bar = document.getElementById(barId);
             const textVal = document.getElementById(valId);
             if(!bar || !textVal) return;
 
-            // Si el valor viene vacío o no está definido
             if(value === undefined || value === "" || value === "--" || value === "-") {
                 textVal.innerText = "--";
                 bar.innerText = "SIN CONEXIÓN";
@@ -305,17 +287,10 @@
             textVal.innerText = numValue;
             bar.innerText = numValue;
             
-            // Calcular porcentaje (asumiendo 3000 como el máximo estándar)
             let percentage = (numValue / maxVal) * 100;
             if(percentage > 100) percentage = 100;
             bar.style.width = percentage + "%";
-
-            // Cambiar color: Naranja si es <= 1900, Azul si es > 1900
-            if(numValue <= 1900) {
-                bar.className = "gas-bar-fill fill-orange";
-            } else {
-                bar.className = "gas-bar-fill fill-blue";
-            }
+            bar.className = (numValue <= 1900) ? "gas-bar-fill fill-orange" : "gas-bar-fill fill-blue";
         }
 
         async function sincronizarSheets() {
@@ -323,37 +298,71 @@
             indicator.innerText = "Sincronizando...";
             indicator.style.color = "var(--cyan)";
 
-            // URL EXACTA DE TU GOOGLE APPS SCRIPT
+            // URL EXACTA QUE ME PROPORCIONASTE
             const urlAppScript = "https://script.google.com/macros/s/AKfycbyLzX69AG6BIob0Wfm76yuDPEDr_3zoK_FQgpQ6DoVqFDDq7qvpVRHDJA8Zt7UyEPaA/exec"; 
 
             try {
                 const respuesta = await fetch(urlAppScript);
                 const datos = await respuesta.json();
 
-                // Actualizar la hora
                 indicator.innerText = `ÚLT. SYNC: ${datos.timestamp || new Date().toLocaleTimeString()}`;
 
-                // Mapeo: Actualiza estas etiquetas conectando los IDs del HTML con la Columna B de tu Sheets
-                updateBar('bar-s1', 'val-s1', datos["S1. Sala 1"]);
-                updateBar('bar-s2', 'val-s2', datos["S2. Sala 2"]);
-                updateBar('bar-s3', 'val-s3', datos["S3. Sala 3"]);
-                updateBar('bar-ca1', 'val-ca1', datos["Ca1. Cama A1"]);
-                updateBar('bar-neb', 'val-neb', datos["Neb. Nebulizar"]);
-                updateBar('bar-ptob', 'val-ptob', datos["Rb. Pto. B"]);
-                updateBar('bar-ptoc', 'val-ptoc', datos["Re. Pto. C"]);
-                updateBar('bar-ptod', 'val-ptod', datos["Re. Pto. D"]);
-                updateBar('bar-ptoe', 'val-ptoe', datos["Re. Pto. e"]);
-                updateBar('bar-ptof', 'val-ptof', datos["Re. Pto. F"]);
+                // --- 1. RENDERIZAR AGENDA (CIRUGÍAS) ---
+                const agendaContainer = document.getElementById('schedule-container');
+                agendaContainer.innerHTML = ''; // Limpiamos estado anterior
+                let totalCirugias = 0;
+
+                datos.cirugias.forEach((cirugia, index) => {
+                    totalCirugias++;
+                    // Extraer solo número de sala
+                    const numSala = cirugia.sala.replace(/\D/g, '') || "-";
+                    // Destacar ligeramente la primera cirugía
+                    const activeClass = (index === 0) ? "active" : "";
+                    const timeClass = (index === 0) ? "glow-amber" : "";
+                    
+                    const obsHTML = cirugia.obs ? `<div class="obs-tag">OBS: ${cirugia.obs}</div>` : '';
+
+                    const html = `
+                        <div class="list-item ${activeClass}">
+                            <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">${numSala}</span></div>
+                            <div class="item-time ${timeClass}">${cirugia.hora}</div>
+                            <div class="item-details">
+                                <div class="patient-name">${cirugia.paciente}</div>
+                                <div class="doctor-name">${cirugia.medico}</div>
+                                <div class="procedure">PROCEDIMIENTO: ${cirugia.procedimiento}</div>
+                                ${obsHTML}
+                            </div>
+                        </div>
+                    `;
+                    agendaContainer.insertAdjacentHTML('beforeend', html);
+                });
                 
-                // Salvavidas por si está escrito con error o sin error en el Sheets
-                const valorHospitalizacion = datos["General"] || datos["Generaral"];
-                updateBar('bar-hosp', 'val-hosp', valorHospitalizacion);
+                document.getElementById('total-cirugias').innerText = `PROGRAMADAS: ${totalCirugias.toString().padStart(2, '0')}`;
+                
+                if (totalCirugias === 0) {
+                    agendaContainer.innerHTML = '<div class="empty-state">No hay cirugías programadas.</div>';
+                }
 
-                // Actualizar Reservas
-                if(datos["Reserva O2"] !== undefined) document.getElementById("val-res-o2").innerHTML = `${datos["Reserva O2"]} <span>UND</span>`;
-                if(datos["RESERVA CO2"] !== undefined) document.getElementById("val-res-co2").innerHTML = `${datos["RESERVA CO2"]} <span>UND</span>`;
+                // --- 2. RENDERIZAR OXÍGENO ---
+                const oxigeno = datos.oxigeno;
+                updateBar('bar-s1', 'val-s1', oxigeno["S1. Sala 1"]);
+                updateBar('bar-s2', 'val-s2', oxigeno["S2. Sala 2"]);
+                updateBar('bar-s3', 'val-s3', oxigeno["S3. Sala 3"]);
+                updateBar('bar-ca1', 'val-ca1', oxigeno["Ca1. Cama A1"]);
+                updateBar('bar-neb', 'val-neb', oxigeno["Neb. Nebulizar"]);
+                updateBar('bar-ptob', 'val-ptob', oxigeno["Rb. Pto. B"]);
+                updateBar('bar-ptoc', 'val-ptoc', oxigeno["Re. Pto. C"]);
+                updateBar('bar-ptod', 'val-ptod', oxigeno["Re. Pto. D"]);
+                updateBar('bar-ptoe', 'val-ptoe', oxigeno["Re. Pto. e"]);
+                updateBar('bar-ptof', 'val-ptof', oxigeno["Re. Pto. F"]);
+                
+                const valHosp = oxigeno["General"] || oxigeno["Generaral"];
+                updateBar('bar-hosp', 'val-hosp', valHosp);
 
-                showToast("Niveles de oxígeno actualizados correctamente.");
+                if(oxigeno["Reserva O2"] !== undefined) document.getElementById("val-res-o2").innerHTML = `${oxigeno["Reserva O2"]} <span>UND</span>`;
+                if(oxigeno["RESERVA CO2"] !== undefined) document.getElementById("val-res-co2").innerHTML = `${oxigeno["RESERVA CO2"]} <span>UND</span>`;
+
+                showToast("Agenda y niveles actualizados correctamente.");
 
             } catch (error) {
                 console.error("Error al sincronizar:", error);
