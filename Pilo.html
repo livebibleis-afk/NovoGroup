@@ -493,8 +493,8 @@
             indicator.innerText = "[ SOLICITANDO DATOS A SHEETS... ]";
             indicator.style.color = "var(--cyan)";
 
-            // REEMPLAZA ESTA URL CON LA QUE TE DIO GOOGLE APPS SCRIPT
-            const urlAppScript = "TU_URL_DE_GOOGLE_SCRIPT_AQUI"; 
+            // AQUI ESTA TU URL INTEGRADA
+            const urlAppScript = "https://script.google.com/macros/s/AKfycbwAcisR6jadEDf-UGlSk5C9ySBiXIRuj6QliO_sVqWSe9fjuESAP4DAow00UGcUp1CZ/exec"; 
 
             try {
                 const respuesta = await fetch(urlAppScript);
@@ -515,7 +515,7 @@
                 valBpm.innerHTML = `${datos.pulsaciones}<span class='vital-unit'>bpm</span>`;
                 valBpm.style.color = "#ff3366";
                 
-                document.getElementById('ecg-status-text').innerText = "TRANSMITIR DATOS DE MONITOREO DESDE SHEETS";
+                document.getElementById('ecg-status-text').innerText = "TRANSMITIENDO DATOS DE MONITOREO DESDE SHEETS";
                 document.getElementById('hud-main-status').innerText = datos.estado;
                 document.getElementById('hud-main-status').style.color = "var(--cyan)";
                 document.getElementById('hud-sub-status').innerText = "CONEXIÓN ESTABLECIDA";
