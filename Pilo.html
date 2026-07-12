@@ -375,6 +375,53 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
-    </script>
+    </script>        // --- FUNCIÓN REAL: CONECTAR CON GOOGLE SHEETS VIA APPS SCRIPT ---
+        async function sincronizarSheets() {
+            const indicator = document.getElementById('sync-indicator');
+            indicator.innerText = "[ SOLICITANDO DATOS A SHEETS... ]";
+            indicator.style.color = "var(--cyan)";
+
+            // REEMPLAZA ESTA URL CON LA QUE TE DIO GOOGLE APPS SCRIPT
+            const urlAppScript = "TU_URL_DE_GOOGLE_SCRIPT_AQUI"; 
+
+            try {
+                // Llamada real a la base de datos
+                const respuesta = await fetch(urlAppScript);
+                const datos = await respuesta.json();
+
+                // Actualización visual de la interfaz HUD
+                indicator.innerText = `[ ÚLTIMA SINCRONIZACIÓN: ${datos.timestamp} ]`;
+                indicator.style.color = "#00f0ff";
+                
+                document.getElementById('tag-o2').innerText = "LIVE";
+                document.getElementById('tag-bpm').innerText = "LIVE";
+                
+                // Inyectar datos de Oxígeno
+                const valO2 = document.getElementById('val-o2');
+                valO2.innerHTML = `${datos.oxigeno}<span class='vital-unit'>%</span>`;
+                valO2.style.color = "var(--cyan)";
+                valO2.classList.add('glow-cyan');
+                
+                // Inyectar datos de Ritmo Cardíaco
+                const valBpm = document.getElementById('val-bpm');
+                valBpm.innerHTML = `${datos.pulsaciones}<span class='vital-unit'>bpm</span>`;
+                valBpm.style.color = "#ff3366";
+                
+                // Actualizar Textos Centrales
+                document.getElementById('ecg-status-text').innerText = "TRANSMITIR DATOS DE MONITOREO DESDE SHEETS";
+                document.getElementById('hud-main-status').innerText = datos.estado;
+                document.getElementById('hud-main-status').style.color = "var(--cyan)";
+                document.getElementById('hud-sub-status').innerText = "CONEXIÓN ESTABLECIDA";
+
+                showToast("Datos sincronizados correctamente con Google Sheets.");
+
+            } catch (error) {
+                console.error("Error al sincronizar:", error);
+                indicator.innerText = "[ ERROR DE CONEXIÓN CON SHEETS ]";
+                indicator.style.color = "#ff3366";
+                showToast("Error de comunicación. Revisa la consola.");
+            }
+        }
+
 </body>
 </html>
