@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index - Programación Quirúrgica HUD</title>
+    <title>Programación Novo Clinic</title>
     <style>
         :root {
             --bg-dark: #050b14;
@@ -31,7 +31,6 @@
             background-size: 30px 30px;
         }
 
-        /* Utilidades HUD */
         .glow-cyan { text-shadow: 0 0 8px var(--cyan); }
         .glow-amber { text-shadow: 0 0 8px var(--amber); }
         .border-cyan { border: 1px solid rgba(0, 240, 255, 0.3); box-shadow: 0 0 10px rgba(0, 240, 255, 0.05) inset; }
@@ -52,10 +51,48 @@
             padding: 1rem 2rem;
             background: linear-gradient(90deg, var(--cyan-dim) 0%, rgba(0,240,255,0.2) 50%, var(--cyan-dim) 100%);
             border-bottom: 2px solid var(--cyan);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .header-title { font-size: 1.5rem; font-weight: bold; letter-spacing: 3px; color: var(--cyan); }
-        .header-time { font-size: 1.2rem; color: var(--text-main); letter-spacing: 2px; }
+        .header-title { font-size: 1.6rem; font-weight: bold; letter-spacing: 3px; color: var(--cyan); }
+        
+        /* Barra de Herramientas / Acciones */
+        .toolbar {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-hud {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 1px;
+        }
+
+        .btn-hud:hover {
+            background: var(--cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 12px var(--cyan);
+        }
+
+        .btn-hud.btn-amber {
+            border-color: var(--amber);
+            color: var(--amber);
+            background: rgba(255, 183, 0, 0.05);
+        }
+
+        .btn-hud.btn-amber:hover {
+            background: var(--amber);
+            color: var(--bg-dark);
+            box-shadow: 0 0 12px var(--amber);
+        }
 
         /* --- CONTENEDOR GRID PRINCIPAL --- */
         .main-grid {
@@ -82,6 +119,18 @@
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            background: rgba(58, 70, 89, 0.2);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.85rem;
+            outline: none;
+            width: 200px;
         }
 
         .schedule-list {
@@ -102,10 +151,7 @@
             padding: 1rem;
             gap: 1rem;
             align-items: center;
-            transition: all 0.3s ease;
         }
-
-        .list-item:hover { background: rgba(58, 70, 89, 0.3); cursor: default; }
 
         .list-item.active {
             border-left-color: var(--amber);
@@ -115,19 +161,8 @@
             border-right: 1px solid rgba(255, 183, 0, 0.2);
         }
 
-        .item-room {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-
-        .item-time {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--cyan);
-        }
-
+        .item-room { text-align: center; font-size: 1.2rem; font-weight: bold; color: var(--text-muted); }
+        .item-time { font-size: 1.5rem; font-weight: bold; color: var(--cyan); }
         .active .item-time { color: var(--amber); }
 
         .item-details { display: flex; flex-direction: column; gap: 0.3rem; }
@@ -144,7 +179,7 @@
             width: fit-content; 
         }
 
-        /* --- PANEL DERECHO: MONITOREO Y SENSORES --- */
+        /* --- PANEL DERECHO: SENSORES GENERALES (O2, BPM) --- */
         .sensors-grid {
             padding: 1.5rem;
             display: flex;
@@ -152,7 +187,6 @@
             gap: 1.5rem;
         }
 
-        /* Bloque Signos Vitales y Oxígeno */
         .vitals-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -168,40 +202,20 @@
         }
 
         .vital-label { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 10px; }
-        .vital-value { font-size: 3rem; font-weight: bold; color: var(--gray); }
+        .vital-value { font-size: 3rem; font-weight: bold; color: var(--gray); transition: color 0.5s ease; }
         .vital-unit { font-size: 1rem; color: var(--gray); }
         
-        .offline-tag {
+        .sync-status-tag {
             position: absolute;
             top: 5px;
             right: 5px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--amber);
             border: 1px solid var(--amber);
             padding: 2px 5px;
             letter-spacing: 1px;
         }
 
-        /* HUD Central Decorativo */
-        .hud-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 180px;
-            margin: 1rem 0;
-            border-top: 1px dashed rgba(0, 240, 255, 0.2);
-            border-bottom: 1px dashed rgba(0, 240, 255, 0.2);
-            position: relative;
-        }
-
-        .circle { border-radius: 50%; position: absolute; }
-        .c1 { width: 140px; height: 140px; border: 1px dashed var(--gray); animation: spin 20s linear infinite; }
-        .c2 { width: 110px; height: 110px; border: 2px dotted rgba(255, 183, 0, 0.3); animation: spin 15s linear infinite reverse; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* Gráfico ECG Linea Plana */
         .ecg-box {
             border: 1px solid rgba(0, 240, 255, 0.2);
             height: 120px;
@@ -227,10 +241,52 @@
             letter-spacing: 4px;
         }
 
-        /* Scrollbar personalizada para la lista */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: var(--cyan); opacity: 0.5; }
+        .hud-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 180px;
+            margin: 1rem 0;
+            border-top: 1px dashed rgba(0, 240, 255, 0.2);
+            border-bottom: 1px dashed rgba(0, 240, 255, 0.2);
+            position: relative;
+        }
+
+        .circle { border-radius: 50%; position: absolute; }
+        .c1 { width: 140px; height: 140px; border: 1px dashed var(--gray); animation: spin 20s linear infinite; }
+        .c2 { width: 110px; height: 110px; border: 2px dotted rgba(255, 183, 0, 0.3); animation: spin 15s linear infinite reverse; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Notificación Flotante */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 1rem;
+            font-family: var(--font-mono);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        /* --- ESTILOS DE IMPRESIÓN OPTIMIZADOS --- */
+        @media print {
+            body { background: #ffffff; color: #000000; background-image: none; padding: 0; }
+            .header, .toolbar, .search-box, .hud-center, .sync-status-tag, .toast { display: none !important; }
+            .main-grid { grid-template-columns: 1fr; }
+            .panel { border: none !important; background: transparent !important; }
+            .panel-header { color: #000000 !important; background: #e0e0e0 !important; border-bottom: 2px solid #000000 !important; }
+            .schedule-list { height: auto; overflow: visible; padding: 0; }
+            .list-item { background: transparent !important; border: 1px solid #cccccc !important; border-left: 5px solid #000000 !important; color: #000000 !important; page-break-inside: avoid; }
+            .patient-name { color: #000000 !important; }
+            .doctor-name, .procedure, .item-time { color: #333333 !important; text-shadow: none !important; }
+            .obs-tag { border: 1px solid #000000; color: #000000; background: transparent; }
+        }
 
         @media (max-width: 1024px) {
             .main-grid { grid-template-columns: 1fr; }
@@ -242,19 +298,24 @@
 
     <div class="dashboard">
         <header class="header border-cyan">
-            <div class="header-title glow-cyan">SYS-OP: INDEX DE PROGRAMACIÓN QUIRÚRGICA</div>
-            <div class="header-time glow-cyan" id="live-clock">--:--:--</div>
+            <div class="header-title glow-cyan">Programación Novo Clinic</div>
+            
+            <div class="toolbar">
+                <button class="btn-hud" onclick="copiarAgenda()">COPIAR AGENDA</button>
+                <button class="btn-hud" onclick="window.print()">IMPRIMIR</button>
+                <button class="btn-hud btn-amber" onclick="sincronizarSheets()">SINCRONIZAR SHEETS</button>
+            </div>
         </header>
 
         <main class="main-grid">
             
             <section class="panel border-cyan">
                 <div class="panel-header">
-                    <span>AGENDA DEL DÍA - MODO STANDBY</span>
-                    <span>TOTAL PROGRAMADAS: 06</span>
+                    <span>AGENDA GENERAL</span>
+                    <input type="text" id="search-input" class="search-box" placeholder="BUSCAR PACIENTE/MÉDICO..." onkeyup="filtrarLista()">
                 </div>
                 
-                <div class="schedule-list">
+                <div class="schedule-list" id="schedule-container">
                     
                     <div class="list-item">
                         <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
@@ -327,36 +388,36 @@
 
             <section class="panel border-cyan">
                 <div class="panel-header">
-                    <span>MONITORES Y SIGNOS VITALES</span>
-                    <span style="color: var(--amber);">[ OFFLINE ]</span>
+                    <span>Oxígeno Novo Clinic</span>
+                    <span style="color: var(--amber);" id="sync-indicator">[ SPREADSHEET DISCONNECTED ]</span>
                 </div>
                 
                 <div class="sensors-grid">
                     
                     <div class="vitals-container">
                         <div class="vital-box">
-                            <div class="offline-tag">STANDBY</div>
+                            <div class="sync-status-tag" id="tag-o2">STANDBY</div>
                             <div class="vital-label" style="color: #00f0ff;">SpO2 (OXÍGENO)</div>
-                            <div class="vital-value">--<span class="vital-unit">%</span></div>
+                            <div class="vital-value" id="val-o2">--<span class="vital-unit">%</span></div>
                         </div>
                         <div class="vital-box">
-                            <div class="offline-tag">STANDBY</div>
+                            <div class="sync-status-tag" id="tag-bpm">STANDBY</div>
                             <div class="vital-label" style="color: #ff3366;">BPM (PULSO)</div>
-                            <div class="vital-value">--<span class="vital-unit">bpm</span></div>
+                            <div class="vital-value" id="val-bpm">--<span class="vital-unit">bpm</span></div>
                         </div>
                     </div>
 
                     <div class="ecg-box">
                         <div class="ecg-flatline"></div>
-                        <div class="ecg-text">NO HAY PACIENTE CONECTADO A LOS SENSORES</div>
+                        <div class="ecg-text" id="ecg-status-text">NO HAY PACIENTE CONECTADO A LOS SENSORES</div>
                     </div>
 
                     <div class="hud-center">
                         <div class="circle c1"></div>
                         <div class="circle c2"></div>
                         <div style="text-align: center; z-index: 10;">
-                            <div style="color: var(--amber); font-weight: bold; font-size: 1.5rem; letter-spacing: 4px;" class="glow-amber">SISTEMA</div>
-                            <div style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px;">ESPERANDO INGRESO</div>
+                            <div style="color: var(--amber); font-weight: bold; font-size: 1.5rem; letter-spacing: 4px;" id="hud-main-status">SISTEMA</div>
+                            <div style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px;" id="hud-sub-status">ESPERANDO INGRESO</div>
                         </div>
                     </div>
 
@@ -365,17 +426,68 @@
         </main>
     </div>
 
+    <div class="toast" id="toast-alert">Agenda copiada al portapapeles con éxito.</div>
+
     <script>
+        // Reloj
         function updateClock() {
             const now = new Date();
             let h = String(now.getHours()).padStart(2, '0');
             let m = String(now.getMinutes()).padStart(2, '0');
             let s = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('live-clock').textContent = h + ':' + m + ':' + s + ' HRS';
+            const clockEl = document.getElementById('live-clock');
+            if(clockEl) clockEl.textContent = h + ':' + m + ':' + s + ' HRS';
         }
         setInterval(updateClock, 1000);
         updateClock();
-    </script>        // --- FUNCIÓN REAL: CONECTAR CON GOOGLE SHEETS VIA APPS SCRIPT ---
+
+        // Copiar Agenda
+        function copiarAgenda() {
+            const items = document.querySelectorAll('.list-item');
+            let textoCopiar = "=== PROGRAMACIÓN NOVO CLINIC ===\n\n";
+            
+            items.forEach(item => {
+                if(item.style.display !== 'none') {
+                    const sala = item.querySelector('.item-room span').innerText;
+                    const hora = item.querySelector('.item-time').innerText;
+                    const paciente = item.querySelector('.patient-name').innerText;
+                    const medico = item.querySelector('.doctor-name').innerText;
+                    const proc = item.querySelector('.procedure').innerText;
+                    const obs = item.querySelector('.obs-tag').innerText;
+                    
+                    textoCopiar += `Sala: ${sala} | Hora: ${hora}\nPaciente: ${paciente}\nMédico: ${medico}\n${proc}\n${obs}\n-----------------------------------\n`;
+                }
+            });
+
+            navigator.clipboard.writeText(textoCopiar).then(() => {
+                showToast("Agenda formateada y copiada al portapapeles.");
+            });
+        }
+
+        // Buscar/Filtrar
+        function filtrarLista() {
+            const input = document.getElementById('search-input').value.toUpperCase();
+            const items = document.querySelectorAll('.list-item');
+            
+            items.forEach(item => {
+                const text = item.innerText.toUpperCase();
+                if(text.indexOf(input) > -1) {
+                    item.style.display = "grid";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        // Mostrar Notificaciones
+        function showToast(message) {
+            const toast = document.getElementById('toast-alert');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // Conectar con Google Sheets
         async function sincronizarSheets() {
             const indicator = document.getElementById('sync-indicator');
             indicator.innerText = "[ SOLICITANDO DATOS A SHEETS... ]";
@@ -385,29 +497,24 @@
             const urlAppScript = "TU_URL_DE_GOOGLE_SCRIPT_AQUI"; 
 
             try {
-                // Llamada real a la base de datos
                 const respuesta = await fetch(urlAppScript);
                 const datos = await respuesta.json();
 
-                // Actualización visual de la interfaz HUD
                 indicator.innerText = `[ ÚLTIMA SINCRONIZACIÓN: ${datos.timestamp} ]`;
                 indicator.style.color = "#00f0ff";
                 
                 document.getElementById('tag-o2').innerText = "LIVE";
                 document.getElementById('tag-bpm').innerText = "LIVE";
                 
-                // Inyectar datos de Oxígeno
                 const valO2 = document.getElementById('val-o2');
                 valO2.innerHTML = `${datos.oxigeno}<span class='vital-unit'>%</span>`;
                 valO2.style.color = "var(--cyan)";
                 valO2.classList.add('glow-cyan');
                 
-                // Inyectar datos de Ritmo Cardíaco
                 const valBpm = document.getElementById('val-bpm');
                 valBpm.innerHTML = `${datos.pulsaciones}<span class='vital-unit'>bpm</span>`;
                 valBpm.style.color = "#ff3366";
                 
-                // Actualizar Textos Centrales
                 document.getElementById('ecg-status-text').innerText = "TRANSMITIR DATOS DE MONITOREO DESDE SHEETS";
                 document.getElementById('hud-main-status').innerText = datos.estado;
                 document.getElementById('hud-main-status').style.color = "var(--cyan)";
@@ -422,6 +529,6 @@
                 showToast("Error de comunicación. Revisa la consola.");
             }
         }
-
+    </script>
 </body>
 </html>
