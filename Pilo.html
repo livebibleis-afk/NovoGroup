@@ -105,7 +105,7 @@
             transition: all 0.3s ease;
         }
 
-        .list-item:hover { background: rgba(58, 70, 89, 0.3); }
+        .list-item:hover { background: rgba(58, 70, 89, 0.3); cursor: default; }
 
         .list-item.active {
             border-left-color: var(--amber);
@@ -251,10 +251,22 @@
             <section class="panel border-cyan">
                 <div class="panel-header">
                     <span>AGENDA DEL DÍA - MODO STANDBY</span>
-                    <span>TOTAL PROGRAMADAS: 03</span>
+                    <span>TOTAL PROGRAMADAS: 06</span>
                 </div>
                 
                 <div class="schedule-list">
+                    
+                    <div class="list-item">
+                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
+                        <div class="item-time">07:30</div>
+                        <div class="item-details">
+                            <div class="patient-name">LUIS MENDOZA</div>
+                            <div class="doctor-name">DRA: GLADYS</div>
+                            <div class="procedure">PROCEDIMIENTO: COLECISTECTOMÍA LAPAROSCÓPICA</div>
+                            <div class="obs-tag">OBS: EVALUACIÓN ANESTESIA LISTA</div>
+                        </div>
+                    </div>
+
                     <div class="list-item active">
                         <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">2</span></div>
                         <div class="item-time glow-amber">09:00</div>
@@ -278,6 +290,28 @@
                     </div>
 
                     <div class="list-item">
+                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">3</span></div>
+                        <div class="item-time">12:30</div>
+                        <div class="item-details">
+                            <div class="patient-name">MARIA SALAZAR</div>
+                            <div class="doctor-name">DR: ROBERTO CHAVEZ</div>
+                            <div class="procedure">PROCEDIMIENTO: ARTROSCOPÍA DE RODILLA</div>
+                            <div class="obs-tag">OBS: REQUIERE EQUIPO TRAUMATOLOGÍA</div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
+                        <div class="item-time">14:00</div>
+                        <div class="item-details">
+                            <div class="patient-name">CARLOS RUIZ</div>
+                            <div class="doctor-name">DRA: GLADYS</div>
+                            <div class="procedure">PROCEDIMIENTO: APENDICECTOMÍA</div>
+                            <div class="obs-tag">OBS: PACIENTE DE EMERGENCIA</div>
+                        </div>
+                    </div>
+
+                    <div class="list-item">
                         <div class="item-room">SALA<br><span style="color: white; font-size: 1.8rem;">1</span></div>
                         <div class="item-time">16:00</div>
                         <div class="item-details">
@@ -287,6 +321,7 @@
                             <div class="obs-tag">OBS: 2H PREOP: DR</div>
                         </div>
                     </div>
+
                 </div>
             </section>
 
