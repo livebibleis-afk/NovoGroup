@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formato Comensales - Novo Clinic</title>
+<style>
+  :root{
+    --verde:#a9d18e;
+    --gris-linea:#d9d9d9;
+    --gris-forma:#bfbfbf;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#f0f0f0;
+    font-family:'Segoe UI',Arial,sans-serif;
+    padding:20px;
+  }
+  .page{
+    position:relative;
+    width:800px;
+    min-height:1100px;
+    margin:0 auto;
+    background:#fff;
+    box-shadow:0 0 12px rgba(0,0,0,.15);
+    padding:40px 80px;
+    overflow:hidden;
+  }
+
+  /* Flechas verdes en los márgenes */
+  .arrows{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:center;
+    padding:30px 0;
+  }
+  .arrows.left{left:0;}
+  .arrows.right{right:0;}
+  .arrows span{
+    color:var(--verde);
+    font-size:22px;
+    line-height:1;
+  }
+
+  /* Encabezado */
+  .header{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+  }
+  .logo-top-left{
+    font-size:22px;
+    font-weight:700;
+    color:#4a7a34;
+    letter-spacing:.5px;
+  }
+  .fecha-wrap{
+    font-size:16px;
+    color:#333;
+  }
+  .fecha-wrap input[type="date"]{
+    font-size:16px;
+    padding:4px 8px;
+    border:1px solid #bbb;
+    border-radius:4px;
+    color:#333;
+  }
+
+  /* Líneas para escribir */
+  .lines{
+    position:relative;
+    z-index:2;
+    margin-top:20px;
+  }
+  .lines .line{
+    border-bottom:1px solid var(--gris-linea);
+    height:38px;
+  }
+
+  /* Pie de página */
+  .footer-shapes{
+    position:absolute;
+    bottom:30px;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    align-items:center;
+    z-index:1;
+  }
+  .marker{
+    width:26px;height:26px;
+    background:var(--gris-forma);
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+  }
+  .triangle{
+    width:0;height:0;
+    border-left:16px solid transparent;
+    border-right:16px solid transparent;
+    border-bottom:26px solid var(--gris-forma);
+  }
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .page{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Flechas verdes márgenes -->
+    <div class="arrows left">
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+    </div>
+    <div class="arrows right">
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+      <span>➤</span><span>➤</span><span>➤</span><span>➤</span>
+    </div>
+
+    <!-- Encabezado: logo arriba izquierda + fecha editable -->
+    <div class="header">
+      <div class="logo-top-left">Novo Clinic</div>
+      <div class="fecha-wrap">
+        <input type="date" id="fecha" value="2026-05-01">
+      </div>
+    </div>
+
+    <!-- (La marca de agua central "Novo Clinic" fue eliminada) -->
+
+    <!-- Líneas para escribir -->
+    <div class="lines">
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div><div class="line"></div>
+      <div class="line"></div><div class="line"></div>
+    </div>
+
+    <!-- Pie de página -->
+    <div class="footer-shapes">
+      <div class="marker"></div>
+      <div class="triangle"></div>
+    </div>
+  </div>
+</body>
+</html>
