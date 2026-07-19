@@ -731,15 +731,28 @@
 
             const renderOxyList = (list) => {
                 return list.map(item => {
-                    const style = getOxyStyles(item.val);
-                    const displayVal = style.isEmpty ? '<span class="progress-text">VACÍO</span>' : item.val;
-                    return `
+                    const valores = item.val.toString().split(';').map(v => v.trim());
+                    
+                    let html = `
                         <div class="oxy-item">
-                            <div class="oxy-item-header"><span>${item.label}</span><span style="color: ${style.color === '#ffffff' ? 'inherit' : style.color}">${item.val}</span></div>
+                            <div class="oxy-item-header">
+                                <span>${item.label}</span>
+                                <span>${item.val}</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">`;
+                            
+                    valores.forEach(valStr => {
+                        const style = getOxyStyles(valStr);
+                        const displayVal = style.isEmpty ? '<span class="progress-text">VACÍO</span>' : valStr;
+                        
+                        html += `
                             <div class="progress-bg ${style.isEmpty ? 'progress-empty' : ''}">
                                 <div class="progress-bar" style="width: ${style.width}%; background: ${style.bg}; color: ${style.color}">${displayVal}</div>
-                            </div>
-                        </div>`;
+                            </div>`;
+                    });
+
+                    html += `</div></div>`;
+                    return html;
                 }).join('');
             };
 
