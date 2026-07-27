@@ -1,182 +1,1034 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovoGroup — Sistema Clínico Integrado</title>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Novo Clinic - HUD Quirófano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* ===================================================================== */
+        /* VARIABLES Y ESTILOS HUD SCI-FI (DASHBOARD UNIFICADO)                  */
+        /* ===================================================================== */
         :root {
-            --bg-base: #f4f6f9;
-            --bg-sidebar: #1e3a60;
-            --text-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #333333;
-            --accent: #0284c7;
-            --accent-hover: #0369a1;
-            --border: #e2e8f0;
+            --bg-dark: #050b14;
+            --cyan: #00f0ff;
+            --cyan-dim: rgba(0, 240, 255, 0.15);
+            --amber: #ffb700;
+            --amber-dim: rgba(255, 183, 0, 0.15);
+            --gray: #3a4659;
+            --text-main: #ffffff;
+            --text-muted: #a0b0c0;
+            --font-mono: 'Courier New', Courier, monospace;
+            --glass-bg: rgba(5, 11, 20, 0.85);
+            --admision-bg: #0a1424;
+            --admision-text: #ffffff;
+            --admision-border: rgba(0, 240, 255, 0.4);
         }
 
-        [data-theme="dark"] {
-            --bg-base: #0f172a;
-            --bg-sidebar: #0f172a;
-            --text-sidebar: #cbd5e1;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --border: #334155;
+        [data-theme="light"] {
+            --bg-dark: #f0f4f8;
+            --cyan: #0077b6;
+            --cyan-dim: rgba(0, 119, 182, 0.1);
+            --amber: #d97706;
+            --amber-dim: rgba(217, 119, 6, 0.1);
+            --gray: #94a3b8;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --admision-bg: #ffffff;
+            --admision-text: #0f172a;
+            --admision-border: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-base); color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden; }
-
-        /* SIDEBAR NAV */
-        #sidebar { width: 260px; background-color: var(--bg-sidebar); color: var(--text-sidebar); display: flex; flex-direction: column; flex-shrink: 0; transition: all 0.3s; z-index: 100; }
-        .sidebar-brand { padding: 20px; font-size: 20px; font-weight: bold; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); color: #0284c7; }
-        .sidebar-menu { list-style: none; padding: 15px 0; flex-grow: 1; }
-        .sidebar-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; transition: background 0.2s; opacity: 0.8; }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(255,255,255,0.1); opacity: 1; border-left: 4px solid var(--accent); }
-        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; text-align: center; opacity: 0.6; }
-
-        /* CONTENIDO PRINCIPAL */
-        #main-wrapper { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { background: var(--bg-card); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .header-title h1 { font-size: 18px; font-weight: 700; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-mono); -webkit-font-smoothing: antialiased; }
         
-        .btn-ui { padding: 8px 14px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
-        .btn-ui:hover { background: var(--bg-base); }
-        
-        .content-body { padding: 25px; flex-grow: 1; overflow-y: auto; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            overflow-x: hidden;
+            padding: 1rem;
+            /* Patrón de cuadrícula HUD */
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-attachment: fixed;
+        }
 
-        /* CONTENEDOR DE MODULOS EXTERNOS O EMULADOS */
-        .module-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); min-height: 600px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        /* Efectos de Brillo HUD */
+        .glow-cyan { text-shadow: 0 0 8px var(--cyan); }
+        .glow-amber { text-shadow: 0 0 8px var(--amber); }
+        .border-cyan { border: 1px solid rgba(0, 240, 255, 0.4); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1) inset; }
+        .border-amber { border: 1px solid rgba(255, 183, 0, 0.4); box-shadow: 0 0 10px rgba(255, 183, 0, 0.1) inset; }
+
+        /* Contenedor Principal */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* HEADER DASHBOARD */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem 1.5rem; 
+            background: linear-gradient(90deg, rgba(0,240,255,0.05) 0%, rgba(0,240,255,0.15) 50%, rgba(0,240,255,0.05) 100%);
+            border-bottom: 2px solid var(--cyan);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            flex-wrap: wrap; 
+            gap: 1rem; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
         
-        /* Ocultar elementos en impresión general si se requiere */
+        .status-badge { display: flex; align-items: center; gap: 0.5rem; color: var(--amber); font-weight: bold; letter-spacing: 2px; font-size: 0.85rem; }
+        .status-dot { width: 10px; height: 10px; background-color: var(--amber); border-radius: 50%; box-shadow: 0 0 8px var(--amber); animation: pulse 2s infinite; }
+        .header-title { font-size: 1.3rem; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
+        .header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .clock { color: var(--cyan); font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; margin-right: 10px; }
+        
+        .search-bar { 
+            padding: 8px 15px; border-radius: 4px; border: 1px solid var(--cyan); 
+            background: rgba(0, 240, 255, 0.05); color: var(--text-main); outline: none; 
+            font-family: var(--font-mono); font-size: 0.9rem; width: 220px; transition: all 0.3s;
+        }
+        .search-bar:focus { box-shadow: 0 0 10px var(--cyan); background: rgba(0, 240, 255, 0.1); }
+        .search-bar::placeholder { color: var(--text-muted); }
+        
+        .icon-btn { 
+            background: rgba(0, 240, 255, 0.1); border: 1px solid var(--cyan); color: var(--cyan); 
+            cursor: pointer; padding: 8px; border-radius: 4px; display: flex; align-items: center; 
+            justify-content: center; transition: all 0.2s; width: 38px; height: 38px;
+        }
+        .icon-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 12px var(--cyan); }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* MAIN PANELES */
+        main { display: flex; flex-direction: column; gap: 2rem; }
+        
+        .panel { background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.1); display: flex; flex-direction: column; }
+        .panel-header { 
+            background: linear-gradient(90deg, var(--cyan-dim) 0%, transparent 100%); 
+            border-top: 2px solid var(--cyan); border-bottom: 1px solid rgba(0, 240, 255, 0.2); 
+            padding: 0.7rem 1.2rem; color: var(--cyan); font-weight: bold; letter-spacing: 2px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem;
+        }
+        .panel-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        /* CARDS CIRUGIAS (ESTILO HUD) */
+        .sala-group { margin-bottom: 20px; }
+        .sala-title { font-size: 1rem; color: var(--amber); margin-bottom: 12px; font-weight: bold; letter-spacing: 2px; border-bottom: 1px dashed rgba(255, 183, 0, 0.3); padding-bottom: 4px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+        
+        .patient-card { 
+            display: flex; flex-direction: column; gap: 0.5rem; padding: 1.2rem; 
+            background: rgba(58, 70, 89, 0.15); border: 1px solid rgba(0, 240, 255, 0.2); 
+            border-left: 4px solid var(--cyan); position: relative; transition: all 0.3s;
+        }
+        .patient-card:hover { transform: translateY(-3px); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); border-color: var(--cyan); }
+        
+        /* Destacar primera tarjeta como "PRÓXIMO" o especial */
+        .patient-card.destacado { border-left-color: var(--amber); background: var(--amber-dim); border: 1px solid rgba(255, 183, 0, 0.3); border-left: 4px solid var(--amber); }
+        .patient-card.destacado:hover { box-shadow: 0 0 15px rgba(255, 183, 0, 0.2); }
+
+        .action-buttons-card { position: absolute; top: 12px; right: 12px; z-index: 2; display: flex; gap: 6px; }
+        .card-action-btn { 
+            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--cyan); border-radius: 4px; 
+            cursor: pointer; padding: 6px; font-size: 13px; display: flex; align-items: center; 
+            justify-content: center; transition: all 0.2s; color: var(--cyan); width: 30px; height: 30px; 
+        }
+        .card-action-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 8px var(--cyan); }
+        
+        .card-row { display: flex; font-size: 0.85rem; line-height: 1.4; }
+        .card-label { width: 130px; min-width: 130px; color: var(--text-muted); font-weight: bold; }
+        .card-value { flex: 1; font-weight: bold; color: var(--text-main); word-break: break-word; }
+        .patient-card.destacado .card-value { color: #fff; }
+
+        /* OXIGENO HUD */
+        .oxygen-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .oxygen-grid { grid-template-columns: 1fr 1fr; } .recuperacion-full { grid-column: 1 / -1; } }
+        
+        .oxy-category { padding: 1.2rem; background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.15); }
+        .oxy-category h3 { margin-bottom: 15px; font-size: 1rem; color: var(--cyan); letter-spacing: 1px; }
+        .oxy-item { margin-bottom: 12px; }
+        .oxy-item-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; font-weight: bold; color: var(--text-muted); }
+        
+        .progress-bg { background: rgba(58, 70, 89, 0.3); border: 1px solid rgba(0, 240, 255, 0.2); height: 18px; width: 100%; position: relative; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: #000; }
+        .progress-empty { background: rgba(255, 0, 0, 0.1) !important; border: 1px solid #ff4d4d; }
+        .progress-empty .progress-text { color: #ff4d4d; position: absolute; width: 100%; text-align: center; line-height: 16px; }
+        
+        .reserva-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+        .reserva-widget { padding: 12px; text-align: center; position: relative; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); }
+        .reserva-title { font-size: 0.75rem; font-weight: bold; color: var(--text-muted); margin-bottom: 5px; }
+        .reserva-val { font-size: 1.3rem; font-weight: bold; color: var(--cyan); text-shadow: 0 0 5px var(--cyan); }
+        .badge-alert { position: absolute; top: -6px; right: -6px; background: #ff4d4d; color: white; font-size: 0.6rem; padding: 2px 6px; font-weight: bold; border-radius: 2px; box-shadow: 0 0 8px #ff4d4d; }
+        .recuperacion-cols { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 768px) { .recuperacion-cols { grid-template-columns: 1fr 1fr; } }
+
+        /* TOAST HUD */
+        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--bg-dark); color: var(--cyan); border: 1px solid var(--cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); padding: 12px 20px; font-size: 0.9rem; letter-spacing: 1px; opacity: 0; transition: all 0.3s; z-index: 3000; transform: translateY(20px); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* ===================================================================== */
+        /* ESTILOS DEL MODAL DE ADMISIÓN (ESTILO TERMINAL HUD)                   */
+        /* ===================================================================== */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(5, 11, 20, 0.8); backdrop-filter: blur(5px); }
+        .modal-content { background-color: var(--admision-bg); color: var(--admision-text); margin: 2% auto; padding: 25px; width: 95%; max-width: 210mm; border: 2px solid var(--cyan); box-shadow: 0 0 30px rgba(0, 240, 255, 0.2); position: relative; }
+        .close-btn { position: absolute; right: 20px; top: 15px; color: var(--cyan); font-size: 28px; font-weight: bold; cursor: pointer; z-index: 10; transition: 0.2s; }
+        .close-btn:hover { color: #fff; text-shadow: 0 0 8px var(--cyan); }
+
+        .reg-header-table { display: table; width: 100%; border-bottom: 2px solid var(--cyan); padding-bottom: 12px; margin-bottom: 20px; }
+        .reg-header-row { display: table-row; }
+        .reg-header-cell-main { display: table-cell; vertical-align: bottom; }
+        .reg-header-cell-side { display: table-cell; vertical-align: bottom; text-align: right; }
+        .reg-header-cell-main h1 { margin: 0; font-size: 16pt; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px var(--cyan-dim); }
+
+        .reg-sala-box { display: inline-flex; align-items: center; border: 1px solid var(--cyan); padding: 6px 12px; font-weight: bold; font-size: 11pt; background-color: rgba(0, 240, 255, 0.1); }
+        .reg-sala-box span { color: var(--cyan); margin-right: 8px; }
+        .reg-sala-box input { border: none; background: transparent; font-weight: bold; font-size: 11pt; width: 50px; color: var(--admision-text); text-align: center; outline: none; font-family: var(--font-mono); }
+
+        .reg-actions-container { margin-bottom: 15px; text-align: right; display: flex; justify-content: flex-end; gap: 10px; }
+        .reg-btn-action { color: #000; border: none; padding: 8px 16px; font-size: 9.5pt; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; font-family: var(--font-mono); letter-spacing: 1px; transition: 0.2s; }
+        .reg-btn-copy { background-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+        .reg-btn-copy:hover { background-color: #fff; }
+        .reg-btn-print { background-color: var(--amber); box-shadow: 0 0 10px rgba(255, 183, 0, 0.4); }
+        .reg-btn-print:hover { background-color: #fff; }
+
+        .reg-btn-copy-mini { background: none; border: 1px solid var(--cyan); color: var(--cyan); cursor: pointer; font-size: 10pt; padding: 2px 6px; margin-left: 6px; display: inline-block; vertical-align: middle; }
+        .reg-btn-copy-mini:hover { background: var(--cyan); color: #000; }
+
+        .reg-dni-section { display: table; width: 100%; margin-bottom: 25px; }
+        .reg-dni-row { display: table-row; }
+        .reg-dni-col { display: table-cell; width: 50%; }
+        .reg-dni-col:first-child { padding-right: 10px; }
+        .reg-dni-col:last-child { padding-left: 10px; }
+        .reg-dni-card { border: 1px dashed var(--cyan); aspect-ratio: 1.58 / 1; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; background: rgba(0, 240, 255, 0.02); }
+        .reg-dni-card.has-image { border: 1px solid var(--cyan); }
+        .reg-dni-card input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+        .reg-dni-label { display: block; font-size: 9.5pt; color: var(--text-muted); font-weight: bold; }
+        .reg-dni-label span { display: block; font-size: 8pt; color: var(--cyan); margin-top: 6px; }
+        .reg-dni-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 1; }
+
+        .reg-form-table { display: table; width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .reg-form-row { display: table-row; }
+        .reg-form-label { display: table-cell; width: 22%; font-weight: bold; font-size: 9.5pt; color: var(--cyan); text-transform: uppercase; vertical-align: middle; padding-right: 10px; }
+        .reg-form-input-cell { display: table-cell; width: 73%; vertical-align: middle; }
+        .reg-form-copy-cell { display: table-cell; width: 5%; text-align: right; vertical-align: middle; }
+        .reg-form-control { width: 100%; border: none; border-bottom: 1px solid var(--admision-border); padding: 6px 0; font-size: 11pt; color: var(--admision-text); outline: none; background: transparent; font-family: var(--font-mono); transition: 0.2s; }
+        .reg-form-control:focus { border-bottom-color: var(--cyan); box-shadow: 0 1px 0 var(--cyan); }
+
+        .reg-age-flex-container { display: flex; align-items: center; width: 100%; }
+        .reg-age-calculator-wrapper { margin-left: 10px; display: inline-flex; align-items: center; padding: 4px 8px; font-size: 9pt; border: 1px solid var(--cyan); background: rgba(0, 240, 255, 0.05); }
+        .reg-age-calculator-wrapper span { color: var(--cyan); margin-right: 6px; font-weight: bold; }
+        .reg-age-calculator-wrapper input[type="date"] { border: none; background: transparent; font-size: 9pt; color: var(--admision-text); outline: none; cursor: pointer; font-family: var(--font-mono); }
+        .reg-age-calculator-wrapper input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.8); }
+
+        .reg-section-heading { font-size: 11pt; font-weight: bold; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255, 183, 0, 0.4); padding-bottom: 6px; margin-top: 25px; margin-bottom: 14px; text-shadow: 0 0 5px var(--amber-dim); }
+
+        .reg-checkbox-grid { display: table; width: 100%; }
+        .reg-checkbox-row { display: table-row; }
+        .reg-checkbox-cell { display: table-cell; width: 50%; padding: 6px 0; vertical-align: middle; }
+        .reg-checkbox-wrapper { position: relative; display: inline-block; cursor: pointer; font-size: 10pt; padding-left: 28px; color: var(--admision-text); user-select: none; }
+        .reg-checkbox-wrapper input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .reg-checkmark { position: absolute; top: 0; left: 0; height: 18px; width: 18px; border: 1px solid var(--cyan); background: rgba(0, 240, 255, 0.05); }
+        .reg-checkbox-wrapper input:checked ~ .reg-checkmark { background-color: var(--cyan); }
+        .reg-checkmark:after { content: ""; position: absolute; display: none; left: 5px; top: 2px; width: 4px; height: 9px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .reg-checkbox-wrapper input:checked ~ .reg-checkmark:after { display: block; }
+        
+        .reg-inline-input { border: none; border-bottom: 1px solid var(--admision-border); outline: none; padding: 2px 0; font-size: 10pt; width: 60%; margin-left: 8px; color: var(--admision-text); background: transparent; font-family: var(--font-mono); }
+        .reg-footer-branding { text-align: center; font-size: 9pt; font-weight: bold; color: var(--text-muted); border-top: 1px dashed rgba(0, 240, 255, 0.2); padding-top: 15px; margin-top: 30px; letter-spacing: 2px; }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 8px var(--amber); }
+            50% { opacity: 0.4; box-shadow: 0 0 2px var(--amber); }
+            100% { opacity: 1; box-shadow: 0 0 8px var(--amber); }
+        }
+
+        /* ===================================================================== */
+        /* IMPRESIÓN ESTRICTA A4 (BLANCO Y NEGRO / COMPLIANCE MÉDICO)          */
+        /* ===================================================================== */
+        .print-only { display: none; }
         @media print {
-            #sidebar, header, .no-print { display: none !important; }
-            body, #main-wrapper, .content-body, .module-container { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; border: none !important; box-shadow: none !important; }
-            .tab-panel.active { display: block !important; }
-        }
+            @page { size: A4 portrait; margin: 0; } 
+            body { background: white !important; color: black !important; margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif !important; }
+            .no-print, header, .search-bar, .oxy-section, .toast, .status-badge { display: none !important; }
+            
+            /* Impresión Normal del Dashboard */
+            .print-only { display: block; padding: 20px; }
+            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+            .print-table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: left; }
+            .print-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; }
+            .sala-separator td { background-color: #ddd !important; -webkit-print-color-adjust: exact; text-align: center; font-weight: bold; }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            #sidebar { width: 100%; min-height: auto; }
-            header { padding: 15px; }
+            /* Impresión del Modal de Admisión (Forzar 1 sola página A4) */
+            body.printing-modal { width: 210mm; height: 297mm; overflow: hidden !important; display: block; }
+            body.printing-modal > * { display: none !important; }
+            body.printing-modal .modal, body.printing-modal .modal * { display: block !important; visibility: visible !important; color: #000 !important; background-color: white !important; font-family: 'Segoe UI', Arial, sans-serif !important; }
+            body.printing-modal .modal { position: absolute; left: 0; top: 0; width: 210mm; height: 297mm; overflow: hidden; }
+            body.printing-modal .modal-content { 
+                box-shadow: none; border: none; width: 210mm; height: 297mm !important; max-width: 210mm; max-height: 297mm; 
+                padding: 12mm 15mm; margin: 0; overflow: hidden !important; page-break-after: avoid; page-break-inside: avoid;
+            }
+            body.printing-modal .reg-actions-container, body.printing-modal .close-btn, body.printing-modal .reg-form-copy-cell, body.printing-modal .reg-btn-copy-mini, body.printing-modal .no-print { display: none !important; }
+            
+            body.printing-modal .reg-header-table { margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #000 !important; }
+            body.printing-modal .reg-form-table { border-spacing: 0 8px !important; }
+            body.printing-modal .reg-section-heading { margin-top: 15px; margin-bottom: 10px; color: #000 !important; border-bottom: 1px solid #000 !important; }
+            body.printing-modal .reg-dni-card { aspect-ratio: 2 / 1; min-height: 50px; border: 1px dashed #000 !important; }
+            body.printing-modal .reg-dni-card.has-image { border: none !important; }
+            body.printing-modal .reg-dni-label span { display: none; }
+            body.printing-modal .reg-form-control, body.printing-modal .reg-inline-input { border-bottom: 1px solid #000 !important; }
+            body.printing-modal .reg-checkmark { border: 1px solid #000 !important; }
+            body.printing-modal .reg-footer-branding { margin-top: 15px; padding-top: 8px; position: absolute; bottom: 12mm; left: 0; right: 0; width: 100%; color: #555 !important; }
+            body.printing-modal input::placeholder { color: transparent !important; }
         }
     </style>
 </head>
 <body>
 
-    <nav id="sidebar" class="no-print">
-        <div class="sidebar-brand">NovoGroup</div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-item active" onclick="switchTab('dashboard-nc')">🏢 Novo Clinic (San Isidro)</li>
-            <li class="sidebar-item" onclick="switchTab('dashboard-nq')">🔴 Novo Q (Dashboard)</li>
-            <li class="sidebar-item" onclick="switchTab('prog-avanzada')">⚡ Programación Quirúrgica</li>
-            <li class="sidebar-item" onclick="switchTab('asistencia')">📋 Control de Asistencia</li>
-            <li class="sidebar-item" onclick="switchTab('facturador')">💰 Facturador (PayMed)</li>
-            <li class="sidebar-item" onclick="switchTab('consentimientos')">✍️ Consentimientos Informados</li>
-            <li class="sidebar-item" onclick="switchTab('comensales')">🍽️ Formato Comensales</li>
-        </ul>
-        <div class="sidebar-footer">
-            NovoGroup v7.0<br>Power by Jeshua Él Mesías
-        </div>
-    </nav>
-
-    <div id="main-wrapper">
-        <header class="no-print">
-            <div class="header-title">
-                <h1 id="current-panel-title">Dashboard Clínico General</h1>
+    <script type="text/plain" id="datos-cirugias"></script>
+    <script type="text/plain" id="datos-oxigeno"></script>
+    
+    <div class="dashboard-container no-print" id="main-interface">
+        <header>
+            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span class="glow-amber">SYSTEM ONLINE</span>
+                </div>
+                <div class="header-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color: var(--cyan);"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                    <span id="main-title" class="glow-cyan">NOVO CLINIC</span>
+                </div>
             </div>
-            <div class="header-actions">
-                <button class="btn-ui" onclick="toggleGlobalTheme()">🌙 Modo</button>
-                <button class="btn-ui" onclick="window.print()">🖨️ Imprimir Módulo</button>
+            
+            <div class="header-controls">
+                <div class="clock glow-cyan" id="live-clock">00:00:00</div>
+                <input type="text" id="searchInput" class="search-bar" placeholder="🔍 BUSCAR PACIENTE...">
+                <button class="icon-btn" id="themeToggle" title="Cambiar Tema (Light/Dark)">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7c.17 0 .34.02.51.04C11.16 6.54 10 8.63 10 11c0 3.31 2.69 6 6 6 2.37 0 4.46-1.16 5.96-2.51.02.17.04.34.04.51 0 3.86-3.14 7-7 7z"/></svg>
+                </button>
+                <button class="icon-btn" id="copyWppBtn" title="Copiar Reporte WhatsApp">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                </button>
+                <button class="icon-btn" id="printBtn" title="Imprimir Programación">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+                </button>
             </div>
         </header>
 
-        <main class="content-body">
-            
-            <div id="dashboard-nc" class="tab-panel active">
-                <div class="module-container">
-                    <h3>Módulo Novo Clinic Sincronizado</h3>
-                    <p>Cargando controles automatizados de base de datos desde la ID de Sheets integrada...</p>
+        <main>
+            <section class="panel" id="cirugias-section">
+                <div class="panel-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7H8v5H6v2h2v5h2v-5h2v-2z"/></svg>
+                        CRONOGRAMA DE CIRUGÍAS [SALA EN VIVO]
                     </div>
-            </div>
-
-            <div id="dashboard-nq" class="tab-panel">
-                <div class="module-container">
-                    <h3>Módulo Quirúrgico Novo Q</h3>
-                    <p>Panel dinámico con lectura de pestaña "NQ CIRUGIAS" y "NQ OXIGENO".</p>
                 </div>
-            </div>
+                <div class="panel-content border-cyan" style="border-top: none;" id="cirugias-container"></div>
+            </section>
 
-            <div id="dashboard-prog-avanzada" class="tab-panel">
+            <section class="panel oxy-section" id="oxigeno-section">
+                <div class="panel-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96zM13 13h-2v3h-2v-3H7v-2h2V8h2v3h2v2z"/></svg>
+                        TELEMETRÍA DE OXÍGENO - NOVO CLINIC
+                    </div>
+                    <button class="card-action-btn" id="copyAllOxyBtn" title="Copiar Todo el Reporte" style="position: static; font-size: 11px; width: auto; padding: 4px 10px; font-weight: bold; font-family: var(--font-mono);">📋 COPIAR TELEMETRÍA</button>
                 </div>
-
-            <div id="dashboard-asistencia" class="tab-panel">
-                </div>
-
-            <div id="dashboard-facturador" class="tab-panel">
-                </div>
-
-            <div id="dashboard-consentimientos" class="tab-panel">
-                </div>
-
-            <div id="dashboard-comensales" class="tab-panel">
-                </div>
-
+                <div class="panel-content border-cyan oxygen-grid" style="border-top: none;" id="oxigeno-container"></div>
+            </section>
         </main>
     </div>
 
+    <div id="registrationModal" class="modal">
+        <div class="modal-content border-cyan">
+            <span class="close-btn" onclick="closeRegistrationModal()">&times;</span>
+            
+            <div class="reg-header-table">
+                <div class="reg-header-row">
+                    <div class="reg-header-cell-main">
+                        <h1>ADMISION QUIRURGICA // HUD TERMINAL</h1>
+                    </div>
+                    <div class="reg-header-cell-side">
+                        <div class="reg-sala-box">
+                            <span>SALA:</span>
+                            <input type="text" id="reg-input-sala" value="" placeholder="---">
+                            <button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-sala')" title="Copiar Sala">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-actions-container">
+                <button class="reg-btn-action reg-btn-copy" onclick="copyAllPatientDataReg()">
+                    <span>📋</span> COPIAR DATA
+                </button>
+                <button class="reg-btn-action reg-btn-print" onclick="printRegistration()">
+                    <span>🖨️</span> IMPRIMIR A4
+                </button>
+            </div>
+
+            <div class="reg-dni-section">
+                <div class="reg-dni-row">
+                    <div class="reg-dni-col">
+                        <div class="reg-dni-card" id="card-anverso">
+                            <span class="reg-dni-label" id="label-anverso">🔍 CARGAR DNI ANVERSO<span>[CLICK PARA INGESTAR ESCANEO]</span></span>
+                            <img id="preview-anverso" class="reg-dni-preview" alt="DNI Anverso">
+                            <input type="file" accept="image/*" onchange="loadDniReg(this, 'preview-anverso', 'label-anverso', 'card-anverso')">
+                        </div>
+                    </div>
+                    <div class="reg-dni-col">
+                        <div class="reg-dni-card" id="card-reverso">
+                            <span class="reg-dni-label" id="label-reverso">🔍 CARGAR DNI REVERSO<span>[CLICK PARA INGESTAR ESCANEO]</span></span>
+                            <img id="preview-reverso" class="reg-dni-preview" alt="DNI Reverso">
+                            <input type="file" accept="image/*" onchange="loadDniReg(this, 'preview-reverso', 'label-reverso', 'card-reverso')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-form-table">
+                <div class="reg-form-row">
+                    <div class="reg-form-label">PACIENTE:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-paciente" class="reg-form-control" placeholder="APELLIDOS Y NOMBRES COMPLETOS"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-paciente')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">H. INGRESO:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-h-ingreso" class="reg-form-control" placeholder="00:00"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-h-ingreso')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">EDAD:</div>
+                    <div class="reg-form-input-cell">
+                        <div class="reg-age-flex-container">
+                            <input type="text" id="reg-input-edad" class="reg-form-control" placeholder="EJ. 43 AÑOS">
+                            <div class="reg-age-calculator-wrapper no-print">
+                                <span>F. NAC:</span>
+                                <input type="date" id="reg-calc-fecha-nac" onchange="calculateAgeReg()" oninput="calculateAgeReg()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-edad')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">TEL. PACIENTE:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-tel-paciente" class="reg-form-control" placeholder="NUMERO DE CONTACTO"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-tel-paciente')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">TEL. FAMILIAR:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-tel-familiar" class="reg-form-control" placeholder="PARENTESCO / TELEFONO"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-tel-familiar')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">MÉDICO TRATANTE:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-medico" class="reg-form-control" placeholder="CIRUJANO ASIGNADO"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-medico')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">FECHA CIRUGÍA:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-fecha" class="reg-form-control" placeholder="DD/MM/AAAA"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-fecha')" title="Copiar dato">📋</button></div>
+                </div>
+                <div class="reg-form-row">
+                    <div class="reg-form-label">PROCEDIMIENTO:</div>
+                    <div class="reg-form-input-cell"><input type="text" id="reg-input-procedimiento" class="reg-form-control" placeholder="EJ. MANGA GASTRICA"></div>
+                    <div class="reg-form-copy-cell"><button class="reg-btn-copy-mini" onclick="copySingleValueReg('reg-input-procedimiento')" title="Copiar dato">📋</button></div>
+                </div>
+            </div>
+
+            <div class="reg-section-heading">PROTOCOLO DE EXÁMENES</div>
+            
+            <div class="reg-checkbox-grid">
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">PRE OPERATORIO<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">PRE OPERATORIO PEDIÁTRICO<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">PRUEBA COVID-19<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">RIESGO CARDIOLÓGICO (EKG)<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">HEMOGRAMA COMPLETO<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">RIESGO NEUROLÓGICO<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                </div>
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">COAGULACIÓN Y SANGRÍA<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell">
+                        <label class="reg-checkbox-wrapper">OTROS:
+                            <input type="checkbox"><span class="reg-checkmark"></span>
+                            <input type="text" id="reg-input-otros" class="reg-inline-input" placeholder="ESPECIFICAR...">
+                            <button class="reg-btn-copy-mini no-print" onclick="copySingleValueReg('reg-input-otros')" title="Copiar">📋</button>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-section-heading">ASIGNACIÓN DE COSTOS</div>
+            <div class="reg-checkbox-grid">
+                <div class="reg-checkbox-row">
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">MÉDICO TRATANTE<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                    <div class="reg-checkbox-cell"><label class="reg-checkbox-wrapper">PACIENTE<input type="checkbox"><span class="reg-checkmark"></span></label></div>
+                </div>
+            </div>
+
+            <div class="reg-footer-branding">
+                SYSTEM POWERED BY BVANKOS // JESHUA EL MESIAS
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">COPIADO AL PORTAPAPELES</div>
+
+    <div class="print-only">
+        <div class="print-header">
+            <h2>PROGRAMACIÓN QUIRÚRGICA - NOVO CLINIC</h2>
+            <p id="print-date"></p>
+        </div>
+        <table class="print-table" id="print-table">
+            <thead>
+                <tr><th>HORA</th><th>MÉDICO</th><th>PACIENTE</th><th>PROCEDIMIENTO</th><th>OBSERVACIONES</th></tr>
+            </thead>
+            <tbody id="print-tbody"></tbody>
+        </table>
+    </div>
+
     <script>
-        // CONFIGURACIÓN DE APIS COMPARTIDAS
-        const CENTRAL_SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4';
-        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxz_7fIrUl1J_vIhuQLbprPUBPJDwlPj_HhFra_rJI9hbL51CPaIDKlVhDaw_Dhljyi/exec';
+        /* ===================================================================== */
+        /* 🔗 CONFIGURACIÓN DE GOOGLE SHEETS                                     */
+        /* ===================================================================== */
+        const SHEET_ID = '10ZSuGpQnPEQTEp5v7FC9Ck44fV9ST4_HKDUipa74ZX4'; 
+        
+        /* INICIO SISTEMA, TEMA Y RELOJ HUD */
+        const initTheme = () => {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+        };
 
-        // Cambiar entre pantallas de la SPA de forma instantánea
-        function switchTab(targetId) {
-            // Desactivar pestañas anteriores
-            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            
-            // Activar el panel seleccionado
-            const selectedPanel = document.getElementById('dashboard-' + targetId.replace('dashboard-', ''));
-            if(selectedPanel) {
-                selectedPanel.classList.add('active');
-                document.getElementById('current-panel-title').innerText = selectedPanel.querySelector('h3')?.innerText || "Panel Técnico";
-            }
-            
-            // Iluminar botón en barra lateral
-            event.currentTarget.classList.add('active');
-        }
-
-        // Modo Oscuro Global Coordinado
-        function toggleGlobalTheme() {
+        document.getElementById('themeToggle').addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
+            try { localStorage.setItem('theme', newTheme); } catch(e){}
+        });
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12; hours = hours ? hours : 12; 
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('live-clock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+
+        const setDateHeaders = () => {
+            const dateStr = new Date().toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('main-title').innerText = `NOVO CLINIC - ${dateStr.toUpperCase()}`;
+            document.getElementById('print-date').innerText = `FECHA: ${dateStr.toUpperCase()}`;
+        };
+
+        const showToast = (message) => {
+            const toast = document.getElementById('toast');
+            toast.innerText = message.toUpperCase();
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        };
+
+        /* FUNCIONES DE REGISTRO (MODAL AVANZADO) */
+        const modal = document.getElementById("registrationModal");
+
+        function openRegistrationModal(encodedData) {
+            let data = null;
+            if (encodedData) {
+                try { data = JSON.parse(decodeURIComponent(encodedData)); } catch(e) { console.error("Error", e); }
+            }
+            document.querySelectorAll('.reg-form-control, .reg-sala-box input, .reg-inline-input').forEach(input => input.value = '');
+            document.querySelectorAll('.modal input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('reg-calc-fecha-nac').value = '';
+            document.getElementById('preview-anverso').style.display = 'none';
+            document.getElementById('preview-reverso').style.display = 'none';
+            document.getElementById('label-anverso').style.display = 'block';
+            document.getElementById('label-reverso').style.display = 'block';
+            document.getElementById('card-anverso').classList.remove('has-image');
+            document.getElementById('card-reverso').classList.remove('has-image');
+            document.querySelectorAll('.reg-dni-card input[type="file"]').forEach(fileInput => fileInput.value = '');
+
+            if (data) {
+                document.getElementById('reg-input-paciente').value = (data.paciente || '').toUpperCase();
+                document.getElementById('reg-input-medico').value = (data.medico || '').toUpperCase();
+                document.getElementById('reg-input-procedimiento').value = (data.procedimiento || '').toUpperCase();
+                document.getElementById('reg-input-sala').value = (data.sala || '').toUpperCase();
+                const today = new Date();
+                const dd = String(today.getDate()).padStart(2, '0');
+                const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+                const yyyy = today.getFullYear();
+                document.getElementById('reg-input-fecha').value = `${dd}/${mm}/${yyyy}`;
+                let cleanTime = data.hora ? data.hora.replace(/[^0-9:]/g, '') : '';
+                document.getElementById('reg-input-h-ingreso').value = cleanTime;
+
+                const obsTexto = (data.obs || '').toUpperCase();
+                const checkBoxesWrappers = Array.from(document.querySelectorAll('.reg-checkbox-wrapper'));
+                const checkByText = (text) => {
+                    const label = checkBoxesWrappers.find(l => l.textContent.toUpperCase().includes(text.toUpperCase()));
+                    if (label) label.querySelector('input[type="checkbox"]').checked = true;
+                };
+
+                if (obsTexto.includes('DR') || obsTexto.includes('MEDICO') || obsTexto.includes('MÉDICO')) checkByText('MÉDICO TRATANTE');
+                if (obsTexto.includes('PX') || obsTexto.includes('PACIENTE')) checkByText('PACIENTE');
+                if (obsTexto.includes('PREOP')) checkByText('PRE OPERATORIO');
+                if (obsTexto.includes('EKG') || obsTexto.includes('CARDIO')) checkByText('RIESGO CARDIOLÓGICO (EKG)');
+
+                setTimeout(() => { const dobInput = document.getElementById('reg-calc-fecha-nac'); if(dobInput) dobInput.focus(); }, 200);
+            }
+            modal.style.display = "block";
         }
 
-        // Lógica de carga asíncrona unificada para los Dashboards de Google Sheets
-        async function fetchCentralData(sheetName) {
-            const url = `https://docs.google.com/spreadsheets/d/${CENTRAL_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const jsonString = text.substring(47).slice(0, -2);
-                return JSON.parse(jsonString).table;
-            } catch (e) {
-                console.error("Error cargando la pestaña " + sheetName, e);
-                return null;
+        function closeRegistrationModal() { modal.style.display = "none"; document.body.classList.remove('printing-modal'); }
+        window.onclick = function(event) { if (event.target == modal) closeRegistrationModal(); }
+
+        function loadDniReg(input, previewId, labelId, cardId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(previewId);
+                    const label = document.getElementById(labelId);
+                    const card = document.getElementById(cardId);
+                    img.src = e.target.result; img.style.display = 'block'; label.style.display = 'none'; card.classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        // Inicializador automático del ecosistema
+        function calculateAgeReg() {
+            const dobInput = document.getElementById('reg-calc-fecha-nac').value;
+            if (!dobInput) return;
+            const parts = dobInput.split('-');
+            const birthYear = parseInt(parts[0], 10);
+            const birthMonth = parseInt(parts[1], 10) - 1;
+            const birthDay = parseInt(parts[2], 10);
+            const today = new Date();
+            let age = today.getFullYear() - birthYear;
+            const monthDiff = today.getMonth() - birthMonth;
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDay)) age--;
+            if (age >= 0) document.getElementById('reg-input-edad').value = age + " AÑOS";
+        }
+
+        function copyTextUniversal(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; textArea.style.left = "-9999px"; textArea.style.top = "-9999px";
+                document.body.appendChild(textArea); textArea.focus(); textArea.select();
+                try { document.execCommand('copy'); document.body.removeChild(textArea); return Promise.resolve(); } 
+                catch (err) { document.body.removeChild(textArea); return Promise.reject(err); }
+            }
+        }
+
+        function copySingleValueReg(inputId) {
+            const element = document.getElementById(inputId);
+            const value = element ? element.value.trim() : "";
+            if (!value) { showToast("⚠️ EL CAMPO ESTÁ VACÍO"); return; }
+            copyTextUniversal(value).then(() => showToast("📋 COPIADO AL PORTAPAPELES")).catch(err => alert('Error: ' + err));
+        }
+
+        function copyAllPatientDataReg() {
+            const fields = [
+                { l: 'SALA', id: 'reg-input-sala' }, { l: 'PACIENTE', id: 'reg-input-paciente' },
+                { l: 'H. INGRESO', id: 'reg-input-h-ingreso' }, { l: 'EDAD', id: 'reg-input-edad' },
+                { l: 'TELÉFONO PACIENTE', id: 'reg-input-tel-paciente' }, { l: 'TELÉFONO FAMILIAR', id: 'reg-input-tel-familiar' },
+                { l: 'MÉDICO TRATANTE', id: 'reg-input-medico' }, { l: 'FECHA DE CIRUGÍA', id: 'reg-input-fecha' },
+                { l: 'PROCEDIMIENTO', id: 'reg-input-procedimiento' }
+            ];
+            let compiledText = "--- REGISTRO DE ADMISIÓN QUIRÚRGICA ---\n";
+            fields.forEach(field => {
+                const element = document.getElementById(field.id);
+                const value = element ? element.value.trim() : "";
+                compiledText += field.l + ": " + (value || '(NO REGISTRADO)') + "\n";
+            });
+            copyTextUniversal(compiledText).then(() => showToast('📋 DATA COPIADA COMPLETA')).catch(err => alert('Error: ' + err));
+        }
+
+        function printRegistration() {
+            document.body.classList.add('printing-modal');
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => { document.body.classList.remove('printing-modal'); }, 1000);
+            }, 100);
+        }
+
+        /* RENDERIZADOR DASHBOARD CON ESTÉTICA HUD */
+        function renderDashboard(cirugias, oxigeno, textoWpp) {
+            const renderCirugias = (filtro = '') => {
+                const container = document.getElementById('cirugias-container');
+                const printTbody = document.getElementById('print-tbody');
+                container.innerHTML = ''; printTbody.innerHTML = '';
+
+                const searchLower = filtro.toLowerCase();
+                const filtered = cirugias.filter(c => 
+                    (c.paciente || '').toLowerCase().includes(searchLower) ||
+                    (c.medico || '').toLowerCase().includes(searchLower) ||
+                    (c.procedimiento || '').toLowerCase().includes(searchLower)
+                );
+
+                const salas = {};
+                filtered.forEach(c => { if (!salas[c.sala]) salas[c.sala] = []; salas[c.sala].push(c); });
+
+                let firstCard = true;
+                for (const [salaName, list] of Object.entries(salas)) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'sala-group';
+                    groupDiv.innerHTML = `<div class="sala-title glow-amber">// ${salaName.toUpperCase()}</div>`;
+                    
+                    const gridDiv = document.createElement('div');
+                    gridDiv.className = 'cards-grid';
+                    printTbody.innerHTML += `<tr class="sala-separator"><td colspan="5">${salaName.toUpperCase()}</td></tr>`;
+
+                    list.forEach((c, index) => {
+                        const card = document.createElement('div');
+                        // Destacamos la primera tarjeta o si tiene alguna observación urgente como en Lee.html
+                        const isDestacado = firstCard || (c.obs && c.obs.toUpperCase().includes('URGENTE'));
+                        card.className = `patient-card ${isDestacado ? 'destacado' : ''}`;
+                        if(firstCard) firstCard = false;
+                        
+                        const copyDataStr = `🏥 *CIRUGÍA PROGRAMADA*\n\n🚪 *SALA:* ${c.sala || '---'}\n🕒 *HORA PROG.:* ${c.hora || '---'}\n\n👤 *PACIENTE:* ${c.paciente || '---'}\n👨‍⚕️ *MÉDICO:* ${c.medico || '---'}\n🩺 *PROCEDIMIENTO:* ${c.procedimiento || '---'}\n\n📋 *OBS:* ${c.obs || '---'}\n🛏️ *H:* ${c.h || '---'}`;
+                        const safeModalPayload = encodeURIComponent(JSON.stringify(c));
+
+                        card.innerHTML = `
+                            <div class="action-buttons-card">
+                                <button class="card-action-btn copy-card-btn" data-clipboard="${encodeURIComponent(copyDataStr)}" title="Copiar Fila">📋</button>
+                                <button class="card-action-btn" onclick="openRegistrationModal('${safeModalPayload}')" title="Registro de Admisión">📝</button>
+                            </div>
+                            <div class="card-row"><div class="card-label">PACIENTE:</div><div class="card-value">${(c.paciente || '---').toUpperCase()}</div></div>
+                            <div class="card-row"><div class="card-label">HORA PROG.:</div><div class="card-value" style="color: var(--amber);">${c.hora || ''}</div></div>
+                            <div class="card-row"><div class="card-label">SALA:</div><div class="card-value">${c.sala || ''}</div></div>
+                            <div class="card-row"><div class="card-label">MÉDICO:</div><div class="card-value">${(c.medico || '').toUpperCase()}</div></div>
+                            <div class="card-row"><div class="card-label">PROCEDIMIENTO:</div><div class="card-value" style="color: var(--cyan);">${(c.procedimiento || '').toUpperCase()}</div></div>
+                            <div class="card-row"><div class="card-label">OBS:</div><div class="card-value">${(c.obs || '').toUpperCase()}</div></div>
+                            <div class="card-row"><div class="card-label">HOSP.:</div><div class="card-value">${c.h || ''}</div></div>
+                        `;
+                        gridDiv.appendChild(card);
+                        printTbody.innerHTML += `<tr><td>${c.hora || ''}</td><td>${c.medico || ''}</td><td>${c.paciente || ''}</td><td>${c.procedimiento || ''}</td><td>${c.obs || ''}</td></tr>`;
+                    });
+
+                    groupDiv.appendChild(gridDiv);
+                    container.appendChild(groupDiv);
+                }
+
+                document.querySelectorAll('.copy-card-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        copyTextUniversal(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
+                            this.innerHTML = '✅'; setTimeout(() => { this.innerHTML = '📋'; }, 1500);
+                        });
+                    });
+                });
+            };
+
+            document.getElementById('searchInput').addEventListener('input', (e) => renderCirugias(e.target.value));
+            renderCirugias();
+
+            const getOxyStyles = (valStr) => {
+                const val = parseInt(valStr) || 0;
+                const isEmpty = val === 0 || valStr.trim() === '-';
+                const width = isEmpty ? 0 : Math.min((val / 3000) * 100, 100);
+                // Colores Sci-Fi / HUD progresivos
+                let bg = isEmpty ? 'transparent' : (val <= 799 ? 'linear-gradient(90deg, #ff4d4d 0%, #ff8000 100%)' : (val <= 1999 ? 'linear-gradient(90deg, #ffb700 0%, #ffff00 100%)' : 'linear-gradient(90deg, #00f0ff 0%, #0080ff 100%)'));
+                let color = isEmpty ? '#ff4d4d' : '#000000';
+                return { width, bg, color, isEmpty };
+            };
+
+            const renderOxyList = (list) => {
+                return list.map(item => {
+                    const valores = item.val.toString().split(';').map(v => v.trim());
+                    let html = `
+                        <div class="oxy-item">
+                            <div class="oxy-item-header">
+                                <span>${item.label.toUpperCase()}</span>
+                                <span style="color: var(--cyan);">${item.val}</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">`;
+                            
+                    valores.forEach(valStr => {
+                        const style = getOxyStyles(valStr);
+                        const displayVal = style.isEmpty ? '<span class="progress-text">VACÍO // 0 PSI</span>' : valStr;
+                        html += `
+                            <div class="progress-bg ${style.isEmpty ? 'progress-empty' : ''}">
+                                <div class="progress-bar" style="width: ${style.width}%; background: ${style.bg}; color: ${style.color}; font-weight: bold;">${displayVal}</div>
+                            </div>`;
+                    });
+
+                    html += `</div></div>`;
+                    return html;
+                }).join('');
+            };
+
+            const getOxyCopyText = (title, list) => {
+                let txt = `🏥 *NOVO CLINIC - TELEMETRÍA*\n*${title.toUpperCase()}*\n`;
+                list.forEach(i => txt += `• ${i.label}: ${i.val}\n`);
+                return encodeURIComponent(txt);
+            };
+
+            const oxyContainer = document.getElementById('oxigeno-container');
+            let oxyHtml = `
+                <div class="oxy-category border-cyan">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 class="glow-cyan" style="margin-bottom: 0;">🛠️ SALAS DE OPERACIONES</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Salas de Operaciones', oxigeno.operaciones)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.operaciones)}
+                </div>
+                
+                <div class="oxy-category border-cyan">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 class="glow-cyan" style="margin-bottom: 0;">🩺 UCI & NEBULIZACIÓN</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('UCI & Nebulización', oxigeno.uci)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.uci)}
+                </div>
+                
+                <div class="oxy-category border-cyan recuperacion-full">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 class="glow-cyan" style="margin-bottom: 0;">🛏️ RECUPERACIÓN</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Recuperación', oxigeno.recuperacion)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    <div class="recuperacion-cols">${renderOxyList(oxigeno.recuperacion)}</div>
+                </div>
+                
+                <div class="oxy-category border-cyan">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 class="glow-cyan" style="margin-bottom: 0;">🏥 HOSPITALIZACIÓN</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Hospitalización', oxigeno.hospitalizacion)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    ${renderOxyList(oxigeno.hospitalizacion)}
+                </div>
+                
+                <div class="oxy-category border-cyan">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 class="glow-amber" style="margin-bottom: 0; color: var(--amber);">📦 RESERVAS DE GASES</h3>
+                        <button class="card-action-btn copy-oxy-btn" data-clipboard="${getOxyCopyText('Reservas de Gases', oxigeno.reservas)}" title="Copiar bloque" style="position: static;">📋</button>
+                    </div>
+                    <div class="reserva-grid">
+            `;
+
+            oxigeno.reservas.forEach(r => {
+                const needsBadge = r.val.includes('01') || r.val.includes('02') || r.val.includes('03');
+                oxyHtml += `<div class="reserva-widget">${needsBadge ? '<span class="badge-alert">¡ALERTA!</span>' : ''}<div class="reserva-title">${r.label.toUpperCase()}</div><div class="reserva-val" style="color: ${needsBadge ? '#ff4d4d' : 'var(--cyan)'}">${r.val}</div></div>`;
+            });
+            oxyContainer.innerHTML = oxyHtml + `</div></div>`;
+
+            document.querySelectorAll('.copy-oxy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    copyTextUniversal(decodeURIComponent(this.getAttribute('data-clipboard'))).then(() => {
+                        this.innerHTML = '✅'; setTimeout(() => { this.innerHTML = '📋'; }, 1500);
+                        showToast('TELEMETRÍA COPIADA');
+                    });
+                });
+            });
+
+            document.getElementById('copyAllOxyBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('REPORTE GENERAL COPIADO'));
+            document.getElementById('copyWppBtn').onclick = () => copyTextUniversal(textoWpp).then(() => showToast('REPORTE GENERAL COPIADO'));
+            document.getElementById('printBtn').onclick = () => window.print();
+        }
+
+        /* LECTURA DESDE GOOGLE SHEETS EN LÍNEA */
+        async function cargarDatosDesdeSheets() {
+            if (SHEET_ID === 'TU_ID_DE_SHEETS_AQUI' || SHEET_ID === '') {
+                const textoCirugias = document.getElementById('datos-cirugias').textContent || '';
+                const textoOxigeno = document.getElementById('datos-oxigeno').textContent || '';
+                renderDashboard(parseCirugiasText(textoCirugias), parseOxigenoText(textoOxigeno), textoOxigeno.trim());
+                showToast("MODO OFFLINE // SIN CONEXIÓN SHEETS");
+                return;
+            }
+
+            const URL_CIRUGIAS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Cirugias&headers=0`;
+            const URL_OXIGENO = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Oxigeno&headers=0`;
+
+            try {
+                const resC = await fetch(URL_CIRUGIAS);
+                const txtC = await resC.text();
+                const jsonC = JSON.parse(txtC.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
+
+                const resO = await fetch(URL_OXIGENO);
+                const txtO = await resO.text();
+                const jsonO = JSON.parse(txtO.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1]);
+
+                const getVal = (col) => {
+                    if (!col) return '';
+                    if (col.f) return col.f.toString().trim();
+                    if (col.v !== null && col.v !== undefined) return col.v.toString().trim();
+                    return '';
+                };
+
+                // --- 1. PROCESAR CIRUGÍAS ---
+                const cirugias = [];
+                for(let i = 0; i < jsonC.table.rows.length; i++) {
+                    const row = jsonC.table.rows[i];
+                    if(!row || !row.c) continue;
+                    
+                    const col0 = getVal(row.c[0]);
+                    const col1 = getVal(row.c[1]);
+
+                    if(col0.toUpperCase().includes('FECHA')) {
+                        let dateVal = col1 || col0.toUpperCase().replace('FECHA', '').replace(/:/g, '').trim();
+                        if(dateVal) {
+                            document.getElementById('main-title').innerText = `NOVO CLINIC - ${dateVal.toUpperCase()}`;
+                            document.getElementById('print-date').innerText = `FECHA: ${dateVal.toUpperCase()}`;
+                        }
+                        continue; 
+                    }
+
+                    if(col0.toUpperCase() === 'SALA' || (row.c[2] && getVal(row.c[2]).toUpperCase() === 'PACIENTE')) continue;
+
+                    const paciente = getVal(row.c[2]);
+                    const medico = getVal(row.c[3]);
+                    if(!paciente && !medico) continue; 
+
+                    cirugias.push({
+                        sala: col0 || 'S1',
+                        hora: col1,
+                        paciente: paciente,
+                        medico: medico,
+                        procedimiento: getVal(row.c[4]),
+                        obs: getVal(row.c[5]),
+                        h: getVal(row.c[6])
+                    });
+                }
+
+                // --- 2. PROCESAR OXÍGENO ---
+                const oxigeno = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+                let textoOxigenoWpp = "📋 *REPORTE DE TELEMETRÍA DE OXÍGENO*\n🏥 *Novo Clinic - HUD*\n";
+                let lastCat = '';
+
+                for(let i = 0; i < jsonO.table.rows.length; i++) {
+                    const row = jsonO.table.rows[i];
+                    if(!row || !row.c) continue;
+                    
+                    let catStr = getVal(row.c[0]);
+                    const catLower = catStr.toLowerCase();
+                    const label = getVal(row.c[1]);
+                    let val = getVal(row.c[2]);
+
+                    if (catStr.toUpperCase() === 'CATEGORIA' || catStr.toUpperCase() === 'CATEGORÍA' || label.toUpperCase() === 'ITEM') continue;
+                    if(!label) continue;
+
+                    if (label.toUpperCase().includes('FECHA') || catStr.toUpperCase().includes('FECHA')) {
+                        let dateVal = val || label.toUpperCase().replace('FECHA', '').replace(/:/g, '').trim();
+                        if(dateVal) {
+                            document.getElementById('main-title').innerText = `NOVO CLINIC - ${dateVal.toUpperCase()}`;
+                            document.getElementById('print-date').innerText = `FECHA: ${dateVal.toUpperCase()}`;
+                        }
+                        continue;
+                    }
+
+                    if (catStr === '' && lastCat !== '') catStr = lastCat;
+
+                    let target = '';
+                    if(catLower.includes('operacion') || catLower.includes('salas')) target = 'operaciones';
+                    else if(catLower.includes('uci') || catLower.includes('nebulizaci')) target = 'uci';
+                    else if(catLower.includes('recuperacion')) target = 'recuperacion';
+                    else if(catLower.includes('hospitalizacion')) target = 'hospitalizacion';
+                    else if(catLower.includes('reserva') || catLower.includes('gas')) target = 'reservas';
+
+                    if(target) {
+                        if (target === 'reservas' && val && !val.toUpperCase().includes('UND')) val += ' UND';
+                        oxigeno[target].push({ label, val });
+                        if(catStr.toUpperCase() !== lastCat) {
+                            textoOxigenoWpp += `\n*${catStr.toUpperCase()}*\n`;
+                            lastCat = catStr.toUpperCase();
+                        }
+                        textoOxigenoWpp += `${label}: ${val}\n`;
+                    }
+                }
+
+                renderDashboard(cirugias, oxigeno, textoOxigenoWpp);
+
+            } catch (error) {
+                console.error("Error sincronizando Sheets:", error);
+                showToast("⚠️ ERROR DE RED // REINTENTANDO...");
+            }
+        }
+
+        /* PARSERS ANTIGUOS OFFLINE */
+        function parseCirugiasText(text) {
+            const cirugias = []; let currentSala = ''; let currentCirugia = null;
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                if (line.startsWith('###')) { currentSala = line.replace('###', '').trim(); return; }
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim().toUpperCase();
+                    const val = line.substring(colonIndex + 1).trim();
+                    if (key === 'PACIENTE') {
+                        if (currentCirugia) cirugias.push(currentCirugia);
+                        currentCirugia = { sala: currentSala, paciente: val };
+                    } else if (currentCirugia) {
+                        if (key === 'HORA PROG.') currentCirugia.hora = val;
+                        else if (key === 'SALA') currentCirugia.sala = val;
+                        else if (key === 'MEDICO') currentCirugia.medico = val;
+                        else if (key === 'PROCEDIMIENTO') currentCirugia.procedimiento = val;
+                        else if (key === 'OBS') currentCirugia.obs = val;
+                        else if (key === 'H') currentCirugia.h = val;
+                    }
+                }
+            });
+            if (currentCirugia) cirugias.push(currentCirugia);
+            return cirugias;
+        }
+
+        function parseOxigenoText(text) {
+            const ox = { operaciones: [], uci: [], recuperacion: [], hospitalizacion: [], reservas: [] };
+            let currentCategory = '';
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line) return;
+                const upper = line.toUpperCase();
+                if (upper.includes('SALAS DE OPERACIONES')) { currentCategory = 'operaciones'; return; }
+                if (upper.includes('RECUPERACIÓN')) { currentCategory = 'recuperacion'; return; }
+                if (upper.includes('UCI & NEBULIZACIÓN')) { currentCategory = 'uci'; return; }
+                if (upper.includes('HOSPITALIZACIÓN')) { currentCategory = 'hospitalizacion'; return; }
+                if (upper.includes('RESERVAS DE GASES')) { currentCategory = 'reservas'; return; }
+                if (!currentCategory) return;
+
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    let cleanLabel = parts[0].replace(/\*/g, '').replace(/^[^\s]+\.\s*/, '').replace(/^[^\w\s]+\s*/, '').trim();
+                    let cleanValue = parts.slice(1).join(':').replace(/\*/g, '').trim();
+                    if (currentCategory === 'hospitalizacion' && parts[0].toUpperCase().includes('HOSPITALIZACIÓN')) {
+                        if(cleanValue) ox.hospitalizacion.push({ label: 'General', val: cleanValue }); return;
+                    }
+                    if (cleanLabel && cleanValue) ox[currentCategory].push({ label: cleanLabel, val: cleanValue });
+                }
+            });
+            return ox;
+        }
+
+        /* INICIALIZACIÓN PRINCIPAL */
         window.onload = () => {
-            console.log("Ecosistema NovoGroup inicializado correctamente.");
-            // Aquí se disparan las consultas simultáneas a Google Sheets para poblar las vistas clínicas
+            initTheme();
+            setDateHeaders();
+            updateClock();
+            cargarDatosDesdeSheets();
+            setInterval(() => {
+                if(SHEET_ID !== 'TU_ID_DE_SHEETS_AQUI' && SHEET_ID !== '') cargarDatosDesdeSheets();
+            }, 60000); 
         };
     </script>
 </body>
